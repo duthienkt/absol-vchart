@@ -312,4 +312,18 @@ vchart.creator.basechart.property.overflowOX = {
     get: function () {
         return Math.max(0, this.oxContentLength - this.oxLength);
     }
-}; 
+};
+
+vchart.creator.basechart.property.showInlineValue = {
+    set: function (value) {
+        if (value) {
+            this.addClass('vchart-show-inline-value');
+        }
+        else {
+            this.removeClass('vchart-show-inline-value');
+        }
+    },
+    get: function () {
+        return this.containsClass('vchart-show-inline-value');
+    }
+};

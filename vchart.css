@@ -165,3 +165,19 @@
     stroke: rgba(60, 60, 70, 0.6);
     stroke-width: 1;
 }
+
+.column-chart-column rect {
+    fill: rgb(123, 192, 247);
+}
+
+.column-chart:not(.vchart-show-inline-value) .column-chart-column text {
+    display: none;
+}
+
+.vchart-show-inline-value .column-chart-column:hover rect {
+    fill: rgb(167, 210, 245);
+}
+
+.vchart-show-inline-value .column-chart-column:not(:hover) text {
+    display: none;
+}
