@@ -1,0 +1,167 @@
+.vchart-segment-line,
+.vchart-axis,
+.vchart-line-arrow {
+    stroke-width: 1;
+    stroke: rgb(68, 114, 196);
+    fill: rgb(68, 114, 196);
+}
+
+.vchart-scroll-arrow {
+    opacity: 0.2;
+}
+
+.vchart-scroll-arrow:hover {
+    opacity: 0.6;
+}
+
+.base-chart,
+.range-chart {
+    font-size: 12;
+    font-family: Arial;
+}
+
+.base-chart-title {
+    font-size: 15;
+    font-weight: bold;
+}
+
+.base-chart-oxy-text {
+    font-style: italic;
+    fill: rgb(70, 70, 70);
+    stroke: none;
+}
+
+.range-chart-value-plot {
+    fill: rgb(255, 218, 216);
+    stroke: black;
+    stroke-width: 1;
+}
+
+.range-chart-limit-line {
+    stroke-width: 4;
+    fill: none;
+}
+
+.range-chart-range-line {
+    stroke-width: 1;
+    fill: none;
+    stroke: black;
+}
+
+.range-chart-limit-line.max {
+    stroke: rgb(230, 22, 16);
+}
+
+.range-chart-limit-line.mid {
+    stroke: rgb(77, 215, 250);
+}
+
+.range-chart-limit-line.min {
+    stroke: rgb(20, 100, 246);
+}
+
+.range-chart:not(.show-inline-value) .range-chart-inline-value {
+    display: none;
+}
+
+/* .show-inline-value .range-chart-note, */
+
+.show-inline-value .range-char-note-value {
+    display: none;
+}
+
+.grank-chart {
+    font-size: 12;
+    font-family: Arial;
+}
+
+.grank-chart-plot {
+    fill: rgb(145, 228, 251);
+    stroke-width: 1;
+    stroke: black;
+}
+
+.grank-chart-group-rect {
+    stroke: black;
+    fill: none;
+    stroke-width: 1;
+}
+
+.vchart-line-draff {
+    stroke: rgba(50, 50, 255, 0.3);
+}
+
+.base-chart {
+    font-size: 12;
+    font-family: Arial;
+}
+
+.rank-chart-plot {
+    stroke: black;
+    stroke-width: 1;
+}
+
+.rank-chart-position-rect {
+    stroke: none;
+    fill: rgba(0, 247, 255, 0.139);
+}
+
+.range-group-chart-limit-line {
+    stroke-width: 5;
+    fill: none;
+}
+
+.range-group-chart-limit-line.max {
+    stroke: rgb(230, 22, 16);
+}
+
+.range-group-chart-limit-line.min {
+    stroke: rgb(20, 100, 246);
+}
+
+.range-group-chart-limit-line.normal {
+    stroke: rgb(255, 218, 216);
+}
+
+.range-group-chart-plot {
+    fill: rgb(145, 228, 251);
+    stroke-width: 1;
+    stroke: hsla(0, 90%, 48%, 0.685);
+}
+
+.range-group-chart-range-line {
+    stroke-width: 1;
+    fill: none;
+    stroke: black;
+}
+
+.line-chart-line {
+    stroke-width: 2;
+    fill: none;
+}
+
+.line-chart-plot {
+    stroke: none;
+}
+
+.assessment-chart {}
+
+.assessment-chart-area {
+    stroke-width: 3;
+}
+
+.assessment-chart-level {
+    fill: none;
+    stroke-width: 1;
+    stroke: rgba(12, 30, 49, 0.333)
+}
+
+.assessment-chart-level-value {
+    font-size: 10;
+}
+
+.assessment-chart-level-value rect {
+    fill: rgba(255, 255, 255, 0.5);
+    stroke: rgba(60, 60, 70, 0.6);
+    stroke-width: 1;
+}
