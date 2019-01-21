@@ -20,6 +20,12 @@
     font-family: Arial;
 }
 
+/*Cheat if in bsc*/
+
+table .base-chart-title {
+    font-size: 15px;
+}
+
 .base-chart-title {
     font-size: 15;
     font-weight: bold;
@@ -70,6 +76,10 @@
     display: none;
 }
 
+table .grank-chart {
+    font-size: 12px;
+}
+
 .grank-chart {
     font-size: 12;
     font-family: Arial;
@@ -89,6 +99,10 @@
 
 .vchart-line-draff {
     stroke: rgba(50, 50, 255, 0.3);
+}
+
+table .base-chart {
+    font-size: 12px;
 }
 
 .base-chart {
@@ -156,6 +170,12 @@
     stroke: rgba(12, 30, 49, 0.333)
 }
 
+table .assessment-chart-level-value text,
+table .assessment-chart-level-value {
+    font-size: 10px;
+}
+
+.assessment-chart-level-value text,
 .assessment-chart-level-value {
     font-size: 10;
 }
@@ -180,4 +200,23 @@
 
 .vchart-show-inline-value .column-chart-column:not(:hover) text {
     display: none;
+}
+
+.sunburst-chart .base-chart-title circle {
+    fill: rgb(245, 203, 153);
+    stroke: none;
+}
+
+.sunburst-chart-node-shape {
+    fill: white;
+    stroke-width: 2;
+    stroke: rgb(247, 205, 155);
+}
+
+.sunburst-chart-node-name {
+    font-size: 14;
+}
+
+table .sunburst-chart-node-name {
+    font-size: 14px;
 }
