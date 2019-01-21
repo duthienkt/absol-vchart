@@ -35,10 +35,34 @@ vchart.creator.assessmentchart.prototype.mapAngle = function (i, deg) {
     return (-90 + i * 360 / this.keys.length) * (deg ? 1 : Math.PI / 180);
 };
 
-vchart.creator.assessmentchart.prototype.mapRadius = function (value) {
+vchart.creator.assessmentchart.prototype.mapRadius = function (level) {
 
-    return this.axisLenth * (value / (this.levels.length - 1));
+    return this.axisLenth * (level / (this.levels.length - 1));
 };
+
+
+vchart.creator.assessmentchart.prototype.mapLevel = function (value) {
+    if (this.isMappingLevel) {
+        if (value < this.levelMappingArray[0])
+            return Math.map(value,
+                this.levelMappingArray[0], this.levelMappingArray[1],
+                0, 1);
+        if (value > this.levelMappingArray[this.levels.length - 1])
+            return Math.map(value,
+                this.levelMappingArray[this.levels.length - 2], this.levelMappingArray[this.levels.length - 1],
+                0, 1);
+        for (var i = 1; i < this.levels.length; ++i) {
+            if (value >= this.levelMappingArray[i - 1] && value <= this.levelMappingArray[i])
+                return Math.map(value,
+                    this.levelMappingArray[i - 1], this.levelMappingArray[i],
+                    i - 1, i);
+        }
+    }
+    else {
+        return value;
+    }
+};
+
 
 
 vchart.creator.assessmentchart.prototype.updateSize = vchart.creator.basechart.prototype.updateSize;
@@ -139,8 +163,9 @@ vchart.creator.assessmentchart.prototype.updateComp = function () {
         var area = this.areas[i];
         var points = area.values.reduce(function (ac, value, i) {
             var angle = this.mapAngle(i);
-            var x = this.mapRadius(value) * Math.cos(angle);
-            var y = this.mapRadius(value) * Math.sin(angle);
+            var level = this.mapLevel(value);
+            var x = this.mapRadius(level) * Math.cos(angle);
+            var y = this.mapRadius(level) * Math.sin(angle);
             ac.push(x + ' ' + y);
             return ac;
 
@@ -189,12 +214,23 @@ vchart.creator.assessmentchart.prototype.preInit = function () {
     this.axisNameMarging = 7;
 };
 
+vchart.creator.assessmentchart.prototype.prepareData = function () {
+    this.levelMappingArray = this.levels.map(function (value) {
+        return parseFloat(value + '');
+    });
 
+    this.isMappingLevel = this.levelMappingArray.reduce(function (ac, cr) {
+        return ac && (!isNaN(cr));
+    }, true);
+
+
+};
 
 
 vchart.creator.assessmentchart.prototype.init = function (props) {
     this.preInit();
     this.super(props);
+    this.prepareData();
     this.initBackComp();
     this.initComp();
     this.initFrontComp();
