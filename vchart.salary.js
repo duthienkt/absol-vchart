@@ -16,6 +16,7 @@ vchart.creator.correlationchart = function () {
 vchart.creator.correlationchart.prototype.updateSize = vchart.creator.basechart.prototype.updateSize;
 
 vchart.creator.correlationchart.prototype.update = function () {
+    
     this.updateSize();
     this.updateBackComp();
     this.updateAxis();
@@ -326,8 +327,8 @@ vchart.creator.squarechart.prototype.preInit = function (props) {
 };
 
 vchart.creator.squarechart.prototype.init = function (props) {
-    this.super(props);
     this.preInit();
+    this.super(props);
     this.initBackComp();
     this.initComp();
     this.sync = this.sync.then(this.update.bind(this));

@@ -190,12 +190,26 @@ vchart.creator.basechart.prototype.updateScrollArrows = function () {
     this.scrollLeft = this.scrollLeft;//update
 };
 vchart.creator.basechart.prototype.update = function () {
+    if (typeof this.canvasWidth != 'number') {
+        this.canvasWidth = 300;
+        this.autoWidth = true;
+    }
     this.updateSize();
     this.updateBackComp();
     this.updateAxis();
     this.updateComp();
     this.updateScrollArrows();
     this.updateFrontComp();
+    requestAnimationFrame(function () {
+        if (this.autoWidth) {
+            var requireWidth = this.canvasWidth + this.overflowOX;
+            var proviceWidth = this.parentElement.getBoundingClientRect().width;
+            this.canvasWidth = Math.max(Math.min(requireWidth, proviceWidth), 300);
+            this.autoWidth = false;
+            this.update();
+            console.log(this);
+        }
+    }.bind(this));
 };
 
 
@@ -249,7 +263,7 @@ vchart.creator.basechart.prototype.initBackComp = function () {
 
     this.$oySegmentLines = this._createOYSegmentLines(this.oySegmentCount + 1 + (this.extendOY ? 1 : 0)).addTo(this);
 
-    this.$title = vchart.text(this.title, this.canvasWidth / 2, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = vchart.text(this.title, 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
 
     this.$oyName = vchart.text(this.valueName || '', 0, 0, 'base-chart-oxy-text').addTo(this);
     this.$oxName = vchart.text(this.keyName || '', 0, 0, 'base-chart-oxy-text').addTo(this);

@@ -462,6 +462,10 @@ vchart.creator.rangechart.prototype.updateOYSegmentLines = function () {
 
 vchart.creator.rangechart.prototype.update = function () {
     if (!this.ranges || this.ranges.length <= 0) return;
+    if (typeof this.canvasWidth != 'number') {
+        this.canvasWidth = 300;
+        this.autoWidth = true;
+    }
     this.updateSize();
     this.updateNote();
     this.updateOyValues();
@@ -470,6 +474,16 @@ vchart.creator.rangechart.prototype.update = function () {
     this.updateRanges();
     this.updateScrollArrows();
     this.updateOYSegmentLines();
+
+    requestAnimationFrame(function () {
+        if (this.autoWidth) {
+            var requireWidth = this.canvasWidth + this.overflowOX;
+            var proviceWidth = this.parentElement.getBoundingClientRect().width;
+            this.canvasWidth = Math.max(Math.min(requireWidth, proviceWidth), 300);
+            this.update();
+            this.autoWidth = false;
+        }
+    }.bind(this));
 };
 
 
@@ -518,7 +532,7 @@ vchart.creator.rangechart.prototype.initComp = function () {
     }.bind(this));
 
 
-    this.$title = vchart.text(this.title, this.canvasWidth / 2, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = vchart.text(this.title, 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
 
     this.$scrollArrows = this._createScrollArrow()
         .addTo(this)

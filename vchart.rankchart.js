@@ -76,10 +76,10 @@ vchart.creator.rankchart.prototype._createPosition = function (position) {
 
 
 
-vchart.creator.rankchart.prototype.updateSize = function () {
-    this.attr({ width: this.canvasWidth + '', height: this.canvasHeight + '', viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ') });
-    this.$title.attr('x', this.canvasWidth / 2);
-};
+// vchart.creator.rankchart.prototype.updateSize = function () {
+//     this.attr({ width: this.canvasWidth + '', height: this.canvasHeight + '', viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ') });
+//     this.$title.attr('x', this.canvasWidth / 2);
+// };
 
 
 
@@ -113,7 +113,7 @@ vchart.creator.rankchart.prototype.updateComp = function () {
             ac[colIndex].child.push(e);
             ac[colIndex].maxWidth = Math.max(ac[colIndex].maxWidth, e.getBBox().width);
             return ac;
-        }, Array(30).fill(null).map(function () {
+        }, Array(200).fill(null).map(function () {
             return { minY: ninf, child: [], maxWidth: ninf };
         }));
         messure.reduce(function (left, col) {

@@ -219,7 +219,7 @@ vchart.creator.grouprankchart.prototype.updateGroups = function () {
             ac[colIndex].child.push(e);
             ac[colIndex].maxWidth = Math.max(ac[colIndex].maxWidth, e.getBBox().width);
             return ac;
-        }, Array(30).fill(null).map(function () {
+        }, Array(200).fill(null).map(function () {
             return { minY: ninf, child: [], maxWidth: ninf };
         }));
         messure.reduce(function (left, col) {
@@ -263,12 +263,25 @@ vchart.creator.grouprankchart.prototype.updateScrollArrows = function () {
 
 vchart.creator.grouprankchart.prototype.update = function () {
     if (!this.groups || this.groups.length <= 0) return;
+    if (typeof this.canvasWidth != 'number') {
+        this.canvasWidth = 300;
+        this.autoWidth = true;
+    }
     this.updateSize();
     this.updateOyValues();
     this.updateAxis();
     this.updateOYSegmentLines();
     this.updateGroups();
     this.updateScrollArrows();
+    requestAnimationFrame(function () {
+        if (this.autoWidth) {
+            var requireWidth = this.canvasWidth + this.overflowOX;
+            var proviceWidth = this.parentElement.getBoundingClientRect().width;
+            this.canvasWidth = Math.max(Math.min(requireWidth, proviceWidth), 300);
+            this.autoWidth = false;
+            this.update();
+        }
+    }.bind(this));
 };
 
 vchart.creator.grouprankchart.prototype.initComp = function () {
@@ -304,7 +317,7 @@ vchart.creator.grouprankchart.prototype.initComp = function () {
     this.$oySegmentLines = this._createOYSegmentLines(this.oySegmentCount + 1 + (this.extendOY ? 1 : 0)).addTo(this);
 
 
-    this.$title = vchart.text(this.title, this.canvasWidth / 2, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = vchart.text(this.title, 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
 
     this.$oyName = vchart.text(this.valueName || '', 0, 0, 'base-chart-oxy-text').addTo(this);
     this.$oxName = vchart.text(this.keyName || '', 0, 0, 'base-chart-oxy-text').addTo(this);
