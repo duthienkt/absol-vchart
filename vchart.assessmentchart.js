@@ -29,7 +29,7 @@ vchart.creator.assessmentchart.prototype.autoColor = function (index, alpha) {
     var hsla = [index / this.areas.length, 0.8, 0.5, alpha === undefined ? 1 : alpha];
     var rgba = vchart.hslaToRGBA(hsla).map(function (x, i) { return (i == 3 ? x : (x * 255 >> 0)); });
     return 'rgba(' + rgba.join(',') + ')';
-}
+};
 
 vchart.creator.assessmentchart.prototype.mapAngle = function (i, deg) {
     return (-90 + i * 360 / this.keys.length) * (deg ? 1 : Math.PI / 180);
@@ -62,6 +62,21 @@ vchart.creator.assessmentchart.prototype.mapLevel = function (value) {
         return value;
     }
 };
+
+vchart.creator.assessmentchart.prototype._createRangeLine = function () {
+    var _ = vchart._;
+    var $ = vchart.$;
+    var res = _({
+        tag: 'g'
+    });
+
+    res.$min = vchart.circle(0, 0, this.rangePlotRadius, 'assessment-chart-range-plot').addTo(res);
+    res.$max = vchart.circle(0, 0, this.rangePlotRadius, 'assessment-chart-range-plot').addTo(res);
+    res.$line = vchart._('path.assessment-chart-range-line').addTo(res);
+
+    return res;
+};
+
 
 
 
@@ -150,6 +165,12 @@ vchart.creator.assessmentchart.prototype.updateBackComp = function () {
 };
 
 vchart.creator.assessmentchart.prototype.initComp = function () {
+    if (this.ranges && this.ranges.length > 0) {
+        this.$ranges = this.ranges.map(function (range, i, arr) {
+            return this._createRangeLine().addTo(this.$content);
+        }.bind(this));
+    }
+
     this.$areas = this.areas.map(function (area, i, arr) {
         return vchart._('path.assessment-chart-area').addTo(this.$content).addStyle({
             fill: area.fill || this.autoColor(i, 0.3),
@@ -159,6 +180,25 @@ vchart.creator.assessmentchart.prototype.initComp = function () {
 };
 
 vchart.creator.assessmentchart.prototype.updateComp = function () {
+    if (this.ranges && this.ranges.length > 0) {
+        this.$ranges.forEach(function ($range, i) {
+            var range = this.ranges[i];
+            var angle = this.mapAngle(i);
+            var levelMax = this.mapLevel(range[1]);
+            var xMax = this.mapRadius(levelMax) * Math.cos(angle);
+            var yMax = this.mapRadius(levelMax) * Math.sin(angle);
+            $range.$max.attr({ cx: xMax, cy: yMax });
+
+            var levelMin = this.mapLevel(range[0]);
+            var xMin = this.mapRadius(levelMin) * Math.cos(angle);
+            var yMin = this.mapRadius(levelMin) * Math.sin(angle);
+            $range.$min.attr({ cx: xMin, cy: yMin });
+            $range.$line.attr('d', 'M' + xMin + ' ' + yMin + 'L' + xMax + ' ' + yMax);
+
+
+        }.bind(this));
+    }
+
     this.$areas.forEach(function ($area, i) {
         var area = this.areas[i];
         var points = area.values.reduce(function (ac, value, i) {
@@ -184,7 +224,6 @@ vchart.creator.assessmentchart.prototype.initFrontComp = function () {
 
 
 vchart.creator.assessmentchart.prototype.updateFrontComp = function () {
-
 
     var levelValueWidth = this.$levelValues.reduce(function (w, $levelValue) {
         return Math.max(w, $levelValue.$text.getBBox().width + 4);
@@ -212,6 +251,7 @@ vchart.creator.assessmentchart.prototype.preInit = function () {
     this.noteMarginH = 8;
     this.paddingMaxAxis = 20;
     this.axisNameMarging = 7;
+    this.rangePlotRadius = 5;
 };
 
 vchart.creator.assessmentchart.prototype.prepareData = function () {
@@ -222,8 +262,6 @@ vchart.creator.assessmentchart.prototype.prepareData = function () {
     this.isMappingLevel = this.levelMappingArray.reduce(function (ac, cr) {
         return ac && (!isNaN(cr));
     }, true);
-
-
 };
 
 
