@@ -229,3 +229,7 @@ table .assessment-chart-level-value {
 table .sunburst-chart-node-name {
     font-size: 14px;
 }
+
+.dualchart-note-rect{
+    stroke: none;
+}
