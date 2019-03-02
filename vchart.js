@@ -375,6 +375,72 @@ vchart.autoCurve = function (points, strong, free) {
 
 
 
+vchart.creator.tooltip = function () {
+    var _ = vchart._;
+    var res = _('g.vchart-tooltip');
+    res.$backgroundRect = vchart.rect(-3, -7, 40, 40, 'vchart-tooltip-rect').attr('rx', '4').attr('ry', '4').addTo(res);
+    res.$textbox = _('g').addTo(res);
+    res.$anchor = _('shape.vchart-tooltip-rect').addTo(res).begin().moveTo(0, -3).lineTo(-5, -11.5).lineTo(5, -11.5).closePath().end();
+    res.sync = res.afterAttached();
+    return res;
+};
+
+vchart.creator.tooltip.prototype.setPosition = function (x, y) {
+    this.attr('transform', vchart.tl.translate(x, y));
+};
+
+
+vchart.creator.tooltip.prototype.updateSize = function () {
+    if (this._updating) return;
+    this._updating = true;
+    requestAnimationFrame(function () {
+        var textBound = this.$textbox.getBBox();
+        this.$backgroundRect.attr({
+            width: textBound.width + 7,
+            height: textBound.height + 7,
+            x: -3 - (textBound.width + 10) / 2,
+            y: -1 - 10 - (textBound.height + 7)
+        });
+        this.$textbox.attr('transform', vchart.tl.translate(-(textBound.width + 10) / 2, -3 - (textBound.height + 7)));
+        this._updating = false;
+    }.bind(this));
+};
+
+
+vchart.creator.tooltip.property = {
+    text: {
+        set: function (value) {
+            if (this._text == value) return;
+            this.$textbox.clearChild();
+            this._text = value + '';
+            var lines = this.text.split('\n');
+            lines.reduce(function (y, line) {
+                vchart.text(line, 0, y, 'vchart-tooltip-text').addTo(this.$textbox);
+                return y + 14;
+            }.bind(this), 7);
+            this.sync.then(this.updateSize.bind(this));
+        },
+        get: function () {
+            return this._text;
+        }
+    },
+    hidden: {
+        set: function (value) {
+            if (value) {
+                this.addClass('hidden');
+            }
+            else {
+                this.removeClass('hidden');
+            }
+        },
+        get: function () {
+            return this.containsClass('hidden');
+        }
+    }
+};
+
+
+
 
 
 

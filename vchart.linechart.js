@@ -31,6 +31,7 @@ vchart.creator.linechart.prototype._createKeyName = function (key) {
 };
 
 vchart.creator.linechart.prototype._createLine = function (line, color) {
+    var chart = this;
     var res = vchart._({
         tag: 'g',
         style: {
@@ -39,8 +40,24 @@ vchart.creator.linechart.prototype._createLine = function (line, color) {
         }
     });
     res.$path = vchart._('path.line-chart-line').addTo(res);
-    res.$plots = line.values.map(function () {
-        return vchart.circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res)
+    res.$plots = line.values.map(function (u, i) {
+        return vchart.circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res).on('mouseenter', function (event) {
+            var text = line.texts && line.texts[i];
+            if (!text) return;
+            var bound = chart.getBoundingClientRect();
+            var currentBound = this.getBoundingClientRect();
+            var dy = currentBound.top - bound.top;
+            var dx = currentBound.left - bound.left;
+            var token = chart.showTooltip(text, dx + 7, dy + 7);
+            this.once('mouseleave', function () {
+                setTimeout(function () {
+                    chart.closeTooltip(token);
+                }, 1000);
+            });
+
+
+
+        })
     }.bind(this));
     return res;
 };

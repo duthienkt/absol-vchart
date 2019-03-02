@@ -151,6 +151,7 @@ vchart.creator.dualchart.prototype.initComp = function () {
 vchart.creator.dualchart.prototype.updateComp = function () {
     this.$lines.map(function ($line, i) {
         var line = this.lines[i];
+        var line = this.lines[i];
         $line.$plots.forEach(function ($plot, j) {
             var value = line.values[j];
             $plot.attr({
@@ -189,8 +190,8 @@ vchart.creator.dualchart.prototype.updateComp = function () {
         $area.begin();
 
         $area
-            .moveTo(this.oxSegmentLength * (values.length - (this.keys.length == 1 ? 0.25 : 0.5)), 0)
-            .lineTo(this.oxSegmentLength * (this.keys.length == 1 ? 0.25 : 0.5), 0);
+            .moveTo(this.oxSegmentLength * (values.length - (this.keys.length == 1 ? 0.25 : 0.5)), -1)
+            .lineTo(this.oxSegmentLength * (this.keys.length == 1 ? 0.25 : 0.5), -1);
         if (this.keys.length == 1) {
             $area.lineTo(this.oxSegmentLength * 0.25, this.mapOYValue(values[0]))
         }
