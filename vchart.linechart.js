@@ -41,7 +41,7 @@ vchart.creator.linechart.prototype._createLine = function (line, color) {
     });
     res.$path = vchart._('path.line-chart-line').addTo(res);
     res.$plots = line.values.map(function (u, i) {
-        return vchart.circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res).on('mouseenter', function (event) {
+        var plot =  vchart.circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res).on('mouseenter', function (event) {
             var text = line.texts && line.texts[i];
             if (!text) return;
             var bound = chart.getBoundingClientRect();
@@ -54,10 +54,11 @@ vchart.creator.linechart.prototype._createLine = function (line, color) {
                     chart.closeTooltip(token);
                 }, 1000);
             });
-
-
-
-        })
+        });
+        if (line.plotColors && line.plotColors[i]){
+            plot.addStyle('fill', line.plotColors[i]);
+        }
+        return plot;
     }.bind(this));
     return res;
 };
