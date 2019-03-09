@@ -1,17 +1,33 @@
+.vchart-tooltip-higne {
+    position: relative;
+}
 
- .vchart-tooltip.hidden{
+.vchart-tooltip-container {
+    background-color: rgba(20, 20, 22, 1);
+    color: rgb(231, 230, 157);
+    position: absolute;
+    white-space: nowrap;
+    padding: 5px;
+    line-height: 1.5;
+    border-radius: 4px;
+    bottom: 0;
+    left: 0;
+}
+
+.vchart-tooltip-container.hidden {
     visibility: hidden;
 }
 
-.vchart-tooltip-rect{
-    fill: rgba(20, 20, 22, 1);
-    stroke: none;
+.vchart-tooltip-anchor-container {
+    z-index: 999;
+    position: absolute;
 }
 
-.vchart-tooltip-text{
-    stroke: none;
-    fill: rgb(231, 230, 157);
+.vchart-tooltip-anchor {
+    position: relative;
 }
+
+/******************************/
 
 .vchart-segment-line,
 .vchart-axis,
@@ -173,7 +189,6 @@ table .base-chart {
     stroke: none;
 }
 
-
 .assessment-chart {}
 
 .assessment-chart-area {
@@ -202,17 +217,17 @@ table .assessment-chart-level-value {
     stroke-width: 1;
 }
 
-.assessment-chart-range-plot{
-    fill:#155757d8;
+.assessment-chart-range-plot {
+    fill: #155757d8;
 }
 
-.assessment-chart-range-line{
-    stroke:#155757d8;
-    stroke-width:3;
+.assessment-chart-range-line {
+    stroke: #155757d8;
+    stroke-width: 3;
 }
- 
+
 .column-chart-column rect {
-    fill: rgb(123, 192, 247); 
+    fill: rgb(123, 192, 247);
 }
 
 .column-chart:not(.vchart-show-inline-value) .column-chart-column text {
@@ -246,6 +261,6 @@ table .sunburst-chart-node-name {
     font-size: 14px;
 }
 
-.dualchart-note-rect{
+.dualchart-note-rect {
     stroke: none;
 }

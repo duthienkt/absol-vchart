@@ -375,70 +375,127 @@ vchart.autoCurve = function (points, strong, free) {
 
 
 
-vchart.creator.tooltip = function () {
-    var _ = vchart._;
-    var res = _('g.vchart-tooltip');
-    res.$backgroundRect = vchart.rect(-3, -7, 40, 40, 'vchart-tooltip-rect').attr('rx', '4').attr('ry', '4').addTo(res);
-    res.$textbox = _('g').addTo(res);
-    res.$anchor = _('shape.vchart-tooltip-rect').addTo(res).begin().moveTo(0, -3).lineTo(-5, -11.5).lineTo(5, -11.5).closePath().end();
-    res.sync = res.afterAttached();
-    return res;
-};
+// vchart.creator.tooltip = function () {
+//     var _ = vchart._;
+//     var res = _('svg');
 
-vchart.creator.tooltip.prototype.setPosition = function (x, y) {
-    this.attr('transform', vchart.tl.translate(x, y));
-};
+//     var tooltipRect = _('g.vchart-tooltip');
+//     res.$backgroundRect = vchart.rect(-3, -7, 40, 40, 'vchart-tooltip-rect').attr('rx', '4').attr('ry', '4').addTo(tooltipRect);
+//     res.$textbox = _('g').addTo(tooltipRect);
+//     res.$anchor = _('shape.vchart-tooltip-rect').addTo(tooltipRect).begin().moveTo(0, -3).lineTo(-5, -11.5).lineTo(5, -11.5).closePath().end();
+//     res.sync = res.afterAttached();
+//     this.tooltipRect = tooltipRect;
+//     return tooltipRect;
+// };
 
-
-vchart.creator.tooltip.prototype.updateSize = function () {
-    if (this._updating) return;
-    this._updating = true;
-    requestAnimationFrame(function () {
-        var textBound = this.$textbox.getBBox();
-        this.$backgroundRect.attr({
-            width: textBound.width + 7,
-            height: textBound.height + 7,
-            x: -3 - (textBound.width + 10) / 2,
-            y: -1 - 10 - (textBound.height + 7)
-        });
-        this.$textbox.attr('transform', vchart.tl.translate(-(textBound.width + 10) / 2, -3 - (textBound.height + 7)));
-        this._updating = false;
-    }.bind(this));
-};
+// vchart.creator.tooltip.prototype.setPosition = function (x, y) {
+// };
 
 
-vchart.creator.tooltip.property = {
-    text: {
-        set: function (value) {
-            if (this._text == value) return;
-            this.$textbox.clearChild();
-            this._text = value + '';
-            var lines = this.text.split('\n');
-            lines.reduce(function (y, line) {
-                vchart.text(line, 0, y, 'vchart-tooltip-text').addTo(this.$textbox);
-                return y + 14;
-            }.bind(this), 7);
-            this.sync.then(this.updateSize.bind(this));
-        },
-        get: function () {
-            return this._text;
-        }
-    },
-    hidden: {
-        set: function (value) {
-            if (value) {
-                this.addClass('hidden');
+// vchart.creator.tooltip.prototype.updateSize = function () {
+//     if (this._updating) return;
+//     this._updating = true;
+//     requestAnimationFrame(function () {
+//         var textBound = this.$textbox.getBBox();
+//         this.$backgroundRect.attr({
+//             width: textBound.width + 7,
+//             height: textBound.height + 7,
+//             x: -3 - (textBound.width + 10) / 2,
+//             y: -1 - 10 - (textBound.height + 7)
+//         });
+//         this.$textbox.attr('transform', vchart.tl.translate(-(textBound.width + 10) / 2, -3 - (textBound.height + 7)));
+//         this._updating = false;
+//     }.bind(this));
+// };
+
+
+// vchart.creator.tooltip.property = {
+//     text: {
+//         set: function (value) {
+//             if (this._text == value) return;
+//             this.$textbox.clearChild();
+//             this._text = value + '';
+//             var lines = this.text.split('\n');
+//             lines.reduce(function (y, line) {
+//                 vchart.text(line, 0, y, 'vchart-tooltip-text').addTo(this.$textbox);
+//                 return y + 14;
+//             }.bind(this), 7);
+//             this.sync.then(this.updateSize.bind(this));
+//         },
+//         get: function () {
+//             return this._text;
+//         }
+//     },
+//     hidden: {
+//         set: function (value) {
+//             if (value) {
+//                 this.addClass('hidden');
+//             }
+//             else {
+//                 this.removeClass('hidden');
+//             }
+//         },
+//         get: function () {
+//             return this.containsClass('hidden');
+//         }
+//     }
+// };
+
+//attached chart tooltip
+absol.documentReady.then(function () {
+    var _ = absol._;
+    var $ = absol.$;
+    var higne = _({
+        class: 'vchart-tooltip-higne',
+        child: {
+            class: 'vchart-tooltip-anchor-container',
+            child: {
+                class: 'vchart-tooltip-anchor',
+                child: '.vchart-tooltip-container'
             }
-            else {
-                this.removeClass('hidden');
-            }
-        },
-        get: function () {
-            return this.containsClass('hidden');
         }
+    }).addTo(document.body);
+
+    var container = $('.vchart-tooltip-container', higne);
+    var anchorContainer = $('.vchart-tooltip-anchor-container', higne);
+    var sync = higne.afterAttached();
+    var currentToken = 0;
+
+    function updateTooltipContainer() {
+        // var containerBound = containerBound.getBoundingClientRect();
+        // var viewBound = absol.dom.traceOutBoundingClientRect(higne);
+
+        // var left = higneBound.left;
+        // var right = higneBound.left;
+
     }
-};
 
+    vchart.showTooltip = function (text, clientX, clientY) {
+        var higneBound = higne.getBoundingClientRect();
+        anchorContainer.addStyle({
+            left: clientX - higneBound.left + 'px',
+            top: clientY - higneBound.top + 'px'
+        });
+
+        container.addClass('hidden');
+        container.clearChild();
+        text.split(/\r?\n/).forEach(function (line) {
+            _('<div><span>' + line + '</span></div>').addTo(container);
+        });
+
+        sync = sync.then(updateTooltipContainer).then(function () {
+            container.removeClass('hidden');
+        });
+
+        return (++currentToken);
+    };
+
+    vchart.closeTooltip = function (token) {
+        if (currentToken == token) {
+            container.addClass('hidden');
+        }
+    };
+});
 
 
 

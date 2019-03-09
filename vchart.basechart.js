@@ -20,8 +20,7 @@ vchart.creator.basechart = function () {
                     mask: 'url(#contentMask' + suffix + ')'
                 },
                 child: 'g#content'
-            },
-            'tooltip.hidden'
+            }
         ]
     });
     res.sync = res.afterAttached();
@@ -56,16 +55,11 @@ vchart.creator.basechart.eventHandler.scrollArrowsPressRight = function (event) 
 
 
 vchart.creator.basechart.prototype.showTooltip = function (text, x, y) {
-    this._currentTooltipToken = (Math.random() + '').replace(/\./g, '');
-    this.$tooltip.hidden = false;
-    this.$tooltip.setPosition(x, y);
-    this.$tooltip.text = text;
-    return this._currentTooltipToken;
+    return vchart.showTooltip(text, x, y);
 };
 
 vchart.creator.basechart.prototype.closeTooltip = function (token) {
-    if (this._currentTooltipToken != token) return;
-    this.$tooltip.hidden = true;
+    return vchart.hideTooltip();
 };
 
 vchart.creator.basechart.prototype.scrollBy = function (dX) {
