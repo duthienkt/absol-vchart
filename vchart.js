@@ -429,14 +429,14 @@ vchart.autoCurve = function (points, strong, free) {
 //     hidden: {
 //         set: function (value) {
 //             if (value) {
-//                 this.addClass('hidden');
+//                 this.addClass('absol-hidden');
 //             }
 //             else {
-//                 this.removeClass('hidden');
+//                 this.removeClass('absol-hidden');
 //             }
 //         },
 //         get: function () {
-//             return this.containsClass('hidden');
+//             return this.containsClass('absol-hidden');
 //         }
 //     }
 // };
@@ -460,31 +460,69 @@ absol.documentReady.then(function () {
     var anchorContainer = $('.vchart-tooltip-anchor-container', higne);
     var sync = higne.afterAttached();
     var currentToken = 0;
+    var anchorClientX, anchorClientY;
 
     function updateTooltipContainer() {
-        // var containerBound = containerBound.getBoundingClientRect();
-        // var viewBound = absol.dom.traceOutBoundingClientRect(higne);
+        var containerBound = container.getBoundingClientRect();
+        var viewBound = absol.dom.traceOutBoundingClientRect(higne);
+        console.log(containerBound, viewBound)
+        if (anchorClientX + containerBound.width > viewBound.right) {
+            container.addStyle({
+                left: 'auto',
+                right: '0'
+            });
+        }
+        else {
+            container.addStyle({
+                left: '0',
+                right: 'auto'
+            });
+        }
+
+        if (anchorClientY - containerBound.height < viewBound.top) {
+            container.addStyle({
+                top: '0',
+                bottom: 'auto'
+            });
+        }
+        else {
+            container.addStyle({
+                top: 'auto',
+                bottom: '0'
+            });
+        }
+
 
         // var left = higneBound.left;
         // var right = higneBound.left;
 
     }
+    function close() {
+        container.addClass('absol-hidden');
+        window.removeEventListener('scroll', close, false);
+
+    }
 
     vchart.showTooltip = function (text, clientX, clientY) {
+        window.addEventListener('scroll', close, false);
+
+        anchorClientX = clientX;
+        anchorClientY = clientY;
         var higneBound = higne.getBoundingClientRect();
         anchorContainer.addStyle({
             left: clientX - higneBound.left + 'px',
             top: clientY - higneBound.top + 'px'
         });
 
-        container.addClass('hidden');
+
+        container.addClass('vchart-hidden');
         container.clearChild();
         text.split(/\r?\n/).forEach(function (line) {
             _('<div><span>' + line + '</span></div>').addTo(container);
         });
 
         sync = sync.then(updateTooltipContainer).then(function () {
-            container.removeClass('hidden');
+            container.removeClass('vchart-hidden');
         });
 
         return (++currentToken);
@@ -492,9 +530,12 @@ absol.documentReady.then(function () {
 
     vchart.closeTooltip = function (token) {
         if (currentToken == token) {
-            container.addClass('hidden');
+            container.addClass('vchart-hidden');
         }
     };
+
+
+
 });
 
 
