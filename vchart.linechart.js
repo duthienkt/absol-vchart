@@ -6,15 +6,22 @@ vchart.creator.linechart = function () {
 vchart.creator.linechart.prototype.processMinMax = function () {
     this.minValue = this.lines.reduce(function (minValue, line) {
         return line.values.reduce(function (minValue, value) {
+            if (!vchart.lambda.isNumber(value)) return minValue;
             return Math.min(minValue, value);
         }, minValue);
     }, 1000000000);
 
     this.maxValue = this.lines.reduce(function (maxValue, line) {
         return line.values.reduce(function (maxValue, value) {
+            if (!vchart.lambda.isNumber(value)) return maxValue;
+
             return Math.max(maxValue, value);
         }, maxValue);
     }, -1000000000);
+    if (this.minValue > this.maxValue) {
+        this.minValue = 0;
+        this.maxValue = this.minValue + 10;
+    }
 };
 
 vchart.creator.linechart.prototype._createLineNote = function (name, color) {
@@ -38,7 +45,7 @@ vchart.creator.linechart.prototype._createLine = function (line, color) {
             stroke: color
         }
     });
-    res.$path = vchart._('path.line-chart-line').addTo(res);
+    res.$path = vchart._('shape.line-chart-line').addTo(res);
     res.$plots = line.values.map(function (u, i) {
         var plot = vchart.circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res).on('mouseenter', function (event) {
             var text = line.texts && line.texts[i];
@@ -145,22 +152,60 @@ vchart.creator.linechart.prototype.updateComp = function () {
     this.$lines.map(function ($line, i) {
         var line = this.lines[i];
         $line.$plots.forEach(function ($plot, j) {
+            $plot.attr('display');
             var value = line.values[j];
-            $plot.attr({
-                cx: this.oxSegmentLength * (j + 0.5),
-                cy: this.mapOYValue(value)
-            });
+            if (vchart.lambda.isNumber(value)) {
+                $plot.attr({
+                    cx: this.oxSegmentLength * (j + 0.5),
+                    cy: this.mapOYValue(value)
+                });
+            }
+            else {
+                $plot.attr('display', 'none');
+            }
         }.bind(this));
 
-        var d = 'm' + line.values.reduce(function (ac, value, j) {
-            var y = this.mapOYValue(value);
-            var x = this.oxSegmentLength * (j + 0.5);
-            ac.result.push((x - ac.x0) + ' ' + (y - ac.y0));
-            ac.x0 = x;
-            ac.y0 = y;
+        // var d = 'm' + line.values.reduce(function (ac, value, j) {
+        //     var y = this.mapOYValue(value);
+        //     var x = this.oxSegmentLength * (j + 0.5);
+        //     ac.result.push((x - ac.x0) + ' ' + (y - ac.y0));
+        //     ac.x0 = x;
+        //     ac.y0 = y;
+        //     return ac;
+        // }.bind(this), { x0: 0, y0: 0, result: [] }).result.join('l');
+        // $line.$path.attr('d', d);
+        $line.$path.begin();
+        line.reduce(function (state, value, j) {
+            
+            if (line.length == 1) {
+                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+                var y = this.mapOYValue(value);
+                var x = this.oxSegmentLength * (j);
+                $line.$path.moveTo(x, y);
+                x = this.oxSegmentLength * (j + 1);
+                $line.$path.lineTo(x, y);
+                return "IN_LINE";
+            }
+
+            if (state == "NOT_START") {
+                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+
+                var y = this.mapOYValue(value);
+                var x = this.oxSegmentLength * (j + 0.5);
+                $line.$path.moveTo(x, y);
+                return 'IN_LINE';
+            }
+            else if (state == 'IN_LINE') {
+                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+                var y = this.mapOYValue(value);
+                var x = this.oxSegmentLength * (j + 0.5);
+                $line.$path.lineTo(x, y);
+                return 'IN_LINE';
+            }
             return ac;
-        }.bind(this), { x0: 0, y0: 0, result: [] }).result.join('l');
-        $line.$path.attr('d', d);
+        }, "NOT_START");
+
+        $line.$path.end();
     }.bind(this));
 };
 
@@ -177,6 +222,7 @@ vchart.creator.linechart.prototype.preInit = function () {
     this.colorTable = ['#821616', ' #824116', '#826C16', '#6C8216', '#418216', '#168216',
         '#168241', '#16826C', '#166C82', '#164182', '#161682', '#411682', '#6C1682',
         '#82166C', '#821641'];
+    this.lines = [];
 };
 
 

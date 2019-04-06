@@ -24,3 +24,7 @@ vchart.lambda.toLocalString = function (fixedRight) {
     }
 
 };
+
+vchart.lambda.isNumber = function (x) {
+    return -Infinity < x && x < Infinity;
+};

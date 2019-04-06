@@ -595,3 +595,6 @@ vchart.creator.rangechart.property.overflowOX = {
 };
 
 
+vchart.creator.ostickchart = function () {
+    return vchart._('rangechart.o-stick-chart', false);
+};

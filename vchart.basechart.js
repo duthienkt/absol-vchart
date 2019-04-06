@@ -217,7 +217,6 @@ vchart.creator.basechart.prototype.update = function () {
             this.canvasWidth = Math.max(Math.min(requireWidth, proviceWidth), 300);
             this.autoWidth = false;
             this.update();
-            console.log(this);
         }
     }.bind(this));
 };
@@ -240,6 +239,9 @@ vchart.creator.basechart.prototype.preInit = function () {
     this.oyMinValue = 0;
     this.valueName = '';
     this.keyName = '';
+    this.colorTable = ['#821616', ' #824116', '#826C16', '#6C8216', '#418216', '#168216',
+    '#168241', '#16826C', '#166C82', '#164182', '#161682', '#411682', '#6C1682',
+    '#82166C', '#821641'];
 };
 
 
@@ -249,6 +251,11 @@ vchart.creator.basechart.prototype.processMinMax = function () {
 };
 
 vchart.creator.basechart.prototype.beautifyMinMax = function () {
+    if (!(this.maxValue > this.minValue)) {
+        console.log(this.maxValue , this.minValue)
+        this.maxValue = 10;
+        this.minValue = 0;
+    }
     if (this.maxValue == this.minValue) this.maxValue += this.maxSegment;
 
     var btSgmt = vchart.calBeautySegment(this.maxSegment, this.minValue, this.maxValue);
@@ -293,6 +300,9 @@ vchart.creator.basechart.prototype.initScroll = function () {
 
 
 vchart.creator.basechart.prototype.init = function (props) {
+    for (var key in props) {
+        if (props[key] === undefined) delete props[key];
+    }
     this.preInit();
     this.super(props);
     this.processMinMax();

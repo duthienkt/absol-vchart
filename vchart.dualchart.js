@@ -8,27 +8,36 @@ vchart.creator.dualchart = function () {
 vchart.creator.dualchart.prototype.processMinMax = function () {
     this.minValue = this.lines.reduce(function (minValue, line) {
         return line.values.reduce(function (minValue, value) {
+            if (!vchart.lambda.isNumber(value)) return minValue;
             return Math.min(minValue, value);
         }, minValue);
     }, 1000000000);
 
     this.minValue = this.areas.reduce(function (minValue, area) {
         return area.values.reduce(function (minValue, value) {
+            if (!vchart.lambda.isNumber(value)) return minValue;
             return Math.min(minValue, value);
         }, minValue);
     }, this.minValue);
 
     this.maxValue = this.lines.reduce(function (maxValue, line) {
         return line.values.reduce(function (maxValue, value) {
+            if (!vchart.lambda.isNumber(value)) return maxValue;
             return Math.max(maxValue, value);
         }, maxValue);
     }, -1000000000);
 
     this.maxValue = this.areas.reduce(function (maxValue, area) {
         return area.values.reduce(function (maxValue, value) {
+            if (!vchart.lambda.isNumber(value)) return maxValue;
             return Math.max(maxValue, value);
         }, maxValue);
     }, this.maxValue);
+
+    if (this.minValue > this.maxValue) {
+        this.minValue = 0;
+        this.maxValue = this.minValue + 10;
+    }
 };
 
 
@@ -136,7 +145,7 @@ vchart.creator.dualchart.prototype.updateBackComp = function () {
 
 
 vchart.creator.dualchart.prototype.initComp = function () {
-    
+
     this.$areas = this.areas.map(function (line, i) {
         return this._createArea(line, this.colors[i + this.lines.length]).addTo(this.$content);
     }.bind(this));
@@ -151,38 +160,50 @@ vchart.creator.dualchart.prototype.initComp = function () {
 vchart.creator.dualchart.prototype.updateComp = function () {
     this.$lines.map(function ($line, i) {
         var line = this.lines[i];
-        var line = this.lines[i];
         $line.$plots.forEach(function ($plot, j) {
+            $plot.attr('display');
             var value = line.values[j];
-            $plot.attr({
-                cx: this.oxSegmentLength * (j + 0.5),
-                cy: this.mapOYValue(value)
-            });
+            if (vchart.lambda.isNumber(value)) {
+                $plot.attr({
+                    cx: this.oxSegmentLength * (j + 0.5),
+                    cy: this.mapOYValue(value)
+                });
+            }
+            else {
+                $plot.attr('display', 'none');
+            }
         }.bind(this));
 
-        var d = 'M';
-        if (this.keys.length == 1) {
-            var y = this.mapOYValue(line.values[0]);
-            var x = this.oxSegmentLength * (0.25);
-            d += x + ' ' + y + 'L';
-        }
+        $line.$path.begin();
+        line.values.reduce(function (state, value, j, arr) {
+            if (arr.length == 1) {
+                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+                var y = this.mapOYValue(value);
+                var x = this.oxSegmentLength * (j + 0.25);
+                $line.$path.moveTo(x, y);
+                x = this.oxSegmentLength * (j + 0.75);
+                $line.$path.lineTo(x, y);
+                return "IN_LINE";
+            }
 
-        d += line.values.reduce(function (ac, value, j) {
-            var y = this.mapOYValue(value);
-            var x = this.oxSegmentLength * (j + 0.5);
-            ac.result.push(x + ' ' + y);
-            ac.x0 = x;
-            ac.y0 = y;
+            if (state == "NOT_START") {
+                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+                var y = this.mapOYValue(value);
+                var x = this.oxSegmentLength * (j + 0.5);
+                $line.$path.moveTo(x, y);
+                return 'IN_LINE';
+            }
+            else if (state == 'IN_LINE') {
+                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+                var y = this.mapOYValue(value);
+                var x = this.oxSegmentLength * (j + 0.5);
+                $line.$path.lineTo(x, y);
+                return 'IN_LINE';
+            }
             return ac;
-        }.bind(this), { result: [] }).result.join('L');
+        }.bind(this), "NOT_START");
 
-        if (this.keys.length == 1) {
-            var y = this.mapOYValue(line.values[0]);
-            var x = this.oxSegmentLength * (0.75);
-            d += "L" + x + ' ' + y;
-        }
-
-        $line.$path.attr('d', d);
+        $line.$path.end();
     }.bind(this));
 
     this.$areas.map(function ($area, i) {
@@ -193,14 +214,14 @@ vchart.creator.dualchart.prototype.updateComp = function () {
             .moveTo(this.oxSegmentLength * (values.length - (this.keys.length == 1 ? 0.25 : 0.5)), -1)
             .lineTo(this.oxSegmentLength * (this.keys.length == 1 ? 0.25 : 0.5), -1);
         if (this.keys.length == 1) {
-            $area.lineTo(this.oxSegmentLength * 0.25, this.mapOYValue(values[0]))
+            $area.lineTo(this.oxSegmentLength * 0.25, vchart.lambda.isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
         }
         for (var i = 0; i < values.length; ++i) {
-            $area.lineTo(this.oxSegmentLength * (i + 0.5), this.mapOYValue(values[i]))
+            $area.lineTo(this.oxSegmentLength * (i + 0.5), vchart.lambda.isNumber(values[i]) ? this.mapOYValue(values[i]) : 0);
         }
 
         if (this.keys.length == 1) {
-            $area.lineTo(this.oxSegmentLength * 0.75, this.mapOYValue(values[0]))
+            $area.lineTo(this.oxSegmentLength * 0.75, vchart.lambda.isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
         }
         $area.closePath().end();
     }.bind(this));
