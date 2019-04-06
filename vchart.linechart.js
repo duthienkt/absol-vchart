@@ -165,15 +165,7 @@ vchart.creator.linechart.prototype.updateComp = function () {
             }
         }.bind(this));
 
-        // var d = 'm' + line.values.reduce(function (ac, value, j) {
-        //     var y = this.mapOYValue(value);
-        //     var x = this.oxSegmentLength * (j + 0.5);
-        //     ac.result.push((x - ac.x0) + ' ' + (y - ac.y0));
-        //     ac.x0 = x;
-        //     ac.y0 = y;
-        //     return ac;
-        // }.bind(this), { x0: 0, y0: 0, result: [] }).result.join('l');
-        // $line.$path.attr('d', d);
+       
         $line.$path.begin();
         line.reduce(function (state, value, j) {
             

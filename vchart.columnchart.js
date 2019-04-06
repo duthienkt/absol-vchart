@@ -11,11 +11,11 @@ vchart.creator.columnchart.prototype._createColumn = function (value, i) {
 };
 
 vchart.creator.columnchart.prototype.processMinMax = function () {
-    this.minValue = this.values.reduce(function (ac, cr) {
+    this.minValue = this.values.filter(vchart.lambda.isNumber).reduce(function (ac, cr) {
         return Math.min(ac, cr);
     }, 1000000000);
 
-    this.maxValue = this.values.reduce(function (ac, cr) {
+    this.maxValue = this.values.filter(vchart.lambda.isNumber).reduce(function (ac, cr) {
         return Math.max(ac, cr);
     }, -1000000000);
 };
