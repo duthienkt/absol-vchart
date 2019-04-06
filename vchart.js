@@ -375,73 +375,6 @@ vchart.autoCurve = function (points, strong, free) {
 
 
 
-// vchart.creator.tooltip = function () {
-//     var _ = vchart._;
-//     var res = _('svg');
-
-//     var tooltipRect = _('g.vchart-tooltip');
-//     res.$backgroundRect = vchart.rect(-3, -7, 40, 40, 'vchart-tooltip-rect').attr('rx', '4').attr('ry', '4').addTo(tooltipRect);
-//     res.$textbox = _('g').addTo(tooltipRect);
-//     res.$anchor = _('shape.vchart-tooltip-rect').addTo(tooltipRect).begin().moveTo(0, -3).lineTo(-5, -11.5).lineTo(5, -11.5).closePath().end();
-//     res.sync = res.afterAttached();
-//     this.tooltipRect = tooltipRect;
-//     return tooltipRect;
-// };
-
-// vchart.creator.tooltip.prototype.setPosition = function (x, y) {
-// };
-
-
-// vchart.creator.tooltip.prototype.updateSize = function () {
-//     if (this._updating) return;
-//     this._updating = true;
-//     requestAnimationFrame(function () {
-//         var textBound = this.$textbox.getBBox();
-//         this.$backgroundRect.attr({
-//             width: textBound.width + 7,
-//             height: textBound.height + 7,
-//             x: -3 - (textBound.width + 10) / 2,
-//             y: -1 - 10 - (textBound.height + 7)
-//         });
-//         this.$textbox.attr('transform', vchart.tl.translate(-(textBound.width + 10) / 2, -3 - (textBound.height + 7)));
-//         this._updating = false;
-//     }.bind(this));
-// };
-
-
-// vchart.creator.tooltip.property = {
-//     text: {
-//         set: function (value) {
-//             if (this._text == value) return;
-//             this.$textbox.clearChild();
-//             this._text = value + '';
-//             var lines = this.text.split('\n');
-//             lines.reduce(function (y, line) {
-//                 vchart.text(line, 0, y, 'vchart-tooltip-text').addTo(this.$textbox);
-//                 return y + 14;
-//             }.bind(this), 7);
-//             this.sync.then(this.updateSize.bind(this));
-//         },
-//         get: function () {
-//             return this._text;
-//         }
-//     },
-//     hidden: {
-//         set: function (value) {
-//             if (value) {
-//                 this.addClass('absol-hidden');
-//             }
-//             else {
-//                 this.removeClass('absol-hidden');
-//             }
-//         },
-//         get: function () {
-//             return this.containsClass('absol-hidden');
-//         }
-//     }
-// };
-
-//attached chart tooltip
 absol.documentReady.then(function () {
     var _ = absol._;
     var $ = absol.$;
@@ -457,6 +390,7 @@ absol.documentReady.then(function () {
     }).addTo(document.body);
 
     var container = $('.vchart-tooltip-container', higne);
+    container.addStyle({ left: -10000, top: -1000 });
     var anchorContainer = $('.vchart-tooltip-anchor-container', higne);
     var sync = higne.afterAttached();
     var currentToken = 0;
@@ -465,7 +399,6 @@ absol.documentReady.then(function () {
     function updateTooltipContainer() {
         var containerBound = container.getBoundingClientRect();
         var viewBound = absol.dom.traceOutBoundingClientRect(higne);
-        console.log(containerBound, viewBound)
         if (anchorClientX + containerBound.width > viewBound.right) {
             container.addStyle({
                 left: 'auto',
@@ -491,12 +424,8 @@ absol.documentReady.then(function () {
                 bottom: '0'
             });
         }
-
-
-        // var left = higneBound.left;
-        // var right = higneBound.left;
-
     }
+
     function close() {
         container.addClass('absol-hidden');
         window.removeEventListener('scroll', close, false);
@@ -533,8 +462,6 @@ absol.documentReady.then(function () {
             container.addClass('vchart-hidden');
         }
     };
-
-
 
 });
 
