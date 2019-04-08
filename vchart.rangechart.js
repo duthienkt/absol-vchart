@@ -201,16 +201,16 @@ vchart.creator.rangechart.prototype._createRangeNote = function (range) {
     var res = _('g');
     var y0 = 0;
     vchart.text(range.name, 0, y0).addStyle('text-anchor', 'middle').addTo(res);
-    y0 += 30;
+    y0 += 22;
     vchart.text(this.numberToString(range.max), 0, y0, 'range-char-note-value').addTo(res);
-    y0 += 30;
+    y0 += 22;
     if (this.ranges[0].mid !== undefined) {
         vchart.text(this.numberToString(range.mid), 0, y0, 'range-char-note-value').addTo(res);
-        y0 += 30;
+        y0 += 22;
     }
 
     vchart.text(this.numberToString(range.min), 0, y0, 'range-char-note-value').addTo(res);
-    y0 += 30;
+    y0 += 22;
 
     if (this.ranges[0].normal !== undefined)
         vchart.text(this.numberToString(range.normal), 0, y0, 'range-char-note-value').addTo(res);
@@ -236,15 +236,15 @@ vchart.creator.rangechart.prototype._createNote = function () {
     var y0 = 12;
     res.$maxLine = this._createLimitLine(0, y0, this.limitLineLength, 'max').addTo(res);
     res.$maxText = vchart.text(this.maxText, 50, y0 + 5).addTo(res);
-    y0 += 30;
+    y0 += 22;
     if (this.ranges[0].mid != undefined) {
         this._createLimitLine(0, y0, this.limitLineLength, 'mid').addTo(res);
         vchart.text(this.midText, 50, y0 + 5).addTo(res);
-        y0 += 30;
+        y0 += 22;
     }
     res.$minLine = this._createLimitLine(0, y0, this.limitLineLength, 'min').addTo(res);
     res.$minText = vchart.text(this.minText, 50, y0 + 5).addTo(res);
-    y0 += 30;
+    y0 += 22;
     if (this.ranges[0].normal !== undefined) {
         vchart.circle(this.limitLineLength / 2, y0, this.valuePlotRadius, 'range-chart-value-plot').addTo(res);
         vchart.text(this.normalText, 50, y0 + 5).addTo(res);
@@ -316,7 +316,7 @@ vchart.creator.rangechart.prototype.updateNote = function () {
         'transform',
         'translate(' + 0 + ', ' + this.notePositionTop + ')'
     );
-    this.oxyBottom = this.notePositionTop - 30;
+    this.oxyBottom = this.notePositionTop - 22;
 };
 
 
@@ -365,7 +365,7 @@ vchart.creator.rangechart.prototype.updateRangeNotes = function () {
 
     this.$rangeNotes.forEach(function (e, i) {
         e.attr('transform',
-            'translate(' + (i * this.oxSegmentLength + this.oxSegmentLength / 2) + ', ' + (this.notePositionTop - 13 - this.oxyBottom) + ')');
+            'translate(' + (i * this.oxSegmentLength + this.oxSegmentLength / 2) + ', ' + (this.notePositionTop - 5 - this.oxyBottom) + ')');
 
 
         var numWidth = Array.prototype.reduce.call(e.childNodes, function (ac, e1, i) {
@@ -388,25 +388,40 @@ vchart.creator.rangechart.prototype.updateRanges = function () {
     this.$ranges.forEach(function (e, i) {
         var range = this.ranges[i];
         e.attr('transform', 'translate(' + this.oxSegmentLength * (i + 0.5) + ',' + 0 + ')');
-        if (range.normal === undefined) {
+        if (!vchart.lambda.isNumber(range.normal)) {
             e.$plot.addStyle('display', 'none');
         }
         else {
             e.$plot.removeStyle('display');
             e.$plot.attr('cy', this._calYOfValue(range.normal) + '');
         }
-        vchart.moveHLine(e.$maxLine,
-            -this.limitLineLength / 2,
-            this._calYOfValue(range.max), this.limitLineLength);
-        e.$maxText.attr('y', this._calYOfValue(range.max) - 5);
+        if (vchart.lambda.isNumber(range.max)) {
+            e.$maxLine.removeStyle('display');
+            e.$maxText.removeStyle('display');
+            vchart.moveHLine(e.$maxLine,
+                -this.limitLineLength / 2,
+                this._calYOfValue(range.max), this.limitLineLength);
+            e.$maxText.attr('y', this._calYOfValue(range.max) - 5);
+        }
+        else {
+            e.$maxLine.addStyle('display', 'none');
+            e.$maxText.addStyle('display', 'none');
+        }
 
+        if (vchart.lambda.isNumber(range.min)) {
+            e.$minLine.removeStyle('display');
+            e.$minText.removeStyle('display');
+            vchart.moveHLine(e.$minLine,
+                -this.limitLineLength / 2,
+                this._calYOfValue(range.min), this.limitLineLength);
+            e.$minText.attr('y', this._calYOfValue(range.min) + 15);
+        }
+        else {
+            e.$minLine.addStyle('display', 'none');
+            e.$minText.addStyle('display', 'none');
+        }
 
-        vchart.moveHLine(e.$minLine,
-            -this.limitLineLength / 2,
-            this._calYOfValue(range.min), this.limitLineLength);
-        e.$minText.attr('y', this._calYOfValue(range.min) + 15);
-
-        if (range.mid === undefined) {
+        if (!vchart.lambda.isNumber(range.mid)) {
             e.$midLine.attr('display', 'none');
         }
         else {
@@ -416,11 +431,16 @@ vchart.creator.rangechart.prototype.updateRanges = function () {
                 this._calYOfValue(range.mid), this.limitLineLength);
         }
 
-
-        vchart.moveVLine(e.$rangeLine,
-            0, this._calYOfValue((range.min)),
-            -Math.map(range.max - range.min, 0, this.oyMaxValue - this.oyMinValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0))
-        );
+        if (vchart.lambda.isNumber(range.min) && vchart.lambda.isNumber(range.max)) {
+            e.$rangeLine.removeStyle('display');
+            vchart.moveVLine(e.$rangeLine,
+                0, this._calYOfValue((range.min)),
+                -Math.map(range.max - range.min, 0, this.oyMaxValue - this.oyMinValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0))
+            );
+        }
+        else {
+            e.$rangeLine.addStyle('display', 'none');
+        }
 
 
         if (range.mid > range.max) {
@@ -491,15 +511,20 @@ vchart.creator.rangechart.prototype.initComp = function () {
     if (this.maxValue == 'auto' || this.maxValue === undefined) {
         this.maxValue = this.ranges.reduce(function (ac, cr) {
             return Math.max(ac, cr.max,
-                cr.normal === undefined ? -10000000000 : cr.normal,
-                cr.mid === undefined ? -10000000000 : cr.mid);
+                vchart.lambda.isNumber(cr.normal) ? cr.normal : -10000000000,
+                vchart.lambda.isNumber(cr.mid) ? cr.mid : -10000000000);
         }, -1000000000);
     }
     if (this.minValue == 'auto' || this.minValue === undefined) {
         this.minValue = this.ranges.reduce(function (ac, cr) {
-            return Math.min(ac, cr.min, cr.normal === undefined ? 10000000000 : cr.normal,
-                cr.mid === undefined ? 10000000000 : cr.mid);
+            return Math.min(ac, cr.min, vchart.lambda.isNumber(cr.normal) ? cr.normal : 10000000000,
+                vchart.lambda.isNumber(cr.mid) ? cr.mid : 10000000000);
         }, 1000000000);
+    }
+
+    if (!(this.maxValue >= this.minValue)) {
+        this.maxValue = 0;
+        this.minValue = 0;
     }
 
     if (this.maxValue == this.minValue) this.maxValue += this.maxSegment * 2;
@@ -596,5 +621,5 @@ vchart.creator.rangechart.property.overflowOX = {
 
 
 vchart.creator.ostickchart = function () {
-    return vchart._('rangechart.o-stick-chart', false);
+    return vchart._('rangechart.base-chart.o-stick-chart', true);
 };

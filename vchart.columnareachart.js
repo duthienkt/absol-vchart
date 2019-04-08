@@ -7,7 +7,6 @@ vchart.creator.columnareachart = function () {
 
 vchart.creator.columnareachart.prototype.processMinMax = function () {
     this.super();
-    console.log(this.minValue, this.maxValue);
     this.minValue = this.areas.reduce(function (minValue, area) {
         return area.values.filter(vchart.lambda.isNumber).reduce(function (minValue, value) {
             if (!vchart.lambda.isNumber(value)) return minValue;
@@ -21,7 +20,6 @@ vchart.creator.columnareachart.prototype.processMinMax = function () {
             return Math.max(maxValue, value);
         }, maxValue);
     }, this.maxValue);
-    console.log(this.minValue, this.maxValue);
 
 };
 

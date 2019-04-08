@@ -251,8 +251,7 @@ vchart.creator.basechart.prototype.processMinMax = function () {
 };
 
 vchart.creator.basechart.prototype.beautifyMinMax = function () {
-    if (!(this.maxValue > this.minValue)) {
-        console.log(this.maxValue , this.minValue)
+    if (!(this.maxValue >= this.minValue)) {
         this.maxValue = 10;
         this.minValue = 0;
     }
@@ -267,7 +266,6 @@ vchart.creator.basechart.prototype.beautifyMinMax = function () {
     this.oyStep = btSgmt.step;
     this.oxyLeft = 20;
     this.oxyBottom = this.canvasHeight - 40;
-
 };
 
 
