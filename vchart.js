@@ -1,6 +1,6 @@
 
 
-var vchart = new absol.Svg({ creator: Object.assign({}, absol.ShareSvgCreator) });
+window.vchart = window.vchart || new absol.Svg({ creator: Object.assign({}, absol.ShareSvgCreator) });
 
 vchart.btSteps = [
     0.001, 0.002, 0.0025, 0.005,
