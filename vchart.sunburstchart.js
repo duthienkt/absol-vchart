@@ -13,16 +13,17 @@ vchart.creator.sunburstchart.eventHandler = {};
 
 vchart.creator.sunburstchart.prototype.updateSize = vchart.creator.basechart.prototype.updateSize;
 
-
-vchart.creator.sunburstchart.prototype.getHighContrastColor = function (h0, s0, l0) {
-    var h = h0 + 0.5;
-    if (h > 1) h -= 1;
-    var s = s0 > 0.5 ? 0 : 1;
-    var l = l0 > 0.5 ? 0 : 1;
-    var rgba = vchart.hslaToRGBA([h, s, l, 1]);
-    return 'rgba(' + rgba.map((x, i) => i < 3 ? x * 255 : x).join(',') + ')';
-
+vchart.creator.sunburstchart.prototype.acceptNode = function (node, visitFunction, content) {
+    visitFunction(node, content);
+    if (node.child) {
+        node.child.forEach(function (cNode) {
+            this.acceptNode(cNode, visitFunction, content);
+        }.bind(this));
+    }
 };
+
+
+
 vchart.creator.sunburstchart.prototype.update = function () {
     this.updateSize();
     this.updateBackComp();
@@ -45,9 +46,24 @@ vchart.creator.sunburstchart.prototype.initRoot = function () {
 
     this.$root = vchart._('g.base-chart-title').addTo(this.$content);
     this.$root.$circle = vchart.circle(0, 0, 0).addTo(this.$root);
+    var textColor;
+    if (this.root.fillColor) {
+        var fillColor = this.root.fillColor;
+        if (this.root.fillColor == 'auto') {
+            fillColor = this.autoFillColors.pop().toString('rgb');
+        }
+        textColor = absol.Color.parse(fillColor).getContrastYIQ().toString('rgb');
+        
+        this.$root.$circle.addStyle('fill', fillColor);
+    }
     this.$root.$lines = lines.map(function (line, i, arr) {
         return vchart.text(line.join(' '), 0, -(arr.length * this.titleLineHeight) / 2 + 15 + this.titleLineHeight * i).attr('text-anchor', 'middle').addTo(this.$root);
     }.bind(this));
+    if (textColor) {
+        this.$root.$lines.forEach(function (l) {
+            l.addStyle('fill', textColor);
+        })
+    }
 
     this.sync = this.sync.then(function () {
         var box = this.$root.getBBox();
@@ -58,6 +74,14 @@ vchart.creator.sunburstchart.prototype.initRoot = function () {
 };
 
 vchart.creator.sunburstchart.prototype.initBackComp = function () {
+    this.autoColorCount = 0;
+    this.acceptNode(this.root, function (node, content) {
+        if (node.fillColor == 'auto') {
+            content.autoColorCount++;
+        }
+    }, this);
+
+    this.autoFillColors = vchart.generateBackgroundColors(this.autoColorCount + 1);
     this.initRoot();
 };
 
@@ -78,17 +102,18 @@ vchart.creator.sunburstchart.prototype.initChartNode = function ($node) {
     if (!$node.chartDataNode.child || !($node.chartDataNode.child.length > 0)) return;
 
     $node.$childNodes = $node.chartDataNode.child.map(function (chartDataNode) {
-
+        var fillColor = chartDataNode.fillColor || $node.chartFillColor;
+        if (fillColor == 'auto') fillColor = this.autoFillColors.pop().toString('rgb');
         var res = vchart._({
             tag: 'g', class: 'sunburst-chart-node',
             props: {
                 chartDataNode: chartDataNode,
                 level: $node.level + ($node.chartDataNode.span || 1),
-                chartFillColor: chartDataNode.fillColor || $node.chartFillColor
+                chartFillColor: fillColor,
+                textColor: absol.Color.parse(fillColor).getContrastYIQ().toString('rgb')
             }
         });
         res.$title = vchart._('<title>' + chartDataNode.name + ': ' + chartDataNode.value + '</title>').addTo(res);
-
         res.$shape =
             vchart._({
                 tag: 'shape',
@@ -125,12 +150,13 @@ vchart.creator.sunburstchart.prototype.calDepth = function (node) {
 };
 
 vchart.creator.sunburstchart.prototype.initComp = function () {
+
+
     this.$root.chartDataNode = this.root;
     this.$root.chartAngle = [-Math.PI / 2, Math.PI * 3 / 2];
     this.$root.level = 0;
     this.depth = this.calDepth(this.root);
-    this.initChartNode(this.$root)
-
+    this.initChartNode(this.$root);
 };
 
 
@@ -151,6 +177,8 @@ vchart.creator.sunburstchart.prototype.updateNode = function ($node) {
         else {
             //todo:
             var text = $node.chartDataNode.name;
+            var textColor = $node.textColor;
+
             var words = text.trim().split(/\s+/);
             var updateNodeSession = this.updateNodeSession;
 
@@ -168,7 +196,7 @@ vchart.creator.sunburstchart.prototype.updateNode = function ($node) {
 
                 lines.reduce(function (y, line) {
                     var lineText = line.join(' ');
-                    $node.$nameCotainer.addChild(vchart.text(lineText, textX, y, 'sunburst-chart-node-name').attr('text-anchor', 'middle'));
+                    $node.$nameCotainer.addChild(vchart.text(lineText, textX, y, 'sunburst-chart-node-name').attr('text-anchor', 'middle').addStyle('fill', textColor));
                     return y + 20;
                 }, 5 - (nLine - 1) * 20 / 2);
                 // requestAnimationFrame(function () {

@@ -53,16 +53,23 @@ vchart.creator.columnchart.prototype.initComp = function () {
 
 vchart.creator.columnchart.prototype.updateComp = function () {
     this.$columes.forEach(function ($colume, i) {
-        var height = - this.mapOYValue(this.values[i]);
-        // x: (i + 0.5) * this.oxSegmentLength - this.columnWidth / 2
-        $colume.$rect.attr({
-            height: height,
-            y: -height
-        });
-        $colume.$value.attr('y', -height - 4);
-        $colume.attr({
-            transform: vchart.tl.translate((i + 0.5) * this.oxSegmentLength, 0)
-        });
+        if (vchart.lambda.isNumber(this.values[i])) {
+            $colume.$rect.removeStyle('display');
+            var height = - this.mapOYValue(this.values[i]);
+            // x: (i + 0.5) * this.oxSegmentLength - this.columnWidth / 2
+            $colume.$rect.attr({
+                height: height,
+                y: -height
+            });
+            $colume.$value.attr('y', -height - 4);
+            $colume.attr({
+                transform: vchart.tl.translate((i + 0.5) * this.oxSegmentLength, 0)
+            });
+        }
+        else {
+            $colume.$rect.addStyle('display', 'none');
+        }
+
     }.bind(this));
 };
 

@@ -515,3 +515,32 @@ vchart.hslaToRGBA = function (hsla) {
 
     return RGBA;
 };
+
+
+
+vchart.generateBackgroundColors = function (n) {
+    var l = Math.ceil(Math.sqrt(n));
+    var arrs = Array(n).fill(null).reduce(function (ac, cr, i) {
+        var tail = ac[ac.length - 1];
+        if (tail.length >= l) {
+            var tail = [];
+            ac.push(tail);
+        }
+
+        var color = absol.Color.fromHSL(i / n, 0.296, 0.46);
+        tail.push(color);
+        return ac;
+    }, [[]]);
+
+    var res = [];
+    var i = 0;
+    while (res.length < n) {
+        if (arrs[i].length > 0) {
+            res.push(arrs[i].shift());
+        }
+        i = (i + 1) % arrs.length;
+    }
+
+    return res;
+
+};

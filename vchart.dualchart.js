@@ -59,7 +59,10 @@ vchart.creator.dualchart.prototype._createAreaNote = function (area, color) {
         tag: 'g'
     });
 
-    res.$rect = vchart.rect(0, -14, 14, 14, 'dualchart-note-rect').addStyle('fill', color).addTo(res);
+    res.$rect = vchart.rect(0, -14, 14, 14, 'dualchart-note-rect').addTo(res);
+    if (color) {
+        res.$rect.addStyle('fill', color)
+    }
     res.$name = vchart.text(area.name, 17, 0, 'dualchart-note-text').addTo(res);
     return res;
 };

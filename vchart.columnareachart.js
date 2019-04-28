@@ -37,8 +37,28 @@ vchart.creator.columnareachart.prototype.initBackComp = function () {
     this.$arealNotes = this.areas.map(function (area, i) {
         return this._createAreaNote(area, this.colors[i]).addTo(this);
     }.bind(this));
+    console.log(this.colName);
+    //todo: user color
+    this.$columnNote = this._createAreaNote({ name: this.colName }, 'rgb(123, 192, 247)').addTo(this).addTo(this);
 };
 
+
+vchart.creator.columnareachart.prototype.updateBackComp = function () {
+    this.oxyBottom = this.canvasHeight - 3;
+    var noteWidth = [this.$columnNote].concat(this.$arealNotes).reduce(function (width, cr) {
+        return 40 + width + cr.getBBox().width;
+    }.bind(this), -40);
+
+    [this.$columnNote].concat(this.$arealNotes).reduce(function (pos, cr, arr) {
+        cr.attr('transform', vchart.tl.translate(pos.x, pos.y));
+        pos.x += cr.getBBox().width + 16;
+        return pos;
+    }.bind(this), { x: this.canvasWidth / 2 - noteWidth / 2, y: this.oxyBottom });
+
+    this.oxyBottom -= 50;
+    //todo:    
+    this.super();
+}
 
 vchart.creator.columnareachart.prototype.initComp = function () {
     this.$areas = this.areas.map(function (line, i) {
