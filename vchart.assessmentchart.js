@@ -107,8 +107,8 @@ vchart.creator.assessmentchart.prototype.initBackComp = function () {
         return vchart.text(key, 0, 0).attr('text-anchor', anchor).addTo(this.$content);
     }.bind(this));
 
-    this.$levels = this.levels.map(function () {
-        return vchart._('path.assessment-chart-level').addTo(this.$content);
+    this.$levels = this.levels.map(function (level, i, levels) {
+        return vchart._('path.assessment-chart-level' + (i + 1 == levels.length ? '.last' : '')).addTo(this.$content);
     }.bind(this));
 
     this.$notes = this.areas.map(function (area, i) {
@@ -166,6 +166,7 @@ vchart.creator.assessmentchart.prototype.updateBackComp = function () {
 
 vchart.creator.assessmentchart.prototype.initComp = function () {
     if (this.ranges && this.ranges.length > 0) {
+        this.$rangeArea = vchart._('shape.assessment-chart-range-area').addStyle('fill-rule', "evenodd").addTo(this.$content);
         this.$ranges = this.ranges.map(function (range, i, arr) {
             return this._createRangeLine().addTo(this.$content);
         }.bind(this));
@@ -194,9 +195,37 @@ vchart.creator.assessmentchart.prototype.updateComp = function () {
             var yMin = this.mapRadius(levelMin) * Math.sin(angle);
             $range.$min.attr({ cx: xMin, cy: yMin });
             $range.$line.attr('d', 'M' + xMin + ' ' + yMin + 'L' + xMax + ' ' + yMax);
-
-
         }.bind(this));
+
+        this.$rangeArea.begin();
+        this.ranges.forEach(function (range, i, arr) {
+            var angle = this.mapAngle(i);
+            var levelMax = this.mapLevel(range[1]);
+            var xMax = this.mapRadius(levelMax) * Math.cos(angle);
+            var yMax = this.mapRadius(levelMax) * Math.sin(angle);
+            if (i == 0) {
+                this.$rangeArea.moveTo(xMax, yMax);
+            }
+            else {
+                this.$rangeArea.lineTo(xMax, yMax);
+            }
+            if (i + 1 == arr.length) this.$rangeArea.closePath();
+        }.bind(this))
+
+        this.ranges.forEach(function (range, i, arr) {
+            var angle = this.mapAngle(i);
+            var levelMax = this.mapLevel(range[0]);
+            var xMin = this.mapRadius(levelMax) * Math.cos(angle);
+            var yMin = this.mapRadius(levelMax) * Math.sin(angle);
+            if (i == 0) {
+                this.$rangeArea.moveTo(xMin, yMin);
+            }
+            else {
+                this.$rangeArea.lineTo(xMin, yMin);
+            }
+            if (i + 1 == arr.length) this.$rangeArea.closePath();
+        }.bind(this))
+        this.$rangeArea.end();
     }
 
     this.$areas.forEach(function ($area, i) {

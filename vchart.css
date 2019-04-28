@@ -191,15 +191,28 @@ table .base-chart {
 
 .assessment-chart {}
 
+.assessment-chart.simply-filling .assessment-chart-area {
+    fill: none !important;
+}
+
+.assessment-chart.simply-filling .assessment-chart-level:not(.last) {
+    display: none;
+}
+
 .assessment-chart-area {
     stroke-width: 3;
 }
+
+
 
 .assessment-chart-level {
     fill: none;
     stroke-width: 1;
     stroke: rgba(12, 30, 49, 0.333)
 }
+
+
+
 
 table .assessment-chart-level-value text,
 table .assessment-chart-level-value {
@@ -225,6 +238,14 @@ table .assessment-chart-level-value {
     stroke: #155757d8;
     stroke-width: 3;
 }
+
+.assessment-chart-range-area {
+    fill: rgba(200, 200, 0, 0.3);
+    stroke: rgb(255, 150, 0);
+    stroke-width: 1.5;
+}
+
+
 
 .column-chart-column rect {
     fill: rgb(123, 192, 247);
