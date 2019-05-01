@@ -3,7 +3,7 @@ vchart.creator.assessmentchart = function () {
     var $ = vchart.$;
     var res = _({
         tag: 'svg',
-        class: 'base-chart'
+        class: ['base-chart', 'assessment-chart']
     });
 
     res.sync = res.afterAttached(200);
@@ -303,3 +303,18 @@ vchart.creator.assessmentchart.prototype.init = function (props) {
     this.initFrontComp();
     this.sync = this.sync.then(this.update.bind(this));
 };
+
+
+vchart.creator.assessmentchart.property = {
+    simpleMode: {
+        set: function (value) {
+            if (value)
+                this.addClass('simple-mode');
+            else
+                this.removeClass('simple-mode');
+        },
+        get: function () {
+            return this.containsClass('simple-mode');
+        }
+    }
+}

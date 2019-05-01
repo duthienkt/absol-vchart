@@ -37,7 +37,6 @@ vchart.creator.columnareachart.prototype.initBackComp = function () {
     this.$arealNotes = this.areas.map(function (area, i) {
         return this._createAreaNote(area, this.colors[i]).addTo(this);
     }.bind(this));
-    console.log(this.colName);
     //todo: user color
     this.$columnNote = this._createAreaNote({ name: this.colName }, 'rgb(123, 192, 247)').addTo(this).addTo(this);
 };

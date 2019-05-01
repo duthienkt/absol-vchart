@@ -191,11 +191,11 @@ table .base-chart {
 
 .assessment-chart {}
 
-.assessment-chart.simply-filling .assessment-chart-area {
+.assessment-chart.simple-mode .assessment-chart-area {
     fill: none !important;
 }
 
-.assessment-chart.simply-filling .assessment-chart-level:not(.last) {
+.assessment-chart.simple-mode .assessment-chart-level:not(.last) {
     display: none;
 }
 
