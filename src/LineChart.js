@@ -1,19 +1,27 @@
-vchart.creator.linechart = function () {
-    return vchart._('basechart', true);
+import Vcore from "./VCore";
+import { isNumber, text, circle,hline } from "./helper";
+import { showTooltip, closeTooltip } from "./ToolTip";
+import { translate, rotate } from "./template";
+
+var _ = Vcore._;
+var $ = Vcore.$;
+
+function  LineChart() {
+    return _('basechart', true);
 };
 
 
-vchart.creator.linechart.prototype.processMinMax = function () {
+LineChart.prototype.processMinMax = function () {
     this.minValue = this.lines.reduce(function (minValue, line) {
         return line.values.reduce(function (minValue, value) {
-            if (!vchart.lambda.isNumber(value)) return minValue;
+            if (!isNumber(value)) return minValue;
             return Math.min(minValue, value);
         }, minValue);
     }, 1000000000);
 
     this.maxValue = this.lines.reduce(function (maxValue, line) {
         return line.values.reduce(function (maxValue, value) {
-            if (!vchart.lambda.isNumber(value)) return maxValue;
+            if (!isNumber(value)) return maxValue;
 
             return Math.max(maxValue, value);
         }, maxValue);
@@ -24,38 +32,38 @@ vchart.creator.linechart.prototype.processMinMax = function () {
     }
 };
 
-vchart.creator.linechart.prototype._createLineNote = function (name, color) {
-    var res = vchart._('g');
-    res.$line = vchart.hline(0, -5, this.noteLineLength, 'line-chart-line').addStyle('stroke', color).addTo(res);
-    res.$name = vchart.text(name, this.noteLineLength + 5, 0).addTo(res);
+LineChart.prototype._createLineNote = function (name, color) {
+    var res = _('g');
+    res.$line = hline(0, -5, this.noteLineLength, 'line-chart-line').addStyle('stroke', color).addTo(res);
+    res.$name = text(name, this.noteLineLength + 5, 0).addTo(res);
     return res;
 };
 
-vchart.creator.linechart.prototype._createKeyName = function (key) {
-    var res = vchart._('g');
-    res.$text = vchart.text(key, 0, 5).addTo(res);
+LineChart.prototype._createKeyName = function (key) {
+    var res = _('g');
+    res.$text = text(key, 0, 5).addTo(res);
     return res;
 };
 
-vchart.creator.linechart.prototype._createLine = function (line, color) {
-    var res = vchart._({
+LineChart.prototype._createLine = function (line, color) {
+    var res = _({
         tag: 'g',
         style: {
             fill: color,
             stroke: color
         }
     });
-    res.$path = vchart._('shape.line-chart-line').addTo(res);
+    res.$path = _('shape.line-chart-line').addTo(res);
     res.$plots = line.values.map(function (u, i) {
-        var plot = vchart.circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res).on('mouseenter', function (event) {
+        var plot = circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res).on('mouseenter', function (event) {
             var text = line.texts && line.texts[i];
             if (!text) return;
             var currentBound = this.getBoundingClientRect();
 
-            var token = vchart.showTooltip(text, (currentBound.left + currentBound.right) / 2, (currentBound.top + currentBound.bottom) / 2);
+            var token = showTooltip(text, (currentBound.left + currentBound.right) / 2, (currentBound.top + currentBound.bottom) / 2);
             this.once('mouseleave', function () {
                 setTimeout(function () {
-                    vchart.closeTooltip(token);
+                    closeTooltip(token);
                 }, 1000);
             });
         });
@@ -69,7 +77,7 @@ vchart.creator.linechart.prototype._createLine = function (line, color) {
 
 
 
-vchart.creator.linechart.prototype.initBackComp = function () {
+LineChart.prototype.initBackComp = function () {
     this.super();
     this.colors = this.lines.map(function (line, i, arr) {
         if (line.color) return line.color;
@@ -86,7 +94,7 @@ vchart.creator.linechart.prototype.initBackComp = function () {
 };
 
 
-vchart.creator.linechart.prototype.updateBackComp = function () {
+LineChart.prototype.updateBackComp = function () {
     this.super();
     this.oxyBottom = this.canvasHeight - 25;
 
@@ -95,7 +103,7 @@ vchart.creator.linechart.prototype.updateBackComp = function () {
     }.bind(this), 0);
 
     this.$lineNotes.reduce(function (x, $lineNote) {
-        $lineNote.attr('transform', vchart.tl.translate(x, this.canvasHeight - 5));
+        $lineNote.attr('transform', translate(x, this.canvasHeight - 5));
         return x + $lineNote.getBBox().width + 15;
     }.bind(this), (this.canvasWidth - lineNoteWidth) / 2);
 
@@ -116,15 +124,15 @@ vchart.creator.linechart.prototype.updateBackComp = function () {
 
     if (this.rotateText) {
         this.$keyNames.forEach(function (e, i) {
-            e.attr('transform', vchart.tl.translate((i + 0.5) * this.oxSegmentLength - 5, 12));
-            e.$text.attr('transform', vchart.tl.rotate(45));
+            e.attr('transform', translate((i + 0.5) * this.oxSegmentLength - 5, 12));
+            e.$text.attr('transform', rotate(45));
 
         }.bind(this));
         this.oxyBottom -= maxKeyNameWidth / 1.4 + 12;
     }
     else {
         this.$keyNames.forEach(function (e, i) {
-            e.attr('transform', vchart.tl.translate((i + 0.5) * this.oxSegmentLength, 12));
+            e.attr('transform', translate((i + 0.5) * this.oxSegmentLength, 12));
             e.$text.attr('text-anchor', 'middle');
 
         }.bind(this));
@@ -141,20 +149,20 @@ vchart.creator.linechart.prototype.updateBackComp = function () {
 
 
 
-vchart.creator.linechart.prototype.initComp = function () {
+LineChart.prototype.initComp = function () {
     this.$lines = this.lines.map(function (line, i) {
         return this._createLine(line, this.colors[i]).addTo(this.$content);
     }.bind(this));
 };
 
 
-vchart.creator.linechart.prototype.updateComp = function () {
+LineChart.prototype.updateComp = function () {
     this.$lines.map(function ($line, i) {
         var line = this.lines[i];
         $line.$plots.forEach(function ($plot, j) {
             $plot.attr('display');
             var value = line.values[j];
-            if (vchart.lambda.isNumber(value)) {
+            if (isNumber(value)) {
                 $plot.attr({
                     cx: this.oxSegmentLength * (j + 0.5),
                     cy: this.mapOYValue(value)
@@ -170,7 +178,7 @@ vchart.creator.linechart.prototype.updateComp = function () {
         line.reduce(function (state, value, j) {
             
             if (line.length == 1) {
-                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+                if (!isNumber(value)) return 'NOT_START';
                 var y = this.mapOYValue(value);
                 var x = this.oxSegmentLength * (j);
                 $line.$path.moveTo(x, y);
@@ -180,7 +188,7 @@ vchart.creator.linechart.prototype.updateComp = function () {
             }
 
             if (state == "NOT_START") {
-                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+                if (!isNumber(value)) return 'NOT_START';
 
                 var y = this.mapOYValue(value);
                 var x = this.oxSegmentLength * (j + 0.5);
@@ -188,7 +196,7 @@ vchart.creator.linechart.prototype.updateComp = function () {
                 return 'IN_LINE';
             }
             else if (state == 'IN_LINE') {
-                if (!vchart.lambda.isNumber(value)) return 'NOT_START';
+                if (!isNumber(value)) return 'NOT_START';
                 var y = this.mapOYValue(value);
                 var x = this.oxSegmentLength * (j + 0.5);
                 $line.$path.lineTo(x, y);
@@ -204,7 +212,7 @@ vchart.creator.linechart.prototype.updateComp = function () {
 
 
 
-vchart.creator.linechart.prototype.preInit = function () {
+LineChart.prototype.preInit = function () {
     this.super();
     this.rotateText = true;
     this.noteLineLength = 40;
@@ -217,11 +225,13 @@ vchart.creator.linechart.prototype.preInit = function () {
     this.lines = [];
 };
 
+Vcore.creator.linechart = LineChart;
 
+export default LineChart;
 
-// vchart.creator.linechart = function () {
-//     var _ = vchart._;
-//     var $ = vchart.$;
+// LineChart = function () {
+//     var _ = _;
+//     var $ = $;
 
 //     var res = _({
 //         tag: 'svg',
@@ -242,11 +252,11 @@ vchart.creator.linechart.prototype.preInit = function () {
 //     return res;
 // };
 
-// vchart.creator.linechart.property = {};
+// LineChart.property = {};
 
 
 
-// vchart.creator.linechart.property.colCount = {
+// LineChart.property.colCount = {
 //     set: function (value) {
 //         this._colCount = value;
 //     },
@@ -255,7 +265,7 @@ vchart.creator.linechart.prototype.preInit = function () {
 //     }
 // };
 
-// vchart.creator.linechart.property.colNames = {
+// LineChart.property.colNames = {
 //     set: function (value) {
 //         this._colNames = value || [];
 //         if (this.$colNames) this.$colNames.forEach(function (e) { e.selftRemove() });
@@ -268,7 +278,7 @@ vchart.creator.linechart.prototype.preInit = function () {
 //     }
 // };
 
-// vchart.creator.linechart.property.lines = {
+// LineChart.property.lines = {
 //     set: function (value) {
 //         this._lines = value || [];
 //         if (this.$lines) this.$lines.map(function (e) { e.selftRemove() });
@@ -286,8 +296,8 @@ vchart.creator.linechart.prototype.preInit = function () {
 
 
 
-// vchart.creator.linechart.prototype._createColText = function (text, x, y) {
-//     return vchart._([
+// LineChart.prototype._createColText = function (text, x, y) {
+//     return _([
 //         '<g transform="translate(' + x + ',' + y + ')">',
 //         '<g  transform="rotate(60)">',
 //         '<text class="vchart-coltext" >',
@@ -298,8 +308,8 @@ vchart.creator.linechart.prototype.preInit = function () {
 //     ].join(''));
 // };
 
-// vchart.creator.linechart.prototype._createLine = function (props) {
-//     var res = vchart._({
+// LineChart.prototype._createLine = function (props) {
+//     var res = _({
 //         tag: 'g',
 //         style: {
 //             fill: props.color || 'rgb(68, 68, 255)',
@@ -309,9 +319,9 @@ vchart.creator.linechart.prototype.preInit = function () {
 
 
 //     res.$dots = Array(props.values.length)
-//         .fill('<ellipse  rx="7" ry="7" style="stroke:none" />').map(vchart._)
+//         .fill('<ellipse  rx="7" ry="7" style="stroke:none" />').map(_)
 //         .map(function (e) { e.addTo(res); return e; });
-//     res.$path = vchart._('<path style="fill:none"/>').addTo(res);
+//     res.$path = _('<path style="fill:none"/>').addTo(res);
 
 //     res._values = props.values;
 
@@ -320,7 +330,7 @@ vchart.creator.linechart.prototype.preInit = function () {
 
 
 
-// vchart.creator.linechart.prototype.updateColNamePositions = function () {
+// LineChart.prototype.updateColNamePositions = function () {
 //     if (this.$colNames) {
 //         var maxSize = this.$colNames.reduce(function (ac, text) {
 //             ac.width = Math.max(text.getBBox().width, ac.width);
@@ -344,17 +354,17 @@ vchart.creator.linechart.prototype.preInit = function () {
 //     }
 // };
 
-// vchart.creator.linechart.prototype.updateAxis = function () {
+// LineChart.prototype.updateAxis = function () {
 //     this.$axis.moveTo(this._axisLeft, this.canvasHeight - this._axisBottom);
 //     this.$axis.resize(this._oxLength, this._oyLength);
 // }
 
-// vchart.creator.linechart.prototype.updateSize = function () {
+// LineChart.prototype.updateSize = function () {
 //     this.attr({ width: this.canvasWidth + '', height: this.canvasHeight + '', viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ') });
 
 // };
 
-// vchart.creator.linechart.prototype._updateLines = function () {
+// LineChart.prototype._updateLines = function () {
 //     if (this.$lines) {
 //         this.$lines.forEach(function (e) {
 //             var x0 = this._axisLeft + this._oxSegmentLength / 2;
@@ -377,7 +387,7 @@ vchart.creator.linechart.prototype.preInit = function () {
 // };
 
 
-// vchart.creator.linechart.prototype.update = function (width, height) {
+// LineChart.prototype.update = function (width, height) {
 //     this.updateSize();
 //     this.updateColNamePositions();
 //     this.updateAxis();
@@ -387,7 +397,7 @@ vchart.creator.linechart.prototype.preInit = function () {
 
 
 
-// vchart.creator.linechart.prototype.init = function (props) {
+// LineChart.prototype.init = function (props) {
 //     props = props || {};
 //     props.canvasWidth = props.canvasWidth || 400;
 //     props.canvasHeight = props.canvasHeight || 300;

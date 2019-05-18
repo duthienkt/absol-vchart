@@ -1,4 +1,13 @@
-vchart.creator.basechart = function () {
+import Vcore from "./VCore";
+import OOP from "absol/src/HTML5/OOP";
+import { calBeautySegment, text, moveHLine, map } from "./helper";
+import { translate } from "./template";
+
+var _ = Vcore._;
+
+var $ = Vcore.$;
+
+function BaseChart() {
     var _ = vchart._;
     var $ = vchart.$;
     var suffix = (Math.random() + '').replace(/\./g, '');
@@ -27,7 +36,7 @@ vchart.creator.basechart = function () {
     res.$axis = $('axis', res);
     res.$maskRect = $('rect#maskRect', res);
     res.$content = $('g#content', res);
-    res.eventHandler = absol.OOP.bindFunctions(res, vchart.creator.basechart.eventHandler);
+    res.eventHandler = OOP.bindFunctions(res, BaseChart.eventHandler);
     res.on('wheel', res.eventHandler.wheel);
     res.$tooltip = $('tooltip', res);
 
@@ -36,33 +45,33 @@ vchart.creator.basechart = function () {
 
 
 
-vchart.creator.basechart.eventHandler = {};
-vchart.creator.basechart.eventHandler.wheel = function (event) {
+BaseChart.eventHandler = {};
+BaseChart.eventHandler.wheel = function (event) {
     var d = this.scrollBy(event.deltaY);
     if (d != 0) {
         event.preventDefault();
     }
 };
 
-vchart.creator.basechart.eventHandler.scrollArrowsPressLeft = function (event) {
+BaseChart.eventHandler.scrollArrowsPressLeft = function (event) {
     this.scrollBy(-60);
 };
 
-vchart.creator.basechart.eventHandler.scrollArrowsPressRight = function (event) {
+BaseChart.eventHandler.scrollArrowsPressRight = function (event) {
     this.scrollBy(60);
 };
 
 
 
-vchart.creator.basechart.prototype.showTooltip = function (text, x, y) {
+BaseChart.prototype.showTooltip = function (text, x, y) {
     return vchart.showTooltip(text, x, y);
 };
 
-vchart.creator.basechart.prototype.closeTooltip = function (token) {
+BaseChart.prototype.closeTooltip = function (token) {
     return vchart.hideTooltip();
 };
 
-vchart.creator.basechart.prototype.scrollBy = function (dX) {
+BaseChart.prototype.scrollBy = function (dX) {
     var scrollLeft = this.scrollLeft + dX / 5;
     var scrollLeft = Math.max(0, Math.min(this.oxContentLength - this.oxLength, scrollLeft));
     var deltaX = scrollLeft - this.scrollLeft;
@@ -74,7 +83,7 @@ vchart.creator.basechart.prototype.scrollBy = function (dX) {
 
 
 
-vchart.creator.basechart.prototype._createOyValues = function (minValue, step, segmentCout, extendOY) {
+BaseChart.prototype._createOyValues = function (minValue, step, segmentCout, extendOY) {
     var child = Array(segmentCout + 1 + (extendOY ? 1 : 0)).fill(0).map(function (u, i) {
         var value;
         if (extendOY) {
@@ -109,7 +118,7 @@ vchart.creator.basechart.prototype._createOyValues = function (minValue, step, s
 };
 
 
-vchart.creator.basechart.prototype._createOYSegmentLines = function (n) {
+BaseChart.prototype._createOYSegmentLines = function (n) {
     var _ = vchart._;
     var res = _({
         tag: 'g',
@@ -120,25 +129,25 @@ vchart.creator.basechart.prototype._createOYSegmentLines = function (n) {
 
 
 
-vchart.creator.basechart.prototype.numberToString = function (value) {
+BaseChart.prototype.numberToString = function (value) {
     return value.toString();
 };
 
-vchart.creator.basechart.prototype.mapOYValue = function (val) {
-    return -this.paddingnAxisBottom + (this.extendOY ? -this.oySegmentLength : 0) - Math.map(val, this.oyMinValue, this.oyMaxValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0));
+BaseChart.prototype.mapOYValue = function (val) {
+    return -this.paddingnAxisBottom + (this.extendOY ? -this.oySegmentLength : 0) - map(val, this.oyMinValue, this.oyMaxValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0));
 };
 
-vchart.creator.basechart.prototype.preInit = function () {
+BaseChart.prototype.preInit = function () {
 
 };
 
-vchart.creator.basechart.prototype.updateSize = function () {
+BaseChart.prototype.updateSize = function () {
     this.attr({ width: this.canvasWidth + '', height: this.canvasHeight + '', viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ') });
 };
 
 
 
-vchart.creator.basechart.prototype.updateOyValues = function () {
+BaseChart.prototype.updateOyValues = function () {
 
     this.oyLength = this.oxyBottom - 70 - this.paddingnAxisBottom;
     this.oySegmentLength = this.oyLength / (this.oySegmentCount + (this.extendOY ? 1 : 0));
@@ -155,15 +164,15 @@ vchart.creator.basechart.prototype.updateOyValues = function () {
     this.$oyValues.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
 };
 
-vchart.creator.basechart.prototype.updateOYSegmentLines = function () {
+BaseChart.prototype.updateOYSegmentLines = function () {
     this.$oySegmentLines.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
     Array.prototype.forEach.call(this.$oySegmentLines.childNodes, function (e, i) {
-        vchart.moveHLine(e, -2, -i * this.oySegmentLength - this.paddingnAxisBottom, 4);
+        moveHLine(e, -2, -i * this.oySegmentLength - this.paddingnAxisBottom, 4);
     }.bind(this));
 };
 
 
-vchart.creator.basechart.prototype.updateBackComp = function () {
+BaseChart.prototype.updateBackComp = function () {
     this.$title.attr('x', this.canvasWidth / 2);
     this.updateOyValues();
     this.updateOYSegmentLines();
@@ -172,8 +181,8 @@ vchart.creator.basechart.prototype.updateBackComp = function () {
 
 
 
-vchart.creator.basechart.prototype.updateAxis = function () {
-    this.$axis.attr('transform', vchart.tl.translate(this.oxyLeft, this.oxyBottom));
+BaseChart.prototype.updateAxis = function () {
+    this.$axis.attr('transform', translate(this.oxyLeft, this.oxyBottom));
     this.$axis.resize(this.canvasWidth - this.oxyLeft - 10, this.oxyBottom - 50);
     this.$oyName.attr({
         x: this.oxyLeft,
@@ -191,15 +200,15 @@ vchart.creator.basechart.prototype.updateAxis = function () {
     this.$oxName.attr({ x: this.canvasWidth - this.$oxName.getBBox().width - 3, y: this.oxyBottom - 9 });
 };
 
-vchart.creator.basechart.prototype.updateFrontComp = function () { };
-vchart.creator.basechart.prototype.updateComp = function () { };
+BaseChart.prototype.updateFrontComp = function () { };
+BaseChart.prototype.updateComp = function () { };
 
-vchart.creator.basechart.prototype.updateScrollArrows = function () {
+BaseChart.prototype.updateScrollArrows = function () {
     this.$scrollArrows.attr('transform', 'translate(' + (this.oxyLeft + 7) + ', ' + (this.oxyBottom - this.oyLength / 2) + ')');
     this.$scrollArrows.$rightArrow.attr('transform', 'translate(' + (this.oxLength - 15) + ', 0)');
     this.scrollLeft = this.scrollLeft;//update
 };
-vchart.creator.basechart.prototype.update = function () {
+BaseChart.prototype.update = function () {
     if (typeof this.canvasWidth != 'number') {
         this.canvasWidth = 300;
         this.autoWidth = true;
@@ -222,7 +231,7 @@ vchart.creator.basechart.prototype.update = function () {
 };
 
 
-vchart.creator.basechart.prototype.initScroll = function () {
+BaseChart.prototype.initScroll = function () {
     this.$scrollArrows = vchart._('scrollarrow')
         .addTo(this)
         .on('pressleft', this.eventHandler.scrollArrowsPressLeft)
@@ -230,7 +239,7 @@ vchart.creator.basechart.prototype.initScroll = function () {
 };
 
 
-vchart.creator.basechart.prototype.preInit = function () {
+BaseChart.prototype.preInit = function () {
     this.canvasWidth = 900;
     this.canvasHeight = 600;
     this.paddingnAxisBottom = 0;
@@ -240,24 +249,24 @@ vchart.creator.basechart.prototype.preInit = function () {
     this.valueName = '';
     this.keyName = '';
     this.colorTable = ['#821616', ' #824116', '#826C16', '#6C8216', '#418216', '#168216',
-    '#168241', '#16826C', '#166C82', '#164182', '#161682', '#411682', '#6C1682',
-    '#82166C', '#821641'];
+        '#168241', '#16826C', '#166C82', '#164182', '#161682', '#411682', '#6C1682',
+        '#82166C', '#821641'];
 };
 
 
-vchart.creator.basechart.prototype.processMinMax = function () {
+BaseChart.prototype.processMinMax = function () {
     this.minValue = 0;
     this.maxValue = 10;
 };
 
-vchart.creator.basechart.prototype.beautifyMinMax = function () {
+BaseChart.prototype.beautifyMinMax = function () {
     if (!(this.maxValue >= this.minValue)) {
         this.maxValue = 10;
         this.minValue = 0;
     }
     if (this.maxValue == this.minValue) this.maxValue += this.maxSegment;
 
-    var btSgmt = vchart.calBeautySegment(this.maxSegment, this.minValue, this.maxValue);
+    var btSgmt = calBeautySegment(this.maxSegment, this.minValue, this.maxValue);
 
     this.oySegmentCount = btSgmt.segmentCout;
     this.oyMinValue = btSgmt.minValue;
@@ -271,24 +280,24 @@ vchart.creator.basechart.prototype.beautifyMinMax = function () {
 
 
 
-vchart.creator.basechart.prototype.initBackComp = function () {
+BaseChart.prototype.initBackComp = function () {
 
     this.$oyValues = this._createOyValues(this.oyMinValue, this.oyStep, this.oySegmentCount, this.extendOY)
         .addTo(this);
 
     this.$oySegmentLines = this._createOYSegmentLines(this.oySegmentCount + 1 + (this.extendOY ? 1 : 0)).addTo(this);
 
-    this.$title = vchart.text(this.title, 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = text(this.title, 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
 
-    this.$oyName = vchart.text(this.valueName || '', 0, 0, 'base-chart-oxy-text').addTo(this);
-    this.$oxName = vchart.text(this.keyName || '', 0, 0, 'base-chart-oxy-text').addTo(this);
+    this.$oyName = text(this.valueName || '', 0, 0, 'base-chart-oxy-text').addTo(this);
+    this.$oxName = text(this.keyName || '', 0, 0, 'base-chart-oxy-text').addTo(this);
 
 };
 
-vchart.creator.basechart.prototype.initComp = function () { };
-vchart.creator.basechart.prototype.initFrontComp = function () { };
+BaseChart.prototype.initComp = function () { };
+BaseChart.prototype.initFrontComp = function () { };
 
-vchart.creator.basechart.prototype.initScroll = function () {
+BaseChart.prototype.initScroll = function () {
     this.$scrollArrows = vchart._('scrollarrow')
         .addTo(this)
         .on('pressleft', this.eventHandler.scrollArrowsPressLeft)
@@ -297,7 +306,7 @@ vchart.creator.basechart.prototype.initScroll = function () {
 
 
 
-vchart.creator.basechart.prototype.init = function (props) {
+BaseChart.prototype.init = function (props) {
     for (var key in props) {
         if (props[key] === undefined) delete props[key];
     }
@@ -314,10 +323,10 @@ vchart.creator.basechart.prototype.init = function (props) {
 
 
 
-vchart.creator.basechart.property = {};
+BaseChart.property = {};
 
 
-vchart.creator.basechart.property.scrollLeft = {
+BaseChart.property.scrollLeft = {
     set: function (value) {
         this._scrollLeft = value || 0;
         this.$content.attr('transform', 'translate(' + (this.oxyLeft - this.scrollLeft) + ',' + this.oxyBottom + ')');
@@ -340,13 +349,13 @@ vchart.creator.basechart.property.scrollLeft = {
     }
 };
 
-vchart.creator.basechart.property.overflowOX = {
+BaseChart.property.overflowOX = {
     get: function () {
         return Math.max(0, this.oxContentLength - this.oxLength);
     }
 };
 
-vchart.creator.basechart.property.showInlineValue = {
+BaseChart.property.showInlineValue = {
     set: function (value) {
         if (value) {
             this.addClass('vchart-show-inline-value');
@@ -359,3 +368,6 @@ vchart.creator.basechart.property.showInlineValue = {
         return this.containsClass('vchart-show-inline-value');
     }
 };
+
+
+Vcore.creator.basechart = BaseChart;

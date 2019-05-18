@@ -1,36 +1,38 @@
-vchart.creator.shape = function () {
-    var res = vchart._('path');
+import Vcore from "./VCore";
+
+function Shape() {
+    var res = Vcore._('path');
     return res;
 };
 
-vchart.creator.shape.prototype.begin = function () {
+Shape.prototype.begin = function () {
     this.buildingPath = '';
     return this;
 };
 
-vchart.creator.shape.prototype.end = function () {
+Shape.prototype.end = function () {
     this.attr('d', this.buildingPath);
     return this;
 };
 
 
-vchart.creator.shape.prototype.moveTo = function (x, y) {
+Shape.prototype.moveTo = function (x, y) {
     this.buildingPath += 'M' + x + ' ' + y;
     return this;
 };
 
-vchart.creator.shape.prototype.closePath = function () {
+Shape.prototype.closePath = function () {
     this.buildingPath += 'z';
     return this;
 }
 
-vchart.creator.shape.prototype.lineTo = function (x, y) {
+Shape.prototype.lineTo = function (x, y) {
     this.buildingPath += 'L' + x + ' ' + y;
     return this;
 };
 
 
-vchart.creator.shape.prototype.arcTo = function (x, y, rx, ry, lf, sf, xRotate) {
+Shape.prototype.arcTo = function (x, y, rx, ry, lf, sf, xRotate) {
     ry = ry || rx;
     lf = lf || 0;
     sf = sf || 0;
@@ -39,12 +41,12 @@ vchart.creator.shape.prototype.arcTo = function (x, y, rx, ry, lf, sf, xRotate) 
     return this;
 };
 
-vchart.creator.shape.prototype.curveTo - function (x, y, x0, y0, x1, y1) {
+Shape.prototype.curveTo - function (x, y, x0, y0, x1, y1) {
     this.buildingPath += 'C' + [x0, y0, x1, y1, x, y].join(' ');
     return this;
 };
 
 
 
-
+Vcore.creator.shape = Shape;
 
