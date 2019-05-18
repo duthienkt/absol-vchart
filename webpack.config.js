@@ -1,6 +1,8 @@
 const path = require('path');
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 
+var demo_src = process.env.DEMO;
+
 module.exports = {
     mode: process.env.MODE || "development",
     entry: ["./src/index.js"],
@@ -19,7 +21,14 @@ module.exports = {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
-                options: { presets: [['es2015', { modules: false }]] }
+                options: {
+                    presets: ["@babel/preset-env"]//,
+                    // plugins: [
+                    //     'transform-jsx-to-absol'
+                    //     // ,
+                    //     // '@babel/transform-literals'
+                    // ]
+                }
             },
             {
                 test: /\.(tpl|txt|xml|rels|css)$/i,
@@ -33,7 +42,7 @@ module.exports = {
     performance: {
         hints: false
     },
-    plugins: [
-        new MinifyPlugin()
-    ]
+    // plugins: [
+    //     new MinifyPlugin()
+    // ]
 };
