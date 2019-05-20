@@ -29,7 +29,8 @@ function BaseChart() {
                     mask: 'url(#contentMask' + suffix + ')'
                 },
                 child: 'g#content'
-            }
+            },
+            'hscrollbar'
         ]
     });
     res.sync = res.afterAttached();
@@ -37,8 +38,8 @@ function BaseChart() {
     res.$maskRect = $('rect#maskRect', res);
     res.$content = $('g#content', res);
     res.eventHandler = OOP.bindFunctions(res, BaseChart.eventHandler);
-    res.on('wheel', res.eventHandler.wheel);
-    res.$tooltip = $('tooltip', res);
+    // res.on('wheel', res.eventHandler.wheel);
+    res.$hscrollbar = $('hscrollbar', res).on('scroll', res.eventHandler.scrollbarscroll);
 
     return res;
 };
@@ -61,15 +62,11 @@ BaseChart.eventHandler.scrollArrowsPressRight = function (event) {
     this.scrollBy(60);
 };
 
-
-
-BaseChart.prototype.showTooltip = function (text, x, y) {
-    return vchart.showTooltip(text, x, y);
+BaseChart.eventHandler.scrollbarscroll = function (event) {
+    this.scrollLeft = this.$hscrollbar.scrollLeft;
+    event.preventDefault();
 };
 
-BaseChart.prototype.closeTooltip = function (token) {
-    return vchart.hideTooltip();
-};
 
 BaseChart.prototype.scrollBy = function (dX) {
     var scrollLeft = this.scrollLeft + dX / 5;
@@ -77,6 +74,7 @@ BaseChart.prototype.scrollBy = function (dX) {
     var deltaX = scrollLeft - this.scrollLeft;
     if (deltaX != 0) {
         this.scrollLeft = scrollLeft;
+        this.$hscrollbar.scrollLeft = scrollLeft;
     }
     return deltaX;
 };
@@ -207,7 +205,12 @@ BaseChart.prototype.updateScrollArrows = function () {
     this.$scrollArrows.attr('transform', 'translate(' + (this.oxyLeft + 7) + ', ' + (this.oxyBottom - this.oyLength / 2) + ')');
     this.$scrollArrows.$rightArrow.attr('transform', 'translate(' + (this.oxLength - 15) + ', 0)');
     this.scrollLeft = this.scrollLeft;//update
+
+    this.$hscrollbar.resize(this.oxLength, 10);
+    this.$hscrollbar.moveTo(this.oxyLeft, this.oxyBottom - 10);
+    this.$hscrollbar.outterWidth = this.oxLength;
 };
+
 BaseChart.prototype.update = function () {
     if (typeof this.canvasWidth != 'number') {
         this.canvasWidth = 300;

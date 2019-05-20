@@ -1,0 +1,9 @@
+
+.line-chart-line {
+    stroke-width: 2;
+    fill: none;
+}
+
+.line-chart-plot {
+    stroke: none;
+}

@@ -1,0 +1,67 @@
+
+.base-chart,
+.range-chart {
+    font-size: 12;
+    font-family: Arial;
+}
+
+/*Cheat if in bsc*/
+
+table .base-chart-title {
+    font-size: 15px;
+}
+
+
+.range-chart:not(:hover) .vchart-vscrollbar {
+    display: none;
+}
+
+.base-chart-title {
+    font-size: 15;
+    font-weight: bold;
+}
+
+.base-chart-oxy-text {
+    font-style: italic;
+    fill: rgb(70, 70, 70);
+    stroke: none;
+}
+
+.range-chart-value-plot {
+    fill: rgb(255, 218, 216);
+    stroke: black;
+    stroke-width: 1;
+}
+
+.range-chart-limit-line {
+    stroke-width: 4;
+    fill: none;
+}
+
+.range-chart-range-line {
+    stroke-width: 1;
+    fill: none;
+    stroke: black;
+}
+
+.range-chart-limit-line.max {
+    stroke: rgb(230, 22, 16);
+}
+
+.range-chart-limit-line.mid {
+    stroke: rgb(77, 215, 250);
+}
+
+.range-chart-limit-line.min {
+    stroke: rgb(20, 100, 246);
+}
+
+.range-chart:not(.show-inline-value) .range-chart-inline-value {
+    display: none;
+}
+
+/* .show-inline-value .range-chart-note, */
+
+.show-inline-value .range-char-note-value {
+    display: none;
+}
