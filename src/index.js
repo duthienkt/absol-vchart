@@ -10,7 +10,13 @@ import './BaseChart';
 import './ToolTip';
 import './HLineArrow';
 import './HScrollBar';
-import './LineChart'
+import './LineChart';
+import './DualChart';
+import './RangeChart';
+import { isNumber, toLocalString } from "./helper";
+
+
+
 
 var vchart = {
     core: Vcore,
@@ -19,11 +25,15 @@ var vchart = {
     $: Vcore.$,
     buildSvg: Vcore._,
     $style: Dom.ShareInstance._({
-        tag:'style',
-        props:{
+        tag: 'style',
+        props: {
             innerHTML: vchartStyle_css
         }
-    }).addTo(document.head)
+    }).addTo(document.head),
+    lambda:{
+        isNumber: isNumber,
+        toLocalString: toLocalString
+    }
 }
 
 window.vchart = vchart;
