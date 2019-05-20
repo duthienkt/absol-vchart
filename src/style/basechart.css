@@ -1,3 +1,7 @@
 .vchart-hidden{
     display: none;
 }
+
+.base-chart:not(:hover) .vchart-vscrollbar {
+    display: none;
+}
