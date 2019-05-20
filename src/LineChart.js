@@ -1,12 +1,12 @@
 import Vcore from "./VCore";
-import { isNumber, text, circle,hline } from "./helper";
+import { isNumber, text, circle, hline } from "./helper";
 import { showTooltip, closeTooltip } from "./ToolTip";
 import { translate, rotate } from "./template";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
-function  LineChart() {
+function LineChart() {
     return _('basechart', true);
 };
 
@@ -60,12 +60,13 @@ LineChart.prototype._createLine = function (line, color) {
             if (!text) return;
             var currentBound = this.getBoundingClientRect();
 
-            var token = showTooltip(text, (currentBound.left + currentBound.right) / 2, (currentBound.top + currentBound.bottom) / 2);
-            this.once('mouseleave', function () {
-                setTimeout(function () {
-                    closeTooltip(token);
-                }, 1000);
-            });
+            showTooltip(text, (currentBound.left + currentBound.right) / 2, (currentBound.top + currentBound.bottom) / 2).then(function (token) {
+                this.once('mouseleave', function () {
+                    setTimeout(function () {
+                        closeTooltip(token);
+                    }, 1000);
+                });
+            }.bind(this));
         });
         if (line.plotColors && line.plotColors[i]) {
             plot.addStyle('fill', line.plotColors[i]);
@@ -157,6 +158,7 @@ LineChart.prototype.initComp = function () {
 
 
 LineChart.prototype.updateComp = function () {
+    console.log(this.lines);
     this.$lines.map(function ($line, i) {
         var line = this.lines[i];
         $line.$plots.forEach(function ($plot, j) {
@@ -173,10 +175,10 @@ LineChart.prototype.updateComp = function () {
             }
         }.bind(this));
 
-       
+
         $line.$path.begin();
-        line.reduce(function (state, value, j) {
-            
+        line.values.reduce(function (state, value, j) {
+
             if (line.length == 1) {
                 if (!isNumber(value)) return 'NOT_START';
                 var y = this.mapOYValue(value);
@@ -203,7 +205,7 @@ LineChart.prototype.updateComp = function () {
                 return 'IN_LINE';
             }
             return ac;
-        }, "NOT_START");
+        }.bind(this), "NOT_START");
 
         $line.$path.end();
     }.bind(this));

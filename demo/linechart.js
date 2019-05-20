@@ -9,6 +9,9 @@ var maxA = Array(12).fill(700);
 var results = Array(12).fill(0).map(function () {
     return 23 + Math.floor(600 * Math.random());
 });
+var results1 = Array(12).fill(0).map(function () {
+    return 23 + Math.floor(600 * Math.random());
+});
 
 var texts = Array(12).fill(0).map(function (u, i) {
     return 'Tối đa: ' + maxA[i] + '\nTối thiểu: ' + minA[i] + '\nTrung bình: ' + midA[i] + '\nĐạt được: ' + results[i];
@@ -30,6 +33,13 @@ vchart._({
                 texts: texts,
                 color: 'red',
                 plotColors: ['blue']
+            },
+            {
+                name: 'Đường 2',
+                values: results1,
+                texts: texts,
+                color: 'pink',
+                plotColors: ['cyan']
             }
         ],
         areas: [

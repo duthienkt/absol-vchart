@@ -23,7 +23,7 @@ var syncTooltip = Dom.documentReady.then(function () {
 
     function updateTooltipContainer() {
         var containerBound = container.getBoundingClientRect();
-        var viewBound = absol.dom.traceOutBoundingClientRect(higne);
+        var viewBound = Dom.traceOutBoundingClientRect(higne);
         if (anchorClientX + containerBound.width > viewBound.right) {
             container.addStyle({
                 left: 'auto',
@@ -94,7 +94,7 @@ var syncTooltip = Dom.documentReady.then(function () {
 
 export function showTooltip(text, clientX, clientY) {
     return syncTooltip.then(function (tooltip) {
-        tooltip.showTooltip(text, clientX, clientY);
+        return tooltip.showTooltip(text, clientX, clientY);
     })
 }
 
