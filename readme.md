@@ -178,3 +178,76 @@ vchart._({
 ```
 
 > Có thể bỏ bớt mid và normal
+
+##AssessmentChart
+
+[![Live-Demo](./doc/assets/assessmentchart.PNG)](http://volcanion.cf/vchart/demo/assessmentchart.html)
+
+```js
+
+var x = vchart._({
+    tag: 'assessmentchart',
+    style: { background: 'rgb(230, 230, 232)' },
+    props: {
+        simpleMode:true,
+        title: 'Programming skill',
+        canvasWidth: 700,
+        canvasHeight: 600,
+        levels: ['0.0', '1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0', '8.0', '9.0', '10.0'],
+        keys: ['C/C++', 'Javascript', 'Matlab', 'CSS', 'C#', 'R', 'Python', 'ASM', 'Pascal'],
+        ranges: [
+            [4, 7],
+            [5, 7],
+            [6, 8],
+            [4, 5],
+            [6, 9],
+            [3, 5],
+            [1, 4],
+            [4, 7],
+            [7, 9]
+        ],
+        areas: [
+            {
+                name: 'FirstYear',
+                values: [5, 0.5, 3.5, 2, 2, 3, 0.7, 8.2, 7]
+            }
+        ]
+    }
+
+}).addTo(document.body);
+
+var a = vchart._({
+    extendEvent: 'contextmenu',
+    tag: 'assessmentchart',
+    style: { background: 'rgb(230, 230, 232)' },
+    props: {
+        title: 'Programming skill',
+        canvasWidth: 900,
+        canvasHeight: 900,
+        levels: ['0.0', '1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0', '8.0', '9.0', '10.0'],
+        keys: ['C/C++', 'Javascript', 'Matlab', 'CSS', 'C#', 'R', 'Python', 'ASM'],
+        areas: [
+            {
+                name: 'FirstYear',
+                values: [5, 0, 3, 2, 2, 3, 0, 0]
+            },
+            {
+                name: 'ThirdYear',
+                values: [6, 2, 4, 3, 6, 1, 3, 3]
+
+            },
+            {
+                name: 'FifthtYear',
+                values: [8, 5, 5, 6, 5, 1, 4, 2]
+            },
+            {
+                name: 'FinalYear',
+                values: [7, 9, 3, 8, 5, 0, 3, 0]
+            }
+        ],
+         numberToString: vchart.lambda.toLocalString(0)
+
+    }
+    , on: chartEventHandlers
+}).addTo(document.body);
+```

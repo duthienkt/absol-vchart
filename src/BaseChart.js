@@ -374,3 +374,5 @@ BaseChart.property.showInlineValue = {
 
 
 Vcore.creator.basechart = BaseChart;
+
+export default BaseChart;

@@ -1,4 +1,6 @@
 import Vcore from "./VCore";
+import { translate } from "./template";
+import { moveHLine } from "./helper";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -11,9 +13,10 @@ function HLineArrow() {
 };
 
 HLineArrow.prototype.resize = function (length) {
-    this.$arrow.attr('transform', vchart.tl.translate(length, 0));
-    vchart.moveHLine(this.$line, 0, 0, length);
+    this.$arrow.attr('transform',translate(length, 0));
+    moveHLine(this.$line, 0, 0, length);
 };
 
+Vcore.creator.hlinearrow = HLineArrow;
 
 export default HLineArrow;

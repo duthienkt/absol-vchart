@@ -1,6 +1,13 @@
-vchart.creator.assessmentchart = function () {
-    var _ = vchart._;
-    var $ = vchart.$;
+import { text, rect, hline, circle, map } from "./helper";
+import Vcore from "./VCore";
+import Color from "absol/src/Color/Color";
+import BaseChart from "./BaseChart";
+import { rotate, translate } from "./template";
+
+var _ = Vcore._;
+var $ = Vcore.$;
+
+function AssessmentChart() {
     var res = _({
         tag: 'svg',
         class: ['base-chart', 'assessment-chart']
@@ -10,50 +17,50 @@ vchart.creator.assessmentchart = function () {
     return res;
 };
 
-vchart.creator.assessmentchart.prototype._createLineNote = function (name, color) {
-    var res = vchart._('g');
-    res.$line = vchart.hline(0, -5, this.noteLineLength, 'assessment-chart-area').addStyle('stroke', color).addTo(res);
-    res.$name = vchart.text(name, this.noteLineLength + 5, 0).addTo(res);
+AssessmentChart.prototype._createLineNote = function (name, color) {
+    var res = _('g');
+    res.$line = hline(0, -5, this.noteLineLength, 'assessment-chart-area').addStyle('stroke', color).addTo(res);
+    res.$name = text(name, this.noteLineLength + 5, 0).addTo(res);
     return res;
 };
 
-vchart.creator.assessmentchart.prototype._createLevelValue = function (value) {
-    var res = vchart._('g.assessment-chart-level-value');
-    res.$bound = vchart.rect(0, -6, 0, 13).attr({ rx: '4', ry: '4' }).addTo(res);
-    res.$text = vchart.text(value + '', 0, 4).attr({ 'text-anchor': 'middle' }).addTo(res);
+AssessmentChart.prototype._createLevelValue = function (value) {
+    var res = _('g.assessment-chart-level-value');
+    res.$bound = rect(0, -6, 0, 13).attr({ rx: '4', ry: '4' }).addTo(res);
+    res.$text = text(value + '', 0, 4).attr({ 'text-anchor': 'middle' }).addTo(res);
 
     return res;
 };
 
-vchart.creator.assessmentchart.prototype.autoColor = function (index, alpha) {
+AssessmentChart.prototype.autoColor = function (index, alpha) {
     var hsla = [index / this.areas.length, 0.8, 0.5, alpha === undefined ? 1 : alpha];
-    var rgba = vchart.hslaToRGBA(hsla).map(function (x, i) { return (i == 3 ? x : (x * 255 >> 0)); });
-    return 'rgba(' + rgba.join(',') + ')';
+    var c = Color.fromHSLA(hsla[0], hsla[1], hsla[2], hsla[3]);
+    return c.toString('rgba');
 };
 
-vchart.creator.assessmentchart.prototype.mapAngle = function (i, deg) {
+AssessmentChart.prototype.mapAngle = function (i, deg) {
     return (-90 + i * 360 / this.keys.length) * (deg ? 1 : Math.PI / 180);
 };
 
-vchart.creator.assessmentchart.prototype.mapRadius = function (level) {
+AssessmentChart.prototype.mapRadius = function (level) {
 
     return this.axisLenth * (level / (this.levels.length - 1));
 };
 
 
-vchart.creator.assessmentchart.prototype.mapLevel = function (value) {
+AssessmentChart.prototype.mapLevel = function (value) {
     if (this.isMappingLevel) {
         if (value < this.levelMappingArray[0])
-            return Math.map(value,
+            return map(value,
                 this.levelMappingArray[0], this.levelMappingArray[1],
                 0, 1);
         if (value > this.levelMappingArray[this.levels.length - 1])
-            return Math.map(value,
+            return map(value,
                 this.levelMappingArray[this.levels.length - 2], this.levelMappingArray[this.levels.length - 1],
                 0, 1);
         for (var i = 1; i < this.levels.length; ++i) {
             if (value >= this.levelMappingArray[i - 1] && value <= this.levelMappingArray[i])
-                return Math.map(value,
+                return map(value,
                     this.levelMappingArray[i - 1], this.levelMappingArray[i],
                     i - 1, i);
         }
@@ -63,16 +70,14 @@ vchart.creator.assessmentchart.prototype.mapLevel = function (value) {
     }
 };
 
-vchart.creator.assessmentchart.prototype._createRangeLine = function () {
-    var _ = vchart._;
-    var $ = vchart.$;
+AssessmentChart.prototype._createRangeLine = function () {
     var res = _({
         tag: 'g'
     });
 
-    res.$min = vchart.circle(0, 0, this.rangePlotRadius, 'assessment-chart-range-plot').addTo(res);
-    res.$max = vchart.circle(0, 0, this.rangePlotRadius, 'assessment-chart-range-plot').addTo(res);
-    res.$line = vchart._('path.assessment-chart-range-line').addTo(res);
+    res.$min = circle(0, 0, this.rangePlotRadius, 'assessment-chart-range-plot').addTo(res);
+    res.$max = circle(0, 0, this.rangePlotRadius, 'assessment-chart-range-plot').addTo(res);
+    res.$line = _('path.assessment-chart-range-line').addTo(res);
 
     return res;
 };
@@ -80,22 +85,22 @@ vchart.creator.assessmentchart.prototype._createRangeLine = function () {
 
 
 
-vchart.creator.assessmentchart.prototype.updateSize = vchart.creator.basechart.prototype.updateSize;
+AssessmentChart.prototype.updateSize = BaseChart.prototype.updateSize;
 
-vchart.creator.assessmentchart.prototype.update = function () {
+AssessmentChart.prototype.update = function () {
     this.updateSize();
     this.updateBackComp();
     this.updateComp();
     this.updateFrontComp();
 };
 
-vchart.creator.assessmentchart.prototype.initBackComp = function () {
-    this.$title = vchart.text(this.title, 20, 20, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
-    this.$content = vchart._('g').addTo(this);
+AssessmentChart.prototype.initBackComp = function () {
+    this.$title = text(this.title, 20, 20, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$content = _('g').addTo(this);
     this.$axisLines = this.keys.map(function (u, i) {
-        var res = vchart._('hlinearrow');
+        var res = _('hlinearrow');
         res.resize(200);
-        res.attr('transform', vchart.tl.rotate(-90 + i * 360 / this.keys.length));
+        res.attr('transform', rotate(-90 + i * 360 / this.keys.length));
         res.addTo(this.$content);
         return res;
     }.bind(this));
@@ -104,11 +109,11 @@ vchart.creator.assessmentchart.prototype.initBackComp = function () {
         var anchor = 'start';
         if (i == 0 || i == arr.length / 2) anchor = 'middle';
         else if (i > arr.length / 2) anchor = 'end';
-        return vchart.text(key, 0, 0).attr('text-anchor', anchor).addTo(this.$content);
+        return text(key, 0, 0).attr('text-anchor', anchor).addTo(this.$content);
     }.bind(this));
 
     this.$levels = this.levels.map(function (level, i, levels) {
-        return vchart._('path.assessment-chart-level' + (i + 1 == levels.length ? '.last' : '')).addTo(this.$content);
+        return _('path.assessment-chart-level' + (i + 1 == levels.length ? '.last' : '')).addTo(this.$content);
     }.bind(this));
 
     this.$notes = this.areas.map(function (area, i) {
@@ -119,7 +124,7 @@ vchart.creator.assessmentchart.prototype.initBackComp = function () {
 
 };
 
-vchart.creator.assessmentchart.prototype.updateBackComp = function () {
+AssessmentChart.prototype.updateBackComp = function () {
     this.$title.attr('x', this.canvasWidth / 2);
     this.axisTop = 30 + this.axisNameMarging + 30;
     this.axisBottom = this.canvasHeight - 25 - 30 - this.axisNameMarging;
@@ -130,7 +135,7 @@ vchart.creator.assessmentchart.prototype.updateBackComp = function () {
     this.axisLenth = Math.min(this.axisBottom - this.axisTop - this.paddingMaxAxis * 2, this.canvasWidth - axisNameWidth * 2 - this.axisNameMarging - this.paddingMaxAxis) / 2;
     this.cx = this.canvasWidth / 2;
     this.cy = (this.axisBottom + this.axisTop) / 2;
-    this.$content.attr('transform', vchart.tl.translate(this.cx, this.cy));
+    this.$content.attr('transform', translate(this.cx, this.cy));
     this.$axisLines.forEach(function ($axisLine) {
         $axisLine.resize(this.mapRadius(this.levels.length - 1) + this.paddingMaxAxis);
     }.bind(this));
@@ -159,28 +164,28 @@ vchart.creator.assessmentchart.prototype.updateBackComp = function () {
 
 
     this.$notes.reduce(function (x, $note) {
-        $note.attr('transform', vchart.tl.translate(x + this.noteMarginH, this.canvasHeight - 7));
+        $note.attr('transform', translate(x + this.noteMarginH, this.canvasHeight - 7));
         return x + maxNoteWidth + this.noteMarginH * 2;
     }.bind(this), this.canvasWidth / 2 - ((maxNoteWidth + 2 * this.noteMarginH) * this.areas.length) / 2);
 };
 
-vchart.creator.assessmentchart.prototype.initComp = function () {
+AssessmentChart.prototype.initComp = function () {
     if (this.ranges && this.ranges.length > 0) {
-        this.$rangeArea = vchart._('shape.assessment-chart-range-area').addStyle('fill-rule', "evenodd").addTo(this.$content);
+        this.$rangeArea = _('shape.assessment-chart-range-area').addStyle('fill-rule', "evenodd").addTo(this.$content);
         this.$ranges = this.ranges.map(function (range, i, arr) {
             return this._createRangeLine().addTo(this.$content);
         }.bind(this));
     }
 
     this.$areas = this.areas.map(function (area, i, arr) {
-        return vchart._('path.assessment-chart-area').addTo(this.$content).addStyle({
+        return _('path.assessment-chart-area').addTo(this.$content).addStyle({
             fill: area.fill || this.autoColor(i, 0.3),
             stroke: area.stroke || this.autoColor(i, 0.8),
         });
     }.bind(this));
 };
 
-vchart.creator.assessmentchart.prototype.updateComp = function () {
+AssessmentChart.prototype.updateComp = function () {
     if (this.ranges && this.ranges.length > 0) {
         this.$ranges.forEach(function ($range, i) {
             var range = this.ranges[i];
@@ -245,14 +250,14 @@ vchart.creator.assessmentchart.prototype.updateComp = function () {
 };
 
 
-vchart.creator.assessmentchart.prototype.initFrontComp = function () {
+AssessmentChart.prototype.initFrontComp = function () {
     this.$levelValues = this.levels.map(function (level) {
         return this._createLevelValue(level).addTo(this.$content);
     }.bind(this));
 };
 
 
-vchart.creator.assessmentchart.prototype.updateFrontComp = function () {
+AssessmentChart.prototype.updateFrontComp = function () {
 
     var levelValueWidth = this.$levelValues.reduce(function (w, $levelValue) {
         return Math.max(w, $levelValue.$text.getBBox().width + 4);
@@ -263,7 +268,7 @@ vchart.creator.assessmentchart.prototype.updateFrontComp = function () {
         this.$levelValues.forEach(function ($levelValue, i) {
 
             $levelValue.$bound.attr({ x: -levelValueWidth / 2, width: levelValueWidth });
-            $levelValue.attr('transform', vchart.tl.translate(0, - this.mapRadius(i)));
+            $levelValue.attr('transform', translate(0, - this.mapRadius(i)));
         }.bind(this));
 
     }
@@ -275,7 +280,7 @@ vchart.creator.assessmentchart.prototype.updateFrontComp = function () {
 };
 
 
-vchart.creator.assessmentchart.prototype.preInit = function () {
+AssessmentChart.prototype.preInit = function () {
     this.noteLineLength = 30;
     this.noteMarginH = 8;
     this.paddingMaxAxis = 20;
@@ -283,7 +288,7 @@ vchart.creator.assessmentchart.prototype.preInit = function () {
     this.rangePlotRadius = 5;
 };
 
-vchart.creator.assessmentchart.prototype.prepareData = function () {
+AssessmentChart.prototype.prepareData = function () {
     this.levelMappingArray = this.levels.map(function (value) {
         return parseFloat(value + '');
     });
@@ -294,7 +299,7 @@ vchart.creator.assessmentchart.prototype.prepareData = function () {
 };
 
 
-vchart.creator.assessmentchart.prototype.init = function (props) {
+AssessmentChart.prototype.init = function (props) {
     this.preInit();
     this.super(props);
     this.prepareData();
@@ -305,7 +310,7 @@ vchart.creator.assessmentchart.prototype.init = function (props) {
 };
 
 
-vchart.creator.assessmentchart.property = {
+AssessmentChart.property = {
     simpleMode: {
         set: function (value) {
             if (value)
@@ -318,3 +323,4 @@ vchart.creator.assessmentchart.property = {
         }
     }
 }
+Vcore.creator.assessmentchart = AssessmentChart;

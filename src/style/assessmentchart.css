@@ -1,0 +1,50 @@
+
+.assessment-chart {}
+
+.assessment-chart.simple-mode .assessment-chart-area {
+    fill: none !important;
+}
+
+.assessment-chart.simple-mode .assessment-chart-level:not(.last) {
+    display: none;
+}
+
+.assessment-chart-area {
+    stroke-width: 3;
+}
+
+
+
+.assessment-chart-level {
+    fill: none;
+    stroke-width: 1;
+    stroke: rgba(12, 30, 49, 0.333)
+}
+
+
+
+.assessment-chart-level-value text,
+.assessment-chart-level-value {
+    font-size: 10px;
+}
+
+.assessment-chart-level-value rect {
+    fill: rgba(255, 255, 255, 0.5);
+    stroke: rgba(60, 60, 70, 0.6);
+    stroke-width: 1;
+}
+
+.assessment-chart-range-plot {
+    fill: #155757d8;
+}
+
+.assessment-chart-range-line {
+    stroke: #155757d8;
+    stroke-width: 3;
+}
+
+.assessment-chart-range-area {
+    fill: rgba(200, 200, 0, 0.3);
+    stroke: rgb(255, 150, 0);
+    stroke-width: 1.5;
+}

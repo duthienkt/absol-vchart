@@ -13,6 +13,8 @@ import './HScrollBar';
 import './LineChart';
 import './DualChart';
 import './RangeChart';
+import './AssessmentChart';
+
 import { isNumber, toLocalString } from "./helper";
 
 
