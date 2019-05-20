@@ -209,6 +209,7 @@ BaseChart.prototype.updateScrollArrows = function () {
     this.$hscrollbar.resize(this.oxLength, 10);
     this.$hscrollbar.moveTo(this.oxyLeft, this.oxyBottom - 10);
     this.$hscrollbar.outterWidth = this.oxLength;
+    this.$hscrollbar.innerWidth = this.oxContentLength;
 };
 
 BaseChart.prototype.update = function () {

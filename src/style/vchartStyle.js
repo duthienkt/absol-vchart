@@ -3,6 +3,8 @@ import basechart_css from './basechart.css';
 import linechart_css from './linechart.css';
 import tooltip_css from './tooltip.css';
 import rangechart_css from './rangechart.css';
+import assessmentchart_css from './assessmentchart.css';
+import columnchart_css from './columnchart.css';
 
 
-export default [minicomp_css, basechart_css, linechart_css, tooltip_css, rangechart_css].join('\n');
+export default [minicomp_css, basechart_css, linechart_css, tooltip_css, rangechart_css, assessmentchart_css, columnchart_css].join('\n');

@@ -31,6 +31,7 @@ function HScrollBar() {
             ]
         }
     );
+    res._scrollLeft = 0;
     res.eventHandler = OOP.bindFunctions(res, HScrollBar.eventHandler);
     Draggable(res).on('predrag', res.eventHandler.predrag)
         .on('drag', res.eventHandler.drag);

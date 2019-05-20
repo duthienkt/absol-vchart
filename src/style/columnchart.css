@@ -1,0 +1,8 @@
+
+.column-chart-column rect {
+    fill: rgb(123, 192, 247);
+}
+
+.column-chart:not(.vchart-show-inline-value) .column-chart-column text {
+    display: none;
+}

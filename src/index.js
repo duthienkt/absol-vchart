@@ -14,6 +14,7 @@ import './LineChart';
 import './DualChart';
 import './RangeChart';
 import './AssessmentChart';
+import './ColumnChart';
 
 import { isNumber, toLocalString } from "./helper";
 
