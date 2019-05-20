@@ -1,6 +1,7 @@
 import Vcore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
 import Draggable from "absol/src/AComp/js/Draggable";
+import { translate } from "./template";
 
 var _ = Vcore._;
 
@@ -73,9 +74,11 @@ HScrollBar.eventHandler.drag = function (event) {
 HScrollBar.prototype.updateButtonPosition = function () {
     var maxButtonX = (this.innerWidth - this.outterWidth) / this.innerWidth * this.width;
     var buttonX = this.scrollLeft / this.innerWidth * this.width;
+    if (maxButtonX < 0) maxButtonX = 0;
 
     if (!(buttonX >= 0)) buttonX = 0;
     if (!(buttonX <= maxButtonX)) buttonX = maxButtonX;
+
     this.$button.attr('x', buttonX + '');
 };
 
@@ -92,7 +95,7 @@ HScrollBar.prototype.updateView = function () {
 
         var buttonWidth = 1 / (this.innerWidth / this.outterWidth) * this.width;
         if (!(buttonWidth >= 0 && buttonWidth < Infinity)) buttonWidth = 0;
-        this.$button.attr('width', buttonWidth + ''); 
+        this.$button.attr('width', buttonWidth + '');
         this.$button.attr({
             height: this.height * 0.8 + '', y: this.height / 10 + '',
             rx: this.height / 2.5 + '',
@@ -135,7 +138,7 @@ HScrollBar.property = {
         set: function (value) {
             if (value >= 0) {
                 this._innerWidth = value;
-
+                this.updateView();
             }
         },
         get: function () {
@@ -169,7 +172,12 @@ HScrollBar.property = {
 };
 
 HScrollBar.prototype.resize = function (width, height) {
-
+    this.height = height;
+    this.width = width;
 };
+
+HScrollBar.prototype.moveTo = function (x, y) {
+    this.attr('transform', translate(x, y));
+}
 
 Vcore.creator.hscrollbar = HScrollBar;
