@@ -28,7 +28,7 @@
   "homepage": "https://github.com/duthienkt/vchart#readme",
   "dependencies": {
     "@babel/plugin-transform-literals": "^7.2.0",
-    "absol": "^1.0.2"
+    "absol": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "7.2.2",

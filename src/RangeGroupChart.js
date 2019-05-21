@@ -1,5 +1,10 @@
-vchart.creator.rangegroupchart = function () {
-    var _ = vchart._;
+import Vcore from "./VCore";
+import { hline, text, circle, moveHLine, moveVLine } from "./helper";
+import { translate } from "./template";
+var _ = Vcore._;
+var $ = Vcore.$;
+
+function RangeGroupChart() {
 
     var res = _('basechart', true);
 
@@ -8,49 +13,49 @@ vchart.creator.rangegroupchart = function () {
 
 
 
-vchart.creator.rangegroupchart.prototype._createNote = function () {
-    var res = vchart._('g');
-    res.$maxLine = vchart.hline(0, 7, 40, ['range-group-chart-limit-line', 'max']).addTo(res);
-    res.$maxText = vchart.text(this.maxText, 50, 12).addTo(res);
+RangeGroupChart.prototype._createNote = function () {
+    var res = _('g');
+    res.$maxLine = hline(0, 7, 40, ['range-group-chart-limit-line', 'max']).addTo(res);
+    res.$maxText = text(this.maxText, 50, 12).addTo(res);
 
-    res.$minLine = vchart.hline(200, 7, 40, ['range-group-chart-limit-line', 'min']).addTo(res);
-    res.$minText = vchart.text(this.minText, 250, 12).addTo(res);
+    res.$minLine = hline(200, 7, 40, ['range-group-chart-limit-line', 'min']).addTo(res);
+    res.$minText = text(this.minText, 250, 12).addTo(res);
 
 
     return res;
 };
 
 
-vchart.creator.rangegroupchart.prototype._createMember = function (member) {
-    var res = vchart._('g');
-    res.$plot = vchart.circle(this.plotRadius, 0, this.plotRadius, 'range-group-chart-plot').addTo(res);
-    res.$value = vchart.text(this.numberToString(member.value), this.plotRadius * 2 + 8, 5).addTo(res);
-    res.$nameContainer = vchart._('g').addTo(res).attr('transform', 'rotate(45)');
-    res.$name = vchart.text(member.name, this.plotRadius, 10).addTo(res.$nameContainer);
+RangeGroupChart.prototype._createMember = function (member) {
+    var res = _('g');
+    res.$plot = circle(this.plotRadius, 0, this.plotRadius, 'range-group-chart-plot').addTo(res);
+    res.$value = text(this.numberToString(member.value), this.plotRadius * 2 + 8, 5).addTo(res);
+    res.$nameContainer = _('g').addTo(res).attr('transform', 'rotate(45)');
+    res.$name = text(member.name, this.plotRadius, 10).addTo(res.$nameContainer);
     return res;
 };
 
-vchart.creator.rangegroupchart.prototype._createRange = function (range) {
-    var res = vchart._('g');
-    res.$lineLeft = vchart.hline(0, 0, 0, 'range-group-chart-range-line').addTo(res);
-    res.$lineRight = vchart.hline(0, 0, 0, 'range-group-chart-range-line').addTo(res);
-    res.$maxLine = vchart.hline(10, -this.paddingnAxisBottom, this.rangePaddingH * 2, ['range-group-chart-limit-line', 'max']).addTo(res);
-    res.$minLine = vchart.hline(10, -this.paddingnAxisBottom, this.rangePaddingH * 2, ['range-group-chart-limit-line', 'min']).addTo(res);
-    res.$max = vchart.text(this.numberToString(range.max), 0, 0).attr('text-anchor', 'middle').addTo(res);
-    res.$min = vchart.text(this.numberToString(range.min), 0, 0).attr('text-anchor', 'middle').addTo(res);
+RangeGroupChart.prototype._createRange = function (range) {
+    var res = _('g');
+    res.$lineLeft = hline(0, 0, 0, 'range-group-chart-range-line').addTo(res);
+    res.$lineRight = hline(0, 0, 0, 'range-group-chart-range-line').addTo(res);
+    res.$maxLine = hline(10, -this.paddingnAxisBottom, this.rangePaddingH * 2, ['range-group-chart-limit-line', 'max']).addTo(res);
+    res.$minLine = hline(10, -this.paddingnAxisBottom, this.rangePaddingH * 2, ['range-group-chart-limit-line', 'min']).addTo(res);
+    res.$max = text(this.numberToString(range.max), 0, 0).attr('text-anchor', 'middle').addTo(res);
+    res.$min = text(this.numberToString(range.min), 0, 0).attr('text-anchor', 'middle').addTo(res);
 
 
     res.$members = range.members.map(function (member) {
         return this._createMember(member).addTo(res);
     }.bind(this));
 
-    res.$name = vchart.text(range.name, 0, 0).attr('text-anchor', 'middle').addTo(res);
+    res.$name = text(range.name, 0, 0).attr('text-anchor', 'middle').addTo(res);
 
     return res;
 
 };
 
-vchart.creator.rangegroupchart.prototype.processMinMax = function () {
+RangeGroupChart.prototype.processMinMax = function () {
     this.super();
     this.maxValue = this.ranges.reduce(function (max, range) {
         return range.members.reduce(function (max, member, i) {
@@ -66,7 +71,7 @@ vchart.creator.rangegroupchart.prototype.processMinMax = function () {
     }.bind(this), 1000000000);
 };
 
-vchart.creator.rangegroupchart.prototype.preInit = function () {
+RangeGroupChart.prototype.preInit = function () {
     this.super();
     this.paddingnAxisBottom = 40;
     this.rangePaddingH = 10;
@@ -76,18 +81,18 @@ vchart.creator.rangegroupchart.prototype.preInit = function () {
 };
 
 
-vchart.creator.rangegroupchart.prototype.initBackComp = function () {
+RangeGroupChart.prototype.initBackComp = function () {
     this.super();
     this.$note = this._createNote().addTo(this);
 };
 
-vchart.creator.rangegroupchart.prototype.updateBackComp = function () {
+RangeGroupChart.prototype.updateBackComp = function () {
 
     var noteBBox = this.$note.getBBox();
-    this.$note.attr('transform', vchart.tl.translate(0, this.canvasHeight - noteBBox.height - 5));
+    this.$note.attr('transform', translate(0, this.canvasHeight - noteBBox.height - 5));
 
     var x = 50 + this.$note.$maxText.getBBox().width + 40;
-    vchart.moveHLine(this.$note.$minLine, x, 7, 40);
+    moveHLine(this.$note.$minLine, x, 7, 40);
     this.$note.$minText.attr('x', x + 50);
 
 
@@ -108,13 +113,13 @@ vchart.creator.rangegroupchart.prototype.updateBackComp = function () {
 
 
 
-vchart.creator.rangegroupchart.prototype.initComp = function () {
+RangeGroupChart.prototype.initComp = function () {
     this.$ranges = this.ranges.map(function (range) {
         return this._createRange(range).addTo(this.$content);
     }.bind(this));
 };
 
-vchart.creator.rangegroupchart.prototype.updateComp = function () {
+RangeGroupChart.prototype.updateComp = function () {
 
     var memberWidth = this.$ranges.reduce(function (memberWidth, $range) {
         return $range.$members.reduce(function (memberWidth, $member) {
@@ -125,15 +130,15 @@ vchart.creator.rangegroupchart.prototype.updateComp = function () {
 
     this.oxContentLength = this.$ranges.reduce(function (oxContentLength, $range, rangeIndex) {
         oxContentLength += this.rangeMarginH;
-        range = this.ranges[rangeIndex];
+        var range = this.ranges[rangeIndex];
 
-        $range.attr('transform', vchart.tl.translate(oxContentLength, 0));
+        $range.attr('transform', translate(oxContentLength, 0));
 
         var rangeWidth = $range.$members.reduce(function (rangeWidth, $member, memberIndex) {
             rangeWidth += this.memberMarginH;
             var member = range.members[memberIndex];
 
-            $member.attr('transform', vchart.tl.translate(rangeWidth, 0));
+            $member.attr('transform', translate(rangeWidth, 0));
 
             $member.$plot.attr('cy', this.mapOYValue(member.value));
             $member.$value.attr('y', this.mapOYValue(member.value) + 5);
@@ -145,11 +150,11 @@ vchart.creator.rangegroupchart.prototype.updateComp = function () {
             return rangeWidth;
         }.bind(this), this.rangePaddingH) + this.rangePaddingH;
 
-        vchart.moveHLine($range.$maxLine, 0, this.mapOYValue(range.max), rangeWidth);
-        vchart.moveHLine($range.$minLine, 0, this.mapOYValue(range.min), rangeWidth);
+        moveHLine($range.$maxLine, 0, this.mapOYValue(range.max), rangeWidth);
+        moveHLine($range.$minLine, 0, this.mapOYValue(range.min), rangeWidth);
         var rangeHeight = this.mapOYValue(range.max) - this.mapOYValue(range.min);
-        vchart.moveVLine($range.$lineLeft, 0, this.mapOYValue(range.min), rangeHeight);
-        vchart.moveVLine($range.$lineRight, rangeWidth, this.mapOYValue(range.min), rangeHeight);
+        moveVLine($range.$lineLeft, 0, this.mapOYValue(range.min), rangeHeight);
+        moveVLine($range.$lineRight, rangeWidth, this.mapOYValue(range.min), rangeHeight);
         $range.$name.attr({ x: rangeWidth / 2, y: this.memberNameHeight + 25 });
 
         oxContentLength += rangeWidth;
@@ -170,3 +175,7 @@ vchart.creator.rangegroupchart.prototype.updateComp = function () {
         return oxContentLength;
     }.bind(this), 0);
 };
+
+Vcore.creator.rangegroupchart = RangeGroupChart;
+
+export default RangeGroupChart;

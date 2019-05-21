@@ -42,6 +42,45 @@ vchart._({
 }).addTo(document.body)
 ```
 
+## CurveChart
+
+[![Live-Demo](./doc/assets/curvechart.PNG)](http://volcanion.cf/vchart/demo/curvechart.html)
+
+```js
+var results = Array(12).fill(0).map(function () {
+    return 23 + Math.floor(600 * Math.random());
+});
+var results1 = Array(12).fill(0).map(function () {
+    return 23 + Math.floor(600 * Math.random());
+});
+vchart._({
+    tag: 'curvechart',
+    props: {
+        title: 'Bão lãnh thanh toán',
+        valueName: '$',
+        keyName: 'Tháng',
+        zeroOY: true,
+        keys: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+        lines: [
+            {
+                name: 'Đường 1',
+                values: results,
+                texts: texts,
+                color: 'red',
+                plotColors: ['blue']
+            },
+            {
+                name: 'Đường 2',
+                values: results1,
+                texts: texts,
+                color: 'pink',
+                plotColors: ['cyan']
+            }
+        ]
+}).addTo(document.body)
+```
+
+
 ## DualChart(Area-Line)
 [![Live-Demo](./doc/assets/dualchart.PNG)](http://volcanion.cf/vchart/demo/dualchart.html)
 
@@ -336,4 +375,94 @@ var a = vchart._({
             ]
         }
     }).addTo(document.body);
+```
+
+## RangeGroupChart
+
+[![Live-Demo](./doc/assets/rangegroupchart.PNG)](http://volcanion.cf/vchart/demo/rangegroupchart.html)
+
+```js
+var x = vchart._({
+    tag: 'rangegroupchart',
+    style: { background: 'rgb(230, 230, 232)' },
+    props: {
+        title: 'Biểu đồ lương chức danh',
+        valueName: 'lương',
+        keyName: 'chức danh',
+        canvasWidth: 900,
+        canvasHeight: 600,
+        zeroOY: true,
+        // maxSegment: 20,
+        numberToString: vchart.lambda.toLocalString(0),
+        maxText: 'Lương tối thiểu',
+        minText: 'Lương tối thiểu',
+        normalText: 'Lương thị trường',
+        ranges: [
+            {
+                name: 'Giám đốc',
+                min: 15000000,
+                max: 25000000,
+                normal: 19000000,
+                members: [
+                    {
+                        name: 'Lê Hoàng Nhật Trí',
+                        value: 19000000
+                    },
+                    {
+                        name: 'Đào Công Cường',
+                        value: 21000000
+                    },
+                    {
+                        name: 'Đào Duy Mạnh',
+                        value: 17000000
+                    }
+                ]
+            },
+            {
+                name: 'Trưởng phòng',
+                min: 11000000,
+                max: 19000000,
+                normal: 20000000,
+                members: [
+                    {
+                        name: 'Võ Văn Toàn Phong',
+                        value: 12000000
+                    },
+                    {
+                        name: 'Huỳnh Bá Lộc',
+                        value: 14000000
+                    },
+                    {
+                        name: 'Hàn Bá Đa',
+                        value: 17000000
+                    }
+                ]
+            },
+            {
+                name: 'Trưởng phòng',
+                min: 9000000,
+                max: 18000000,
+                normal: 18500000,
+                members: [
+                    {
+                        name: "Đinh Văn Biết",
+                        value: 9000000
+                    },
+                    {
+                        name: 'Nguyễn Văn Mạnh',
+                        value: 10000000
+                    },
+                    {
+                        name: 'Nguyễn Hoàng Kim Trâm',
+                        value: 9800000
+                    }
+                ]
+            }
+
+        ]
+
+    }
+
+}).addTo(document.body);
+
 ```

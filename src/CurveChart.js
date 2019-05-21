@@ -1,10 +1,11 @@
-vchart.creator.curvechart = function () {
-    return vchart._('linechart', true);
+import Vcore from "./VCore";
+import { autoCurve } from "./helper";
+
+function CurveChart() {
+    return Vcore._('linechart', true);
 };
 
-
-
-vchart.creator.curvechart.prototype.updateComp = function () {
+CurveChart.prototype.updateComp = function () {
     this.$lines.map(function ($line, i) {
         var line = this.lines[i];
         $line.$plots.forEach(function ($plot, j) {
@@ -20,7 +21,11 @@ vchart.creator.curvechart.prototype.updateComp = function () {
             var x = this.oxSegmentLength * (j + 0.5);
             return [x, y];
         }.bind(this));
-        d = vchart.autoCurve(points, 0.5, 0.000001);
+        var d = autoCurve(points, 0.5, 0.000001);
         $line.$path.attr('d', d);
     }.bind(this));
 };
+
+Vcore.creator.curvechart = CurveChart;
+
+export default CurveChart;

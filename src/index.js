@@ -16,11 +16,11 @@ import './RangeChart';
 import './AssessmentChart';
 import './ColumnChart';
 import './ColumnAreaChart';
+import './RangeGroupChart';
+import './CurveChart';
 
-import { isNumber, toLocalString } from "./helper";
-
-
-
+import { isNumber, toLocalString, text, circle, rect, vline, hline, moveVLine, moveHLine, autoCurve } from "./helper";
+import { showTooltip, closeTooltip } from "./ToolTip";
 
 var vchart = {
     core: Vcore,
@@ -34,10 +34,20 @@ var vchart = {
             innerHTML: vchartStyle_css
         }
     }).addTo(document.head),
-    lambda:{
+    lambda: {
         isNumber: isNumber,
         toLocalString: toLocalString
-    }
+    },
+    text: text,
+    circle: circle,
+    rect: rect,
+    vline: vline,
+    hline: hline,
+    moveVLine: moveVLine, 
+    moveHLine: moveHLine,
+    autoCurve: autoCurve,
+    showTooltip: showTooltip,
+    closeTooltip: closeTooltip
 }
 
 window.vchart = vchart;
