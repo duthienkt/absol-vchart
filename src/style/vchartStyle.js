@@ -6,6 +6,7 @@ import rangechart_css from './rangechart.css';
 import assessmentchart_css from './assessmentchart.css';
 import columnchart_css from './columnchart.css';
 import rangegroupchart_css from './rangegroupchart.css';
+import rankchart_css from './rankchart.css';
 
 
-export default [minicomp_css, basechart_css, linechart_css, tooltip_css, rangechart_css, assessmentchart_css, columnchart_css,rangegroupchart_css ].join('\n');
+export default [minicomp_css, basechart_css, linechart_css, tooltip_css, rangechart_css, assessmentchart_css, columnchart_css, rangegroupchart_css, rankchart_css].join('\n');

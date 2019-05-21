@@ -1,0 +1,10 @@
+
+.rank-chart-plot {
+    stroke: black;
+    stroke-width: 1;
+}
+
+.rank-chart-position-rect {
+    stroke: none;
+    fill: rgba(0, 247, 255, 0.139);
+}

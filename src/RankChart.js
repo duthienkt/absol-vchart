@@ -1,14 +1,18 @@
-vchart.creator.rankchart = function () {
-    
-    return  vchart._('basechart', true);
+import Vcore from "./VCore";
+import { translate } from "./template";
+import { rect, text } from "./helper";
+
+var _ = Vcore._;
+var $ = Vcore.$;
+
+
+function RankChart() {
+    return _('basechart', true);
 };
 
 
-
-
-
-vchart.creator.rankchart.prototype._createRank = function (rank, value) {
-    var res = vchart._({
+RankChart.prototype._createRank = function (rank, value) {
+    var res = _({
         tag: 'g',
         child: [
             {
@@ -53,8 +57,7 @@ vchart.creator.rankchart.prototype._createRank = function (rank, value) {
 
 
 
-vchart.creator.rankchart.prototype._createOYSegmentLines = function (n) {
-    var _ = vchart._;
+RankChart.prototype._createOYSegmentLines = function (n) {
     var res = _({
         tag: 'g',
         child: Array(n).fill('path.vchart-segment-line')
@@ -64,8 +67,8 @@ vchart.creator.rankchart.prototype._createOYSegmentLines = function (n) {
 
 
 
-vchart.creator.rankchart.prototype._createPosition = function (position) {
-    var res = vchart._({
+RankChart.prototype._createPosition = function (position) {
+    var res = _({
         tag: 'g',
         child: position.ranks.map(function (value, rank) {
             return this._createRank(rank, value);
@@ -76,24 +79,16 @@ vchart.creator.rankchart.prototype._createPosition = function (position) {
 
 
 
-// vchart.creator.rankchart.prototype.updateSize = function () {
-//     this.attr({ width: this.canvasWidth + '', height: this.canvasHeight + '', viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ') });
-//     this.$title.attr('x', this.canvasWidth / 2);
-// };
 
 
-
-
-
-
-vchart.creator.rankchart.prototype.updateComp = function () {
+RankChart.prototype.updateComp = function () {
     this.oxContentLength = this.$positions.reduce(function (contentLength, pe, positionIndex) {
         var position = this.positions[positionIndex];
         contentLength = contentLength + 20;
         var maxDY = Array.prototype.reduce.call(pe.childNodes, function (maxDY, meme, j) {
             var value = position.ranks[j];
             var y = this.mapOYValue(value);
-            meme.attr('transform', vchart.tl.translate(contentLength, y));
+            meme.attr('transform', translate(contentLength, y));
             meme._tr_y = y;
             return Math.max(maxDY, -y);
         }.bind(this), 0);
@@ -119,7 +114,7 @@ vchart.creator.rankchart.prototype.updateComp = function () {
         messure.reduce(function (left, col) {
             if (col.child.length == 0) return;
             col.child.forEach(function (vale) {
-                vale.attr('transform', vchart.tl.translate(left, vale._tr_y));
+                vale.attr('transform', translate(left, vale._tr_y));
             });
 
             return left + col.maxWidth + 9;
@@ -146,14 +141,14 @@ vchart.creator.rankchart.prototype.updateComp = function () {
 };
 
 
-vchart.creator.rankchart.prototype.update = function () {
+RankChart.prototype.update = function () {
     if (!this.positions || this.positions.length <= 0) {
         return;
     }
     this.super();
 };
 
-vchart.creator.rankchart.prototype.processMinMax = function(){
+RankChart.prototype.processMinMax = function () {
     this.maxValue = this.positions.reduce(function (ac, postion) {
         return postion.ranks.reduce(function (ac, value) {
             return Math.max(ac, value);
@@ -167,20 +162,20 @@ vchart.creator.rankchart.prototype.processMinMax = function(){
     }, 10000000000);
 };
 
-vchart.creator.rankchart.prototype.initComp = function () {
+RankChart.prototype.initComp = function () {
     this.$positionBoxes = this.positions.map(function (postion) {
-        return vchart.rect(0, 0, 0, 0, 'rank-chart-position-rect').addTo(this.$content);
+        return rect(0, 0, 0, 0, 'rank-chart-position-rect').addTo(this.$content);
     }.bind(this));
 
     this.$positions = this.positions.map(this._createPosition.bind(this)).map(function (e) {
         return e.addTo(this.$content);
     }.bind(this));
     this.$positionNames = this.positions.map(function (position) {
-        return vchart.text(position.name, 0, 18).attr('text-anchor', 'middle').addTo(this.$content);
+        return text(position.name, 0, 18).attr('text-anchor', 'middle').addTo(this.$content);
     }.bind(this));
 };
 
-vchart.creator.rankchart.prototype.preInit = function () {
+RankChart.prototype.preInit = function () {
     this.super();
     this.colors = [
         'transparent', 'rgb(201, 241, 253)', 'rgb(212, 227, 252)', 'rgb(218, 202, 251)',
@@ -189,13 +184,13 @@ vchart.creator.rankchart.prototype.preInit = function () {
         'rgb(215, 87, 246)', 'rgb(255, 138, 132)', 'rgb(152, 165, 52)', 'rgb(254, 248, 160)',
         'rgb(174, 221, 148)', 'rgb(0, 164, 221)', 'rgb(20, 100, 246)', 'rgb(156, 41, 183)'
     ];
-  
+
     this.plotRadius = 9;
     this.paddingnAxisBottom = this.plotRadius + 30;
 };
 
 
-vchart.creator.rankchart.prototype.init = function (props) {
+RankChart.prototype.init = function (props) {
     if (!props.positions || props.positions.length <= 0) {
         console.log('Empty data!');
         return;
@@ -203,3 +198,5 @@ vchart.creator.rankchart.prototype.init = function (props) {
     this.super(props);
 };
 
+Vcore.creator.rankchart = RankChart;
+export default RankChart;

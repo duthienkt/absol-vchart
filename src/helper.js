@@ -1,7 +1,8 @@
 import Vcore from "./VCore";
 import Color from 'absol/src/Color/Color';
+import Vec2 from 'absol/src/Math/Vec2';
 var _ = Vcore._;
-
+ 
 
 export var beautyStep = [
     0.001, 0.002, 0.0025, 0.005,
@@ -138,10 +139,10 @@ export function autoCurve(points, strong, free) {
     Cs.push('M' + points[1].join(' '));
 
     for (var i = 1; i < points.length - 2; ++i) {
-        var A = Math.makeVec2(points[i - 1]);
-        var B = Math.makeVec2(points[i]);
-        var C = Math.makeVec2(points[i + 1]);
-        var D = Math.makeVec2(points[i + 2]);
+        var A = Vec2.make(points[i - 1]);
+        var B = Vec2.make(points[i]);
+        var C = Vec2.make(points[i + 1]);
+        var D = Vec2.make(points[i + 2]);
         var AB = B.sub(A);
         var BC = C.sub(B);
         var CB = BC.inv();
