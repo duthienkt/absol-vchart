@@ -1,0 +1,19 @@
+
+.sunburst-chart .base-chart-title circle {
+    fill: rgb(245, 203, 153);
+    stroke: none;
+}
+
+.sunburst-chart-node-shape {
+    fill: white;
+    stroke-width: 2;
+    stroke: rgb(247, 205, 155);
+}
+
+.sunburst-chart-node-name {
+    font-size: 14;
+}
+
+table .sunburst-chart-node-name {
+    font-size: 14px;
+}
