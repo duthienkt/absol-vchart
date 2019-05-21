@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --config webpack.config.js --demo scrollbar",
+    "dev": "webpack-dev-server --config webpack.config.js",
     "dist": "webpack --config webpack.config.js --progress --profile --colors --mode production"
   },
   "repository": {
@@ -27,7 +27,6 @@
   },
   "homepage": "https://github.com/duthienkt/vchart#readme",
   "dependencies": {
-    "@babel/plugin-transform-literals": "^7.2.0",
     "absol": "^1.0.5"
   },
   "devDependencies": {
@@ -38,7 +37,6 @@
     "@babel/register": "7.0.0",
     "babel-loader": "^8.0.6",
     "babel-minify-webpack-plugin": "^0.3.1",
-    "babel-plugin-transform-jsx-to-absol": "file:../babel-plugin-transform-jsx-to-absol",
     "raw-loader": "^2.0.0",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.30.0",
