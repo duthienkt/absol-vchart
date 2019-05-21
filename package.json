@@ -1,5 +1,5 @@
 {
-  "name": "@absol/vchart",
+  "name": "absol-vchart",
   "version": "0.9.0",
   "description": "svg chart, by absol.js",
   "main": "scr/index.js",
