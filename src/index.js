@@ -46,11 +46,26 @@ var vchart = {
     rect: rect,
     vline: vline,
     hline: hline,
-    moveVLine: moveVLine, 
+    moveVLine: moveVLine,
     moveHLine: moveHLine,
     autoCurve: autoCurve,
     showTooltip: showTooltip,
     closeTooltip: closeTooltip
 }
+
+if ('absol' in window){
+    if (absol.ShareCreator) {
+        Object.assign(
+            absol.ShareCreator,
+            Object.keys(vchart.creator)
+                .filter(function (e) {
+                    return !!e.match(/.+chart/);
+                }).reduce(function (ac, cr) {
+                    ac[cr] = vchart.creator[cr];
+                    return ac;
+                }, {})
+    );
+}}
+
 
 window.vchart = vchart;
