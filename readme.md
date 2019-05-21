@@ -6,7 +6,7 @@ SVG chart, base on absol.js
 
 ## Linechart
 
-[![Live-Demo](./doc/assets/linechart.PNG)](http://volcanion.cf/vchart/demo/linechart.html)
+[![Live-Demo](./doc/assets/linechart.PNG)](https://volcanion.cf/vchart/demo/linechart.html)
 
 ```js
 var results = Array(12).fill(0).map(function () {
@@ -44,7 +44,7 @@ vchart._({
 
 ## CurveChart
 
-[![Live-Demo](./doc/assets/curvechart.PNG)](http://volcanion.cf/vchart/demo/curvechart.html)
+[![Live-Demo](./doc/assets/curvechart.PNG)](https://volcanion.cf/vchart/demo/curvechart.html)
 
 ```js
 var results = Array(12).fill(0).map(function () {
@@ -82,7 +82,7 @@ vchart._({
 
 
 ## DualChart(Area-Line)
-[![Live-Demo](./doc/assets/dualchart.PNG)](http://volcanion.cf/vchart/demo/dualchart.html)
+[![Live-Demo](./doc/assets/dualchart.PNG)](https://volcanion.cf/vchart/demo/dualchart.html)
 
 
 ```js
@@ -155,7 +155,7 @@ vchart._({
 
 ## RangeChart(O-stick-chart)
 
-[![Live-Demo](./doc/assets/rangechart.PNG)](http://volcanion.cf/vchart/demo/rangechart.html)
+[![Live-Demo](./doc/assets/rangechart.PNG)](https://volcanion.cf/vchart/demo/rangechart.html)
 
 ```js
    var y = vchart._({
@@ -220,7 +220,7 @@ vchart._({
 
 ## AssessmentChart
 
-[![Live-Demo](./doc/assets/assessmentchart.PNG)](http://volcanion.cf/vchart/demo/assessmentchart.html)
+[![Live-Demo](./doc/assets/assessmentchart.PNG)](https://volcanion.cf/vchart/demo/assessmentchart.html)
 
 ```js
 
@@ -293,7 +293,7 @@ var a = vchart._({
 
 ## ColumnChart, ColumnAreaChart
 
-[![Live-Demo](./doc/assets/columnchart.PNG)](http://volcanion.cf/vchart/demo/columnareachart.html)
+[![Live-Demo](./doc/assets/columnchart.PNG)](https://volcanion.cf/vchart/demo/columnareachart.html)
 
 ```js
 var a = vchart._({
@@ -320,7 +320,7 @@ var a = vchart._({
 
 ```
 
-[![Live-Demo](./doc/assets/columnareachart.PNG)](http://volcanion.cf/vchart/demo/columnareachart.html)
+[![Live-Demo](./doc/assets/columnareachart.PNG)](https://volcanion.cf/vchart/demo/columnareachart.html)
 
 ```js
  var minA = Array(12).fill(0).map(function () {
@@ -379,7 +379,7 @@ var a = vchart._({
 
 ## RangeGroupChart
 
-[![Live-Demo](./doc/assets/rangegroupchart.PNG)](http://volcanion.cf/vchart/demo/rangegroupchart.html)
+[![Live-Demo](./doc/assets/rangegroupchart.PNG)](https://volcanion.cf/vchart/demo/rangegroupchart.html)
 
 ```js
 var x = vchart._({
@@ -469,7 +469,7 @@ var x = vchart._({
 
 ## RankChart
 
-[![Live-Demo](./doc/assets/rankchart.PNG)](http://volcanion.cf/vchart/demo/rankchart.html)
+[![Live-Demo](./doc/assets/rankchart.PNG)](https://volcanion.cf/vchart/demo/rankchart.html)
 
 ```js
 var x = vchart._({
@@ -510,7 +510,7 @@ var x = vchart._({
 
 
 ## SunburstChart
-[![Live-Demo](./doc/assets/sunburstchart.PNG)](http://volcanion.cf/vchart/demo/sunburstchart.html)
+[![Live-Demo](./doc/assets/sunburstchart.PNG)](https://volcanion.cf/vchart/demo/sunburstchart.html)
 
 ```js
 var x = vchart._({
@@ -573,7 +573,7 @@ var x = vchart._({
 ```
 
 ## SquareChart
-[![Live-Demo](./doc/assets/squarechart.PNG)](http://volcanion.cf/vchart/demo/squarechart.html)
+[![Live-Demo](./doc/assets/squarechart.PNG)](https://volcanion.cf/vchart/demo/squarechart.html)
 
 ```js
 var y = vchart._({
