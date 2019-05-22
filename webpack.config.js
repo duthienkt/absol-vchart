@@ -5,7 +5,7 @@ var demo_src = process.env.DEMO;
 
 module.exports = {
     mode: process.env.MODE || "development",
-    entry: ["./src/index.js"],
+    entry: ["./src/vchart.js"],
     output: {
         path: path.join(__dirname, "."),
         filename: "./dist/vchart.js"
