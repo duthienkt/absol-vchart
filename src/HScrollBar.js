@@ -1,6 +1,6 @@
 import Vcore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
-import Draggable from "absol/src/AComp/js/Draggable";
+import Draggable from "absol-acomp/js/Draggable";
 import { translate } from "./template";
 
 var _ = Vcore._;
