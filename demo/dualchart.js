@@ -44,18 +44,18 @@ vchart._({
         ],
         areas: [
             {
-                name: 'Tối đa',
+                name: 'Tối đa(enim ad minima veniam, quis nostrum exercitationem)',
                 values: maxA,
                 color: 'rgb(255, 204, 127)'
             },
 
             {
-                name: 'Trung bình',
+                name: 'Trung bình(aut odit aut fugit, sed quia consequuntur)',
                 values: midA,
                 color: 'rgb(204, 204, 127)'
             },
             {
-                name: 'Thấp',
+                name: 'Thấp(magnam aliquam quaerat voluptatem)',
                 values: minA,
                 color: 'rgb(231, 228, 227)'
             }

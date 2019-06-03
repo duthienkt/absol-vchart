@@ -92,7 +92,6 @@ DualChart.prototype.initBackComp = function () {
     }.bind(this));
 
 
-
     this.$keyNames = this.keys.map(function (key) {
         return this._createKeyName(key).addTo(this.$content);
     }.bind(this));
@@ -103,7 +102,7 @@ DualChart.prototype.initBackComp = function () {
 
 DualChart.prototype.updateBackComp = function () {
     this.super();
-    this.oxyBottom = this.canvasHeight - 25;
+    this.oxyBottom = this.canvasHeight - 5;
 
     var $notes = this.$lineNotes.concat(this.$arealNotes);
 
@@ -111,10 +110,27 @@ DualChart.prototype.updateBackComp = function () {
         return noteWidth + $lineNote.getBBox().width + 15;
     }.bind(this), 0);
 
-    $notes.reduce(function (x, $line) {
-        $line.attr('transform', translate(x, this.canvasHeight - 5));
-        return x + $line.getBBox().width + 15;
-    }.bind(this), (this.canvasWidth - notesWidth) / 2);
+    if (notesWidth >= this.canvasWidth) {
+        var maxNoteWidth = $notes.reduce(function (maxNoteWidth, $lineNote) {
+            return Math.max(maxNoteWidth, $lineNote.getBBox().width + 10);
+        }.bind(this), 0);
+        var notePerLine = Math.max(1, Math.floor(this.canvasWidth / maxNoteWidth));
+        var x0 = (this.canvasWidth - notePerLine * maxNoteWidth) / 2 + 5;
+        var y0 = this.canvasHeight - 5;
+        $notes.forEach(function ($note, i) {
+            $note.attr('transform', translate(x0 + maxNoteWidth * (i % notePerLine), y0));
+            if (i % notePerLine == notePerLine - 1)
+                y0 -= 20;
+            this.oxyBottom -= 20;
+        }.bind(this));
+    }
+    else {
+        $notes.reduce(function (x, $line) {
+            $line.attr('transform', translate(x, this.canvasHeight - 5));
+            return x + $line.getBBox().width + 15;
+        }.bind(this), (this.canvasWidth - notesWidth) / 2);
+        this.oxyBottom -= 20;
+    }
 
     var maxKeyNameWidth = this.$keyNames.reduce(function (w, $keyName) {
         return Math.max(w, $keyName.$text.getBBox().width);
@@ -135,7 +151,6 @@ DualChart.prototype.updateBackComp = function () {
         this.$keyNames.forEach(function (e, i) {
             e.attr('transform', translate((i + 0.5) * this.oxSegmentLength - 5, 12));
             e.$text.attr('transform', rotate(45));
-
         }.bind(this));
         this.oxyBottom -= maxKeyNameWidth / 1.4 + 12;
     }
@@ -143,19 +158,19 @@ DualChart.prototype.updateBackComp = function () {
         this.$keyNames.forEach(function (e, i) {
             e.attr('transform', translate((i + 0.5) * this.oxSegmentLength, 12));
             e.$text.attr('text-anchor', 'middle');
-
         }.bind(this));
         this.oxyBottom -= 30;
     }
 
+
     //reupdate because update oxybottom
+
     this.super();
 };
 
 
 
 DualChart.prototype.initComp = function () {
-
     this.$areas = this.areas.map(function (line, i) {
         return this._createArea(line, this.colors[i + this.lines.length]).addTo(this.$content);
     }.bind(this));
