@@ -640,3 +640,71 @@ var y = vchart._({
     }
 }).addTo(document.body);
 ```
+
+## GroupRankChart
+[![Live-Demo](./doc/assets/grouprankchart.PNG)](https://volcanion.cf/vchart/demo/squarechart.html)
+
+```js
+
+var x = vchart._({
+    tag: 'grouprankchart',
+    style: { background: 'rgb(230, 230, 232)' },
+    props: {
+        title: 'Biểu đồ lương nhóm chức danh',
+        valueName: 'lương',
+        canvasWidth: 500,
+        canvasHeight: 600,
+        zeroOY: true,
+        valueName: 'lương(VND)',
+        numberToString: vchart.lambda.toLocalString(0),
+        groups: [
+            {
+                name: 'Nhóm trưởng phòng',
+                members: [
+                    {
+                        name: "Trưởng phòng tài chính",
+                        value: 17000000
+                    },
+                    {
+                        name: 'Trưởng phòng kinh doanh',
+                        value: 13000000
+                    },
+                    {
+                        name: "Trưởng phòng nhân sự",
+                        value: 11000000
+                    },
+                    {
+                        name: 'Trưởng phòng kế toán',
+                        value: 12500000
+                    },
+
+                ]
+            },
+            {
+                name: "hỏi nhiều quá",
+                members: [
+                    {
+                        name: 'Giám đốc',
+                        value: 20000000
+                    },
+                    {
+                        name: 'Phó giám đốc',
+                        value: 17000000
+                    },
+                    {
+                        name: 'Giám đốc kĩ thuật',
+                        value: 15000000
+                    },
+                    {
+                        name: 'Giám đốc tài chính',
+                        value: 21000000
+                    }
+
+                ]
+            }
+        ]
+    }
+
+}).addTo(document.body);
+
+```
