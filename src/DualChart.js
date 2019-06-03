@@ -211,35 +211,6 @@ DualChart.prototype.updateLine = function () {
                 $plot.attr('display', 'none');
         }.bind(this));
 
-        // $line.$path.begin();
-        // line.values.reduce(function (state, value, j, arr) {
-        //     if (arr.length == 1) {
-        //         if (!isNumber(value)) return 'NOT_START';
-        //         var y = this.mapOYValue(value);
-        //         var x = this.oxSegmentLength * (j + 0.25);
-        //         $line.$path.moveTo(x, y);
-        //         x = this.oxSegmentLength * (j + 0.75);
-        //         $line.$path.lineTo(x, y);
-        //         return "IN_LINE";
-        //     }
-
-        //     if (state == "NOT_START") {
-        //         if (!isNumber(value)) return 'NOT_START';
-        //         var y = this.mapOYValue(value);
-        //         var x = this.oxSegmentLength * (j + 0.5);
-        //         $line.$path.moveTo(x, y);
-        //         return 'IN_LINE';
-        //     }
-        //     else if (state == 'IN_LINE') {
-        //         if (!isNumber(value)) return 'NOT_START';
-        //         var y = this.mapOYValue(value);
-        //         var x = this.oxSegmentLength * (j + 0.5);
-        //         $line.$path.lineTo(x, y);
-        //         return 'IN_LINE';
-        //     }
-        //     return ac;
-        // }.bind(this), "NOT_START");
-
         $line.$path.end();
     }.bind(this));
 
