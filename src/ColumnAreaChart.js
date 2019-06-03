@@ -75,26 +75,32 @@ ColumnAreaChart.prototype.initComp = function () {
 };
 ColumnAreaChart.prototype.updateComp = function () {
     this.super();
-    this.$areas.map(function ($area, i) {
-        var values = this.areas[i].values;
-        $area.begin();
-
-        $area
-            .moveTo(this.oxSegmentLength * (values.length - (this.keys.length == 1 ? 0.25 : 0.5)), -1)
-            .lineTo(this.oxSegmentLength * (this.keys.length == 1 ? 0.25 : 0.5), -1);
-        if (this.keys.length == 1) {
-            $area.lineTo(this.oxSegmentLength * 0.25, isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
-        }
-        for (var i = 0; i < values.length; ++i) {
-            $area.lineTo(this.oxSegmentLength * (i + 0.5), isNumber(values[i]) ? this.mapOYValue(values[i]) : 0);
-        }
-
-        if (this.keys.length == 1) {
-            $area.lineTo(this.oxSegmentLength * 0.75, isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
-        }
-        $area.closePath().end();
-    }.bind(this));
+    this.updateArea();
 };
+
+ColumnAreaChart.prototype.updateArea  = DualChart.prototype.updateArea;
+
+// ColumnAreaChart.prototype.updateArea = function(){
+//     this.$areas.map(function ($area, i) {
+//         var values = this.areas[i].values;
+//         $area.begin();
+
+//         $area
+//             .moveTo(this.oxSegmentLength * (values.length - (this.keys.length == 1 ? 0.25 : 0.5)), -1)
+//             .lineTo(this.oxSegmentLength * (this.keys.length == 1 ? 0.25 : 0.5), -1);
+//         if (this.keys.length == 1) {
+//             $area.lineTo(this.oxSegmentLength * 0.25, isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
+//         }
+//         for (var i = 0; i < values.length; ++i) {
+//             $area.lineTo(this.oxSegmentLength * (i + 0.5), isNumber(values[i]) ? this.mapOYValue(values[i]) : 0);
+//         }
+
+//         if (this.keys.length == 1) {
+//             $area.lineTo(this.oxSegmentLength * 0.75, isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
+//         }
+//         $area.closePath().end();
+//     }.bind(this));
+// };
 
 
 ColumnAreaChart.prototype.preInit = function () {
