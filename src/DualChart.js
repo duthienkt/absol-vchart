@@ -1,5 +1,5 @@
 import Vcore from "./VCore";
-import { isNumber, rect, text } from "./helper";
+import { isNumber, rect, text, getSubNumberArray } from "./helper";
 import { translate, rotate } from "./template";
 import LineChart from "./LineChart";
 
@@ -168,74 +168,131 @@ DualChart.prototype.initComp = function () {
 
 
 DualChart.prototype.updateComp = function () {
+    this.updateLine();
+    this.updateArea();
+};
+
+
+DualChart.prototype.updateLine = function () {
+
     this.$lines.map(function ($line, i) {
         var line = this.lines[i];
+
+        var subLines = getSubNumberArray(line.values);
+        $line.$path.begin();
+        subLines.forEach(function (subLine, j) {
+            var start = subLine.start;
+            var values = subLine.values;
+            if (values.length > 1) {
+                $line.$path.moveTo(this.oxSegmentLength * (start + 0.5), this.mapOYValue(values[0]));
+                for (var xi = 1; xi < values.length; ++xi) {
+                    $line.$path.lineTo(this.oxSegmentLength * (start + xi + 0.5), this.mapOYValue(values[xi]));
+                }
+            }
+            else {
+                $line.$path.moveTo(this.oxSegmentLength * (start + 0.25), this.mapOYValue(values[0]));
+                $line.$path.lineTo(this.oxSegmentLength * (start + 0.75), this.mapOYValue(values[0]));
+            }
+        }.bind(this));
+        $line.$path.end();
+
+
         $line.$plots.forEach(function ($plot, j) {
             $plot.attr('display');
             var value = line.values[j];
             if (isNumber(value)) {
                 $plot.attr({
+                    display: undefined,
                     cx: this.oxSegmentLength * (j + 0.5),
                     cy: this.mapOYValue(value)
                 });
             }
-            else {
+            else
                 $plot.attr('display', 'none');
-            }
         }.bind(this));
 
-        $line.$path.begin();
-        line.values.reduce(function (state, value, j, arr) {
-            if (arr.length == 1) {
-                if (!isNumber(value)) return 'NOT_START';
-                var y = this.mapOYValue(value);
-                var x = this.oxSegmentLength * (j + 0.25);
-                $line.$path.moveTo(x, y);
-                x = this.oxSegmentLength * (j + 0.75);
-                $line.$path.lineTo(x, y);
-                return "IN_LINE";
-            }
+        // $line.$path.begin();
+        // line.values.reduce(function (state, value, j, arr) {
+        //     if (arr.length == 1) {
+        //         if (!isNumber(value)) return 'NOT_START';
+        //         var y = this.mapOYValue(value);
+        //         var x = this.oxSegmentLength * (j + 0.25);
+        //         $line.$path.moveTo(x, y);
+        //         x = this.oxSegmentLength * (j + 0.75);
+        //         $line.$path.lineTo(x, y);
+        //         return "IN_LINE";
+        //     }
 
-            if (state == "NOT_START") {
-                if (!isNumber(value)) return 'NOT_START';
-                var y = this.mapOYValue(value);
-                var x = this.oxSegmentLength * (j + 0.5);
-                $line.$path.moveTo(x, y);
-                return 'IN_LINE';
-            }
-            else if (state == 'IN_LINE') {
-                if (!isNumber(value)) return 'NOT_START';
-                var y = this.mapOYValue(value);
-                var x = this.oxSegmentLength * (j + 0.5);
-                $line.$path.lineTo(x, y);
-                return 'IN_LINE';
-            }
-            return ac;
-        }.bind(this), "NOT_START");
+        //     if (state == "NOT_START") {
+        //         if (!isNumber(value)) return 'NOT_START';
+        //         var y = this.mapOYValue(value);
+        //         var x = this.oxSegmentLength * (j + 0.5);
+        //         $line.$path.moveTo(x, y);
+        //         return 'IN_LINE';
+        //     }
+        //     else if (state == 'IN_LINE') {
+        //         if (!isNumber(value)) return 'NOT_START';
+        //         var y = this.mapOYValue(value);
+        //         var x = this.oxSegmentLength * (j + 0.5);
+        //         $line.$path.lineTo(x, y);
+        //         return 'IN_LINE';
+        //     }
+        //     return ac;
+        // }.bind(this), "NOT_START");
 
         $line.$path.end();
     }.bind(this));
 
+}
+
+DualChart.prototype.updateArea = function () {
     this.$areas.map(function ($area, i) {
         var values = this.areas[i].values;
+        var subAreas = getSubNumberArray(values);
+
         $area.begin();
+        subAreas.forEach(function (subArea) {
+            var start = subArea.start;
+            var values = subArea.values;
 
-        $area
-            .moveTo(this.oxSegmentLength * (values.length - (this.keys.length == 1 ? 0.25 : 0.5)), -1)
-            .lineTo(this.oxSegmentLength * (this.keys.length == 1 ? 0.25 : 0.5), -1);
-        if (this.keys.length == 1) {
-            $area.lineTo(this.oxSegmentLength * 0.25, isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
-        }
-        for (var i = 0; i < values.length; ++i) {
-            $area.lineTo(this.oxSegmentLength * (i + 0.5), isNumber(values[i]) ? this.mapOYValue(values[i]) : 0);
-        }
+            if (values.length > 1) {
+                $area.moveTo(this.oxSegmentLength * (start + 0.5), -1);
+                for (var xi = 0; xi < values.length; ++xi) {
+                    $area.lineTo(this.oxSegmentLength * (start + xi + 0.5), this.mapOYValue(values[xi]));
+                }
 
-        if (this.keys.length == 1) {
-            $area.lineTo(this.oxSegmentLength * 0.75, isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
-        }
-        $area.closePath().end();
+                $area.lineTo(this.oxSegmentLength * (start + values.length - 1 + 0.5), -1);
+                $area.closePath();
+            }
+            else {
+                $area.moveTo(this.oxSegmentLength * (start + 0.25), -1);
+
+                $area.lineTo(this.oxSegmentLength * (start + 0.25), this.mapOYValue(values[0]));
+                $area.lineTo(this.oxSegmentLength * (start + 0.75), this.mapOYValue(values[0]));
+
+                $area.lineTo(this.oxSegmentLength * (start + 0.75), -1);
+                $area.closePath();
+            }
+
+        }.bind(this));
+
+        // $area
+        //     .moveTo(this.oxSegmentLength * (values.length - (this.keys.length == 1 ? 0.25 : 0.5)), -1)
+        //     .lineTo(this.oxSegmentLength * (this.keys.length == 1 ? 0.25 : 0.5), -1);
+        // if (this.keys.length == 1) {
+        //     $area.lineTo(this.oxSegmentLength * 0.25, isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
+        // }
+        // for (var i = 0; i < values.length; ++i) {
+        //     $area.lineTo(this.oxSegmentLength * (i + 0.5), isNumber(values[i]) ? this.mapOYValue(values[i]) : 0);
+        // }
+
+        // if (this.keys.length == 1) {
+        //     $area.lineTo(this.oxSegmentLength * 0.75, isNumber(values[0]) ? this.mapOYValue(values[0]) : 0);
+        // }
+        // $area.closePath().end();
+        $area.end();
+
     }.bind(this));
-
 };
 
 Object.keys(LineChart.prototype)

@@ -2,7 +2,7 @@ import Vcore from "./VCore";
 import Color from 'absol/src/Color/Color';
 import Vec2 from 'absol/src/Math/Vec2';
 var _ = Vcore._;
- 
+
 
 export var beautyStep = [
     0.001, 0.002, 0.0025, 0.005,
@@ -204,7 +204,7 @@ export function generateBackgroundColors(n) {
 };
 
 export function isNumber(x) {
-    return -Infinity < x && x < Infinity;
+    return -Infinity < x && x < Infinity && typeof (x) == 'number';
 };
 
 
@@ -234,4 +234,24 @@ export function toLocalString(fixedRight) {
 
 export function map(x, l, h, L, H) {
     return L + (x - l) / (h - l) * (H - L);
+}
+
+
+export function getSubNumberArray(arr) {
+    return arr.reduce(function (ac, value, j) {
+        if (isNumber(value)) {
+            var cr;
+            if (ac.last + 1 < j) {
+                cr = { start: j, values: [] };
+                ac.currentSubArea = cr;
+                ac.result.push(cr)
+            }
+            else {
+                cr = ac.currentSubArea;
+            }
+            ac.last = j;
+            cr.values.push(value);
+        }
+        return ac;
+    }, { last: -100, result: [], currentSubArea: null }).result;
 }

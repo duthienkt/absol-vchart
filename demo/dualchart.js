@@ -62,3 +62,49 @@ vchart._({
         ]
     }
 }).addTo(document.body)
+
+
+vchart._({
+    tag: 'dualchart',
+    props: {
+        title: 'Bão lãnh thanh toán(đứt đoạn)',
+        valueName: '$',
+        keyName: 'Tháng',
+        zeroOY: true,
+        keys: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+        lines: [
+            {
+                name: 'Đường 1',
+                values: [3000, '-', 3010, 4200, '-', 2000, 2500, 2600, '-', 3000, '-', 3700],
+                texts: texts,
+                color: 'red',
+                plotColors: ['blue', 'red', 'cyan', 'green', 'blue', 'red', 'cyan', 'green', 'blue', 'red', 'cyan', 'green']
+            },
+            {
+                name: 'Đường 2',
+                values: results1,
+                texts: texts,
+                color: 'pink',
+                plotColors: ['cyan']
+            }
+        ],
+        areas: [
+            {
+                name: 'Tối đa',
+                values: [5000, '-', 4010, 5200, '', 3000, 3500, 3000, '', 4500, '-', 1500],
+                color: 'rgb(255, 204, 127)'
+            },
+
+            {
+                name: 'Trung bình',
+                values: [4000, '-', 3300, 3500, '', 2400, 2500, 2600, '', 3000, '-', 3100],
+                color: 'rgb(204, 204, 127)'
+            },
+            {
+                name: 'Thấp',
+                values: [1200, '-', 2200, 1200, '', 1100, 1300, 1200, '', 1500, '-', 1170],
+                color: 'rgb(231, 228, 227)'
+            }
+        ]
+    }
+}).addTo(document.body)
