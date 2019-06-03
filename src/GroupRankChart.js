@@ -1,6 +1,11 @@
-vchart.creator.grouprankchart = function () {
-    var _ = vchart._;
-    var $ = vchart.$;
+import Vcore from "./VCore";
+import OOP from "absol/src/HTML5/OOP";
+import { circle, text, moveHLine, calBeautySegment, map } from "./helper";
+import { translate } from "./template";
+var _ = Vcore._;
+var $ = Vcore.$;
+
+function GroupRankChart() {
     var suffix = (Math.random() + '').replace(/\./g, '');
     var res = _({
         tag: 'svg',
@@ -20,43 +25,51 @@ vchart.creator.grouprankchart = function () {
                     mask: 'url(#contentMask' + suffix + ')'
                 },
                 child: 'g#content'
-            }
+            },
+            'hscrollbar'
         ]
     });
     res.sync = res.afterAttached();
     res.$axis = $('axis', res);
     res.$maskRect = $('rect#maskRect', res);
     res.$content = $('g#content', res);
-    res.eventHandler = absol.OOP.bindFunctions(res, vchart.creator.grouprankchart.eventHandler);
+    res.eventHandler = OOP.bindFunctions(res, GroupRankChart.eventHandler);
     res.on('wheel', res.eventHandler.wheel);
-
+    res.$hscrollbar = $('hscrollbar', res).on('scroll', res.eventHandler.scrollbarscroll);
     return res;
 };
 
 
 
-vchart.creator.grouprankchart.eventHandler = {};
-vchart.creator.grouprankchart.eventHandler.wheel = function (event) {
+GroupRankChart.eventHandler = {};
+GroupRankChart.eventHandler.wheel = function (event) {
     var d = this.scrollBy(event.deltaY);
     if (d != 0) {
         event.preventDefault();
     }
 };
 
-vchart.creator.grouprankchart.eventHandler.scrollArrowsPressLeft = function (event) {
+GroupRankChart.eventHandler.scrollArrowsPressLeft = function (event) {
     this.scrollBy(-60);
 };
 
-vchart.creator.grouprankchart.eventHandler.scrollArrowsPressRight = function (event) {
+GroupRankChart.eventHandler.scrollArrowsPressRight = function (event) {
     this.scrollBy(60);
 };
 
-vchart.creator.grouprankchart.prototype.scrollBy = function (dX) {
+
+GroupRankChart.eventHandler.scrollbarscroll = function (event) {
+    this.scrollLeft = this.$hscrollbar.scrollLeft;
+    event.preventDefault();
+};
+
+GroupRankChart.prototype.scrollBy = function (dX) {
     var scrollLeft = this.scrollLeft + dX / 5;
     var scrollLeft = Math.max(0, Math.min(this.oxContentLength - this.oxLength, scrollLeft));
     var deltaX = scrollLeft - this.scrollLeft;
     if (deltaX != 0) {
         this.scrollLeft = scrollLeft;
+        this.$hscrollbar.scrollLeft = scrollLeft;
     }
     return deltaX;
 };
@@ -64,22 +77,21 @@ vchart.creator.grouprankchart.prototype.scrollBy = function (dX) {
 
 
 
-vchart.creator.grouprankchart.prototype.numberToString = function (value) {
+GroupRankChart.prototype.numberToString = function (value) {
     return value.toString();
 }
 
-vchart.creator.grouprankchart.prototype._createMember = function (member) {
-    var _ = vchart._;
+GroupRankChart.prototype._createMember = function (member) {
     var res = _('g');
-    res.$plot = vchart.circle(this.plotRadius, 0, this.plotRadius, 'grank-chart-plot').addTo(res);
-    res.$name = vchart.text(member.name, this.plotRadius * 2 + 9, -3).addTo(res);
-    res.$value = vchart.text('' + this.numberToString(member.value) + '', this.plotRadius * 2 + 9, 16).addTo(res);
+    res.$plot = circle(this.plotRadius, 0, this.plotRadius, 'grank-chart-plot').addTo(res);
+    res.$name = text(member.name, this.plotRadius * 2 + 9, -3).addTo(res);
+    res.$value = text('' + this.numberToString(member.value) + '', this.plotRadius * 2 + 9, 16).addTo(res);
     return res;
 };
 
 
 
-vchart.creator.grouprankchart.prototype._createOyValues = function (minValue, step, segmentCout, extendOY) {
+GroupRankChart.prototype._createOyValues = function (minValue, step, segmentCout, extendOY) {
     var child = Array(segmentCout + 1 + (extendOY ? 1 : 0)).fill(0).map(function (u, i) {
         var value;
         if (extendOY) {
@@ -107,15 +119,14 @@ vchart.creator.grouprankchart.prototype._createOyValues = function (minValue, st
             }
         }
     }.bind(this));
-    return vchart._({
+    return _({
         tag: 'g',
         child: child
     });
 };
 
 
-vchart.creator.grouprankchart.prototype._createOYSegmentLines = function (n) {
-    var _ = vchart._;
+GroupRankChart.prototype._createOYSegmentLines = function (n) {
     var res = _({
         tag: 'g',
         child: Array(n).fill('path.vchart-segment-line')
@@ -123,28 +134,28 @@ vchart.creator.grouprankchart.prototype._createOYSegmentLines = function (n) {
     return res;
 };
 
-vchart.creator.grouprankchart.prototype._createGroup = function (group) {
-    return vchart._({
+GroupRankChart.prototype._createGroup = function (group) {
+    return _({
         tag: 'g',
         child: group.members.map(this._createMember.bind(this))
     });
 };
 
 
-vchart.creator.grouprankchart.prototype._callOYValue = function (val) {
-    return -this.paddingnAxisBottom + (this.extendOY ? -this.oySegmentLength : 0) - Math.map(val, this.oyMinValue, this.oyMaxValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0));
+GroupRankChart.prototype._callOYValue = function (val) {
+    return -this.paddingnAxisBottom + (this.extendOY ? -this.oySegmentLength : 0) - map(val, this.oyMinValue, this.oyMaxValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0));
 };
 
 
 
 
-vchart.creator.grouprankchart.prototype.updateSize = function () {
+GroupRankChart.prototype.updateSize = function () {
     this.attr({ width: this.canvasWidth + '', height: this.canvasHeight + '', viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ') });
     this.$title.attr('x', this.canvasWidth / 2);
 };
 
 
-vchart.creator.grouprankchart.prototype.updateOyValues = function () {
+GroupRankChart.prototype.updateOyValues = function () {
 
     this.oyLength = this.oxyBottom - 70 - this.paddingnAxisBottom;
     this.oySegmentLength = this.oyLength / (this.oySegmentCount + (this.extendOY ? 1 : 0));
@@ -161,8 +172,8 @@ vchart.creator.grouprankchart.prototype.updateOyValues = function () {
     this.$oyValues.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
 };
 
-vchart.creator.grouprankchart.prototype.updateAxis = function () {
-    this.$axis.attr('transform', vchart.tl.translate(this.oxyLeft, this.oxyBottom));
+GroupRankChart.prototype.updateAxis = function () {
+    this.$axis.attr('transform', translate(this.oxyLeft, this.oxyBottom));
     this.$axis.resize(this.canvasWidth - this.oxyLeft - 10, this.oxyBottom - 50);
     this.$oyName.attr({
         x: this.oxyLeft,
@@ -182,16 +193,16 @@ vchart.creator.grouprankchart.prototype.updateAxis = function () {
 
 
 
-vchart.creator.grouprankchart.prototype.updateOYSegmentLines = function () {
+GroupRankChart.prototype.updateOYSegmentLines = function () {
     this.$oySegmentLines.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
     Array.prototype.forEach.call(this.$oySegmentLines.childNodes, function (e, i) {
-        vchart.moveHLine(e, -2, -i * this.oySegmentLength - this.paddingnAxisBottom, 4);
+        moveHLine(e, -2, -i * this.oySegmentLength - this.paddingnAxisBottom, 4);
     }.bind(this));
 };
 
 
 
-vchart.creator.grouprankchart.prototype.updateGroups = function () {
+GroupRankChart.prototype.updateGroups = function () {
     this.oxContentLength = this.$groups.reduce(function (contentLength, ge, groupIndex) {
         var group = this.groups[groupIndex];
         contentLength = contentLength + 20;
@@ -199,7 +210,7 @@ vchart.creator.grouprankchart.prototype.updateGroups = function () {
 
             var member = group.members[j];
             var y = this._callOYValue(member.value);
-            meme.attr('transform', vchart.tl.translate(contentLength, y));
+            meme.attr('transform', translate(contentLength, y));
             meme._tr_y = y;
             return Math.max(maxDY, -y);
         }.bind(this), 0);
@@ -225,7 +236,7 @@ vchart.creator.grouprankchart.prototype.updateGroups = function () {
         messure.reduce(function (left, col) {
             if (col.child.length == 0) return;
             col.child.forEach(function (meme) {
-                meme.attr('transform', vchart.tl.translate(left, meme._tr_y));
+                meme.attr('transform', translate(left, meme._tr_y));
             });
 
             return left + col.maxWidth + 9;
@@ -253,15 +264,20 @@ vchart.creator.grouprankchart.prototype.updateGroups = function () {
 };
 
 
-vchart.creator.grouprankchart.prototype.updateScrollArrows = function () {
+GroupRankChart.prototype.updateScrollArrows = function () {
     this.$scrollArrows.attr('transform', 'translate(' + (this.oxyLeft + 7) + ', ' + (this.oxyBottom - this.oyLength / 2) + ')');
     this.$scrollArrows.$rightArrow.attr('transform', 'translate(' + (this.oxLength - 15) + ', 0)');
     this.scrollLeft = this.scrollLeft;//update
+
+    this.$hscrollbar.resize(this.oxLength, 10);
+    this.$hscrollbar.moveTo(this.oxyLeft, this.oxyBottom - 10);
+    this.$hscrollbar.outterWidth = this.oxLength;
+    this.$hscrollbar.innerWidth = this.oxContentLength;
 };
 
 
 
-vchart.creator.grouprankchart.prototype.update = function () {
+GroupRankChart.prototype.update = function () {
     if (!this.groups || this.groups.length <= 0) return;
     if (typeof this.canvasWidth != 'number') {
         this.canvasWidth = 300;
@@ -284,7 +300,7 @@ vchart.creator.grouprankchart.prototype.update = function () {
     }.bind(this));
 };
 
-vchart.creator.grouprankchart.prototype.initComp = function () {
+GroupRankChart.prototype.initComp = function () {
     this.maxValue = this.groups.reduce(function (ac, group) {
         return group.members.reduce(function (ac, member) {
             return Math.max(ac, member.value);
@@ -303,7 +319,7 @@ vchart.creator.grouprankchart.prototype.initComp = function () {
     this.oxyBottom = this.canvasHeight - 40;//fix size, not need update
     this.oxyLeft = 0;
 
-    var btSgmt = vchart.calBeautySegment(this.maxSegment, this.minValue, this.maxValue);
+    var btSgmt = calBeautySegment(this.maxSegment, this.minValue, this.maxValue);
 
     this.oySegmentCount = btSgmt.segmentCout;
     this.oyMinValue = btSgmt.minValue;
@@ -334,7 +350,7 @@ vchart.creator.grouprankchart.prototype.initComp = function () {
         return vchart.rect(0, 0, 0, 0, 'grank-chart-group-rect').addTo(this.$content);
     }.bind(this));
 
-    this.$scrollArrows = vchart._('scrollarrow')
+    this.$scrollArrows = _('scrollarrow')
         .addTo(this)
         .on('pressleft', this.eventHandler.scrollArrowsPressLeft)
         .on('pressright', this.eventHandler.scrollArrowsPressRight);
@@ -342,7 +358,7 @@ vchart.creator.grouprankchart.prototype.initComp = function () {
 
 };
 
-vchart.creator.grouprankchart.prototype.init = function (props) {
+GroupRankChart.prototype.init = function (props) {
     this.plotRadius = 6;
     this.canvasWidth = 400;
     this.canvasHeight = 300;
@@ -358,10 +374,10 @@ vchart.creator.grouprankchart.prototype.init = function (props) {
     this.sync = this.sync.then(this.update.bind(this));
 };
 
-vchart.creator.grouprankchart.property = {};
+GroupRankChart.property = {};
 
 
-vchart.creator.grouprankchart.property.scrollLeft = {
+GroupRankChart.property.scrollLeft = {
     set: function (value) {
         this._scrollLeft = value || 0;
         this.$content.attr('transform', 'translate(' + (this.oxyLeft - this.scrollLeft) + ',' + this.oxyBottom + ')');
@@ -384,9 +400,12 @@ vchart.creator.grouprankchart.property.scrollLeft = {
     }
 };
 
-vchart.creator.grouprankchart.property.overflowOX = {
+GroupRankChart.property.overflowOX = {
     get: function () {
         return Math.max(0, this.oxContentLength - this.oxLength);
     }
-}; 
+};
 
+Vcore.creator.grouprankchart = GroupRankChart;
+
+export default GroupRankChart;

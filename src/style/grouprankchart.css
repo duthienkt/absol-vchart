@@ -1,0 +1,16 @@
+.grank-chart {
+    font-size: 12px;
+    font-family: Arial;
+}
+
+.grank-chart-plot {
+    fill: rgb(145, 228, 251);
+    stroke-width: 1;
+    stroke: black;
+}
+
+.grank-chart-group-rect {
+    stroke: black;
+    fill: none;
+    stroke-width: 1;
+}

@@ -65,7 +65,7 @@ var x = vchart._({
     props: {
         title: 'Biểu đồ lương nhóm chức danh',
         valueName: 'lương',
-        canvasWidth: 900,
+        canvasWidth: 500,
         canvasHeight: 600,
         zeroOY: true,
         valueName: 'lương(VND)',
