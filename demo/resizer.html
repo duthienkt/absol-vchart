@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Demo</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://volcanion.cf/hightlight/styles/default.css">
+    <script src="https://volcanion.cf/hightlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="../dist/vchart.js"></script>
+</head>
+
+<body>
+    <div id="resizer-view0"></div>
+    <script class="viewable">
+        var mChart = vchart._({
+            tag: 'sunburstchart',
+            props: {
+                // title: 'absol js code analysis',
+                canvasWidth: 600,
+                canvasHeight: 600,
+                zeroOY: true,
+                numberToString: vchart.lambda.toLocalString(3),
+                root: {
+                    name: 'Năng lực cốt lõi',
+                    value: 22,
+                    child: [{
+                        fillColor: 'rgb(115, 90, 145)',
+                        name: 'Năng lực chuyên môn nghiệp vụ',
+                        value: 7,
+                        child: [
+                            { name: 'Nhân sự', value: 1 },
+                            { name: 'Tài chính', value: 1 },
+                            { name: 'Phạm vi, tác động', value: 1 },
+                            { name: 'MMTB, CNKT', value: 1 },
+                            { name: 'Năng lực ra quyết định', value: 1 },
+                            { name: 'Tổ chức điều hành', value: 1 },
+                            { name: 'Đàm phán', value: 1 }
+                        ]
+                    },
+                    {
+                        fillColor: 'rgb(159, 175, 91)',
+                        name: 'Năng lực chung',
+                        value: 7,
+                        child: [
+                            { name: 'Tổng hợp', value: 1 },
+                            { name: 'Báo cáo', value: 1 },
+                            { name: 'Thu thập thông tin', value: 1 },
+                            { name: 'Làm việc nhóm', value: 1 },
+                            { name: 'Giao tiếp', value: 1 },
+                            { name: 'Ngoại ngữ', value: 1 },
+                            { name: 'Vi tính văn phòng', value: 1 }
+                        ]
+                    },
+                    { name: 'Ra quyết định', value: 1, fillColor: 'auto', span: 2 },
+                    { name: 'Kiểm tra giám sát', value: 1, fillColor: 'auto', span: 2 },
+                    { name: 'Tổ chức', value: 1, fillColor: 'auto', span: 2 },
+                    { name: 'Hoạch định', value: 1, fillColor: 'auto', span: 2 },
+                    {
+                        fillColor: 'rgb(71, 116, 170)',
+                        name: 'Năng lực lãnh đạo',
+                        value: 4,
+                        child: [
+                            { name: 'Định hướng hiệu quả', value: 1 },
+                            { name: 'Tạo động lực nhân viên', value: 3 },
+                        ]
+                    }
+                    ]
+                }
+            }
+
+        });
+
+        var mResizer = vchart.wrapChartInWHResizer(mChart).addTo(document.getElementById('resizer-view0'));
+
+
+        var minA = Array(12).fill(0).map(function () {
+            return Math.floor(Math.random() * 200) + 100;
+        });
+
+        var midA = minA.map(function (v) {
+            return 300 + Math.floor(Math.random() * 200);
+        });
+        var maxA = Array(12).fill(700);
+        var results = Array(12).fill(0).map(function () {
+            return 23 + Math.floor(600 * Math.random());
+        });
+        var results1 = Array(12).fill(0).map(function () {
+            return 23 + Math.floor(600 * Math.random());
+        });
+
+        var texts = Array(12).fill(0).map(function (u, i) {
+            return 'Tối đa: ' + maxA[i] + '\nTối thiểu: ' + minA[i] + '\nTrung bình: ' + midA[i] + '\nĐạt được: ' + results[i];
+        });
+
+
+        var mDualChart = vchart._({
+            tag: 'dualchart',
+            props: {
+                title: 'Bão lãnh thanh toán',
+                valueName: '$',
+                keyName: 'Tháng',
+                zeroOY: true,
+                keys: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                lines: [
+                    {
+                        name: 'Đường 1',
+                        values: results,
+                        texts: texts,
+                        color: 'red',
+                        plotColors: ['blue']
+                    },
+                    {
+                        name: 'Đường 2',
+                        values: results1,
+                        texts: texts,
+                        color: 'pink',
+                        plotColors: ['cyan']
+                    }
+                ],
+                areas: [
+                    {
+                        name: 'Tối đa(enim ad minima veniam, quis nostrum exercitationem)',
+                        values: maxA,
+                        color: 'rgb(255, 204, 127)'
+                    },
+
+                    {
+                        name: 'Trung bình(aut odit aut fugit, sed quia consequuntur)',
+                        values: midA,
+                        color: 'rgb(204, 204, 127)'
+                    },
+                    {
+                        name: 'Thấp(magnam aliquam quaerat voluptatem)',
+                        values: minA,
+                        color: 'rgb(231, 228, 227)'
+                    }
+                ]
+            }
+        })
+
+        var mDualChartResizer = vchart.wrapChartInWHResizer(mDualChart).addTo(document.getElementById('resizer-view0'));
+
+    </script>
+
+    <script>
+        var viewableScript = document.querySelectorAll('script.viewable');
+        viewableScript.forEach(function (elt) {
+            absol.$(elt).selfReplace(absol._({
+                tag: 'pre',
+                child: {
+                    tag: 'code',
+                    class: 'js',
+                    child: { text: elt.innerHTML }
+                }
+            }));
+        });
+        setTimeout(function () {
+            var href = location.href;
+            var mathedscroll = href.match(/\#([a-z0-9\_A-Z\-]+)/);
+            if (mathedscroll) {
+                var e = absol.$(mathedscroll[0]);
+                if (e) e.scrollIntoView();
+            }
+        }, 1000)
+    </script>
+</body>
+
+</html>
