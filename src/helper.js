@@ -4,7 +4,6 @@ import Vec2 from 'absol/src/Math/Vec2';
 
 import AComp from 'absol-acomp/AComp';
 Vcore.creator.widthheightresizer = AComp.creator.widthheightresizer;
-console.log(AComp.creator.widthheightresizer)
 
 var _ = Vcore._;
 
