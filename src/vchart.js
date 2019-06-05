@@ -1,7 +1,9 @@
 import vchart from ".";
 
+import * as helper from './helper';
 
-if ('absol' in window){
+Object.assign(vchart, helper);
+if ('absol' in window) {
     if (absol.ShareCreator) {
         Object.assign(
             absol.ShareCreator,
@@ -12,8 +14,9 @@ if ('absol' in window){
                     ac[cr] = vchart.creator[cr];
                     return ac;
                 }, {})
-    );
-}}
+        );
+    }
+}
 
 
 window.vchart = vchart;

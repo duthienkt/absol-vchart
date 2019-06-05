@@ -1,6 +1,11 @@
 import Vcore from "./VCore";
 import Color from 'absol/src/Color/Color';
 import Vec2 from 'absol/src/Math/Vec2';
+
+import AComp from 'absol-acomp/AComp';
+Vcore.creator.widthheightresizer = AComp.creator.widthheightresizer;
+console.log(AComp.creator.widthheightresizer)
+
 var _ = Vcore._;
 
 
@@ -254,4 +259,28 @@ export function getSubNumberArray(arr) {
         }
         return ac;
     }, { last: -100, result: [], currentSubArea: null }).result;
+}
+
+export function wrapChartInWHResizer(chartElt, outerParam) {
+    outerParam = outerParam || {};
+    return _({
+        tag: 'widthheightresizer',
+        child: chartElt,
+        style: {
+            display:'inline-block',
+            verticalAlign:'top'
+        },
+        on: {
+            sizechange: function (event) {
+                var data = event.data;
+                if (data.width) {
+                    chartElt.canvasWidth = parseFloat(data.width.replace('px', ''))-4;
+                }
+                if (data.height) {
+                    chartElt.canvasHeight = parseFloat(data.height.replace('px', ''))-4;
+                }
+                chartElt.update();
+            } 
+        }
+    }).addStyle(outerParam.style||{});
 }
