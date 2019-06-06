@@ -31,8 +31,12 @@ module.exports = {
                 }
             },
             {
-                test: /\.(tpl|txt|xml|rels|css)$/i,
+                test: /\.(tpl|txt|xml|rels)$/i,
                 use: 'raw-loader',
+            },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
             }
         ]
     },

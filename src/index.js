@@ -1,7 +1,6 @@
 import Vcore from "./VCore";
 
-import vchartStyle_css from './style/vchartStyle';
-import Dom from "absol/src/HTML5/Dom";
+import './style/vchartStyle';
 
 import './Axis';
 import './Shape';
@@ -32,12 +31,6 @@ var vchart = {
     _: Vcore._,
     $: Vcore.$,
     buildSvg: Vcore._,
-    $style: Dom.ShareInstance._({
-        tag: 'style',
-        props: {
-            innerHTML: vchartStyle_css
-        }
-    }).addTo(document.head),
     lambda: {
         isNumber: isNumber,
         toLocalString: toLocalString

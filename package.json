@@ -1,6 +1,6 @@
 {
   "name": "absol-vchart",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "svg chart, by absol.js",
   "main": "scr/index.js",
   "directories": {
@@ -38,7 +38,9 @@
     "@babel/register": "7.0.0",
     "babel-loader": "^8.0.6",
     "babel-minify-webpack-plugin": "^0.3.1",
+    "css-loader": "^2.1.1",
     "raw-loader": "^2.0.0",
+    "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.0",
