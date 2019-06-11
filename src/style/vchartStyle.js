@@ -10,5 +10,6 @@ import './rankchart.css';
 import './sunburstchart.css';
 import './squarechart.css';
 import './grouprankchart.css';
+import './mappingchart.css';
 
 export default {};

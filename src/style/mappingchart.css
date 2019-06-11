@@ -1,0 +1,43 @@
+.mapping-chart{
+    border: solid 1px gray;
+}
+
+.mapping-chart-range-text{
+    stroke: none;
+    fill: blue;
+    font-size: 14px;
+}
+
+.mapping-chart-range-plot{
+    fill:cyan;
+    stroke: red;
+    stroke-width: 0.54;
+}
+
+.mapping-chart-title{
+    font-size: 20px;
+    fill: black;
+    stroke: none;
+}
+
+.mapping-chart-range-line{
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.mapping-chart-marker{
+    font-size: 14px;
+}
+
+.mapping-chart-marker-box{
+    fill: rgba(17, 187, 230, 0.788);
+    stroke: none;
+}
+
+svg:not(.mapping-chart-hover-bot)  .mapping-chart-marker.bot{
+    visibility: hidden;
+}
+
+svg:not(.mapping-chart-hover-top)  .mapping-chart-marker.top{
+    visibility: hidden;
+}
