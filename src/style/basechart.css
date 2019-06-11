@@ -5,3 +5,14 @@
 .base-chart:not(:hover) .vchart-vscrollbar {
     display: none;
 }
+
+.vchart-hitbox{
+    fill: rgba(0, 0, 0, 0);
+    /* stroke: none; */
+}
+
+
+.vchart-debug .vchart-hitbox{
+    fill: rgba(22, 129, 216, 0.247);
+    stroke: rgba(22, 129, 216, 0.87);
+}

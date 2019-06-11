@@ -41,7 +41,7 @@ Shape.prototype.arcTo = function (x, y, rx, ry, lf, sf, xRotate) {
     return this;
 };
 
-Shape.prototype.curveTo - function (x, y, x0, y0, x1, y1) {
+Shape.prototype.curveTo = function (x, y, x0, y0, x1, y1) {
     this.buildingPath += 'C' + [x0, y0, x1, y1, x, y].join(' ');
     return this;
 };
