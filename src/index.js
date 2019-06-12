@@ -22,6 +22,7 @@ import './SunburstChart';
 import './SquareChart';
 import './GroupRankChart';
 import './MappingChart';
+import './ImagesChart';
 
 import { isNumber, toLocalString, text, circle, rect, vline, hline, moveVLine, moveHLine, autoCurve } from "./helper";
 import { showTooltip, closeTooltip } from "./ToolTip";
