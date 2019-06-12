@@ -34,7 +34,7 @@ function GroupRankChart() {
     res.$maskRect = $('rect#maskRect', res);
     res.$content = $('g#content', res);
     res.eventHandler = OOP.bindFunctions(res, GroupRankChart.eventHandler);
-    res.on('wheel', res.eventHandler.wheel);
+    // res.on('wheel', res.eventHandler.wheel);
     res.$hscrollbar = $('hscrollbar', res).on('scroll', res.eventHandler.scrollbarscroll);
     return res;
 };
