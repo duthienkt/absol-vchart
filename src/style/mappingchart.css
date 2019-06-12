@@ -14,6 +14,12 @@
     stroke-width: 0.54;
 }
 
+.mapping-chart-line-plot{
+    fill:green;
+    stroke: red;
+    stroke-width: 0.54;
+}
+
 .mapping-chart-title{
     font-size: 20px;
     fill: black;
@@ -27,6 +33,11 @@
 
 .mapping-chart-marker{
     font-size: 14px;
+    cursor: pointer;
+}
+
+.mapping-chart-marker:hover .mapping-chart-marker-box{
+    fill: rgba(17, 230, 88, 0.788);
 }
 
 .mapping-chart-marker-box{
@@ -34,10 +45,28 @@
     stroke: none;
 }
 
-svg:not(.mapping-chart-hover-bot)  .mapping-chart-marker.bot{
+
+
+svg:not(.mapping-chart-hover-bot) .mapping-chart-marker.bot{
     visibility: hidden;
+}
+
+.mapping-chart-marker.bot:hover .mapping-chart-marker-box,
+.mapping-chart-marker.top:hover .mapping-chart-marker-box
+{
+    fill: rgba(17, 187, 230, 0.788);
 }
 
 svg:not(.mapping-chart-hover-top)  .mapping-chart-marker.top{
     visibility: hidden;
+}
+
+.mapping-chart-map-line{
+    stroke: black;
+    stroke-width: 3;
+}
+
+.mapping-chart-map-line.selected-line{
+    stroke: red;
+    stroke-width: 3;
 }

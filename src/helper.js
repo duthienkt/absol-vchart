@@ -44,7 +44,7 @@ export function circle(x, y, r, eClss) {
  * @param {Number} x
  * @param {Number} y
  * @param {String} eClss - can be undefine
- * @returns {SVGTextElement} 
+ * @returns {SVGTextElement}
  */
 export function text(text, x, y, eClss) {
     if (eClss instanceof Array) eClss = eClss.join(' ');
@@ -94,6 +94,16 @@ export function rect(x, y, width, height, eClss) {
 };
 
 
+export function line(x0, y0, x1, y1){
+    return _({
+        tag: 'path',
+        class: eClss,
+        attr: {
+            d: 'M' + x0 + ' ' + y0 + 'L' + x1+ ' '+ y1 
+        }
+    });
+}
+
 
 export function calBeautySegment(maxSegment, minValue, maxValue) {
     var i = 0;
@@ -116,7 +126,7 @@ export function calBeautySegment(maxSegment, minValue, maxValue) {
 
 
 
-//x[i] < x[i+1] 
+//x[i] < x[i+1]
 export function autoCurve(points, strong, free) {
     if (!(strong > 0)) strong = 0.5;
     if (points.length == 0) {
@@ -279,7 +289,7 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
                     chartElt.canvasHeight = parseFloat(data.height.replace('px', ''))-4;
                 }
                 chartElt.update();
-            } 
+            }
         }
     }).addStyle(outerParam.style||{});
 }

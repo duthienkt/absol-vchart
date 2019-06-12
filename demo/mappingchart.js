@@ -1,7 +1,7 @@
 vchart._({
     tag: 'mappingchart',
     style: {},
-    class: ['vchart-debugx'],
+    class: ['vchart-debug'],
     attr: {},
     props: {
         title: 'Ánh xạ lương',
@@ -10,8 +10,13 @@ vchart._({
         min: 5000000,
         max: 100000000,
         numberToString: function (x) {
-            return Math.round(x / 1000) * 1000 + 'VND'
-        }
+            return Math.round(x / 100000) * 100000 + ''
+        },
+        content: [
+            {value: 7000000, mapValue: 12000000},
+            {value: 30000000, mapValue: 40000000},
+            {value: 55000000, mapValue: 70000000}
+        ]
         // collision: 1
     },
     on: {
