@@ -216,26 +216,43 @@ SquareChart.prototype.mapOYValue = function (value) {
 SquareChart.prototype.updateAxis = function () {
     this.$axis.moveTo(this.oxyLeft, this.oxyBottom);
     this.$axis.resize(this.canvasWidth - this.oxyLeft - 10, this.oxyBottom - 43);
-    this.$oyName.attr({ x: 3, y: 30 });
+    this.$oyName.attr({ x: this.oxyLeft - 5, y: 30 });
     this.$oxName.attr({ x: this.canvasWidth - 4, y: this.oxyBottom + 20 });
 };
 
 
 SquareChart.prototype.initBackComp = function () {
     this.$title = text(this.title, 0, 0, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
-    this.$oyName = text(this.valueName, 0, 0, 'base-chart-oxy-text').addTo(this);
+    this.$oyName = text(this.valueName, 0, 0, 'base-chart-oxy-text').attr('text-anchor', 'end').addTo(this);
     this.$oxName = text(this.keyName, 0, 100, 'base-chart-oxy-text').attr('text-anchor', 'end').addTo(this);
     this.$keyNames = this.keys.map(function (key) {
         return text(key, 100, 100).attr('text-anchor', 'middle').addTo(this);
     }.bind(this));
 
+    this.$testText = text('0'.repeat(10), 0, 18).addStyle('visibility', 'hidden').addTo(this);
+
 };
 
 
 SquareChart.prototype.updateBackComp = function () {
+    // update value text
+
+    if (this.minValueText !== null && this.minValueText !== undefined)
+        this.$minValueText.innerHTML = this.minValueText;
+    else
+        this.$minValueText.innerHTML = '';
+    if (this.maxValueText !== null && this.maxValueText !== undefined)
+        this.$maxValueText.innerHTML = this.maxValueText;
+    else
+        this.$maxValueText.innerHTML = '';
+
     this.$title.attr({ x: this.canvasWidth / 2, y: 20 });
 
-    this.oxyLeft = Math.max(20, this.$oyName.getBBox().width);
+    this.oxyLeft = Math.max(20, this.$oyName.getBBox().width + 10,
+        this.$maxValueText.getBBox().width + 10,
+        this.$minValueText.getBBox().width + 10,
+        this.$testText.getBBox().width / 10 * this.minValueTextLength + 10
+    );
     this.oxyBottom = this.canvasHeight - 10;
     this.oxLength = this.canvasWidth - this.oxyLeft - 12 - this.$oxName.getBBox().width;
     this.oxSegmentLength = this.oxLength / this.keys.length;
@@ -283,6 +300,9 @@ SquareChart.prototype.initComp = function () {
     }.bind(this));
 
     this.$dynamicLine = _('path.correlation-chart-line.dynamic').addTo(this);
+    // (this.minValueText !== undefined && this.minValueText  === null)
+    this.$minValueText = text('test', 10, 100).attr('text-anchor', 'end').addTo(this);
+    this.$maxValueText = text('test 2   ', 100, 100).attr('text-anchor', 'end').addTo(this);
 };
 
 
@@ -323,11 +343,24 @@ SquareChart.prototype.updateComp = function () {
     }.bind(this));
 
     this.$dynamicLine.attr('d', vchart.autoCurve(dynamicPoints, 0.7, 0.01));//
+
+    this.$minValueText.attr({
+        x: this.oxyLeft - 5,
+        y: this.mapOYValue(this.dynamicY(this.getX(0))) + 6
+    });
+
+    this.$maxValueText.attr({
+        x: this.oxyLeft - 5,
+        y: this.mapOYValue(this.dynamicY(this.getX(this.keys.length - 1))) + 6
+    });
+
+
 };
 
 
 SquareChart.prototype.preInit = function (props) {
     this.plotRadius = 6;
+    this.minValueTextLength = 0;
 };
 
 SquareChart.prototype.init = function (props) {
