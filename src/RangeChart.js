@@ -233,19 +233,19 @@ RangeChart.prototype._createNote = function () {
     var res = _('g.range-chart-note');
 
     var y0 = 12;
-    res.$maxLine = this._createLimitLine(0, y0, this.limitLineLength, 'max').addTo(res);
+    res.$maxLine = this._createLimitLine(10, y0, this.limitLineLength, 'max').addTo(res);
     res.$maxText = text(this.maxText, 50, y0 + 5).addTo(res);
     y0 += 22;
     if (this.ranges[0].mid != undefined) {
-        this._createLimitLine(0, y0, this.limitLineLength, 'mid').addTo(res);
+        this._createLimitLine(10, y0, this.limitLineLength, 'mid').addTo(res);
         text(this.midText, 50, y0 + 5).addTo(res);
         y0 += 22;
     }
-    res.$minLine = this._createLimitLine(0, y0, this.limitLineLength, 'min').addTo(res);
+    res.$minLine = this._createLimitLine(10, y0, this.limitLineLength, 'min').addTo(res);
     res.$minText = text(this.minText, 50, y0 + 5).addTo(res);
     y0 += 22;
     if (this.ranges[0].normal !== undefined) {
-        circle(this.limitLineLength / 2, y0, this.valuePlotRadius, 'range-chart-value-plot').addTo(res);
+        circle(this.limitLineLength / 2 + 10, y0, this.valuePlotRadius, 'range-chart-value-plot').addTo(res);
         text(this.normalText, 50, y0 + 5).addTo(res);
     }
 
