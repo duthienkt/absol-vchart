@@ -94,12 +94,12 @@ export function rect(x, y, width, height, eClss) {
 };
 
 
-export function line(x0, y0, x1, y1){
+export function line(x0, y0, x1, y1) {
     return _({
         tag: 'path',
         class: eClss,
         attr: {
-            d: 'M' + x0 + ' ' + y0 + 'L' + x1+ ' '+ y1 
+            d: 'M' + x0 + ' ' + y0 + 'L' + x1 + ' ' + y1
         }
     });
 }
@@ -276,20 +276,25 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
         tag: 'widthheightresizer',
         child: chartElt,
         style: {
-            display:'inline-block',
-            verticalAlign:'top'
+            display: 'inline-block',
+            verticalAlign: 'top'
         },
         on: {
             sizechange: function (event) {
                 var data = event.data;
                 if (data.width) {
-                    chartElt.canvasWidth = parseFloat(data.width.replace('px', ''))-4;
+                    chartElt.canvasWidth = parseFloat(data.width.replace('px', '')) - 4;
                 }
                 if (data.height) {
-                    chartElt.canvasHeight = parseFloat(data.height.replace('px', ''))-4;
+                    chartElt.canvasHeight = parseFloat(data.height.replace('px', '')) - 4;
                 }
                 chartElt.update();
             }
         }
-    }).addStyle(outerParam.style||{});
+    }).addStyle(outerParam.style || {});
 }
+
+export function paddingLeft(text, char, length) {
+    while (text.length < length) text = char + '' + text;
+    return text;
+} 
