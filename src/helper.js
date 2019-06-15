@@ -298,3 +298,11 @@ export function paddingLeft(text, char, length) {
     while (text.length < length) text = char + '' + text;
     return text;
 } 
+
+/**
+ * 
+ * @param {String} text 
+ */
+export function pathTokenize(text){
+    return text.match(/[a-zA-Z]+|(\-?[0-9\.]+(e\-?[0-9]+)?)/g)
+}
