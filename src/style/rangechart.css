@@ -28,9 +28,8 @@ table .base-chart-title {
 }
 
 .range-chart-value-plot {
-    fill: rgb(255, 218, 216);
-    stroke: black;
-    stroke-width: 1;
+    fill: #f7941d;
+    stroke: none;
 }
 
 .range-chart-limit-line {
@@ -45,15 +44,15 @@ table .base-chart-title {
 }
 
 .range-chart-limit-line.max {
-    stroke: rgb(230, 22, 16);
+    stroke: #ED1C24;
 }
 
 .range-chart-limit-line.mid {
-    stroke: rgb(77, 215, 250);
+    stroke: #58EBF4;
 }
 
 .range-chart-limit-line.min {
-    stroke: rgb(20, 100, 246);
+    stroke: #2C82FF;
 }
 
 .range-chart:not(.show-inline-value) .range-chart-inline-value {
