@@ -195,6 +195,6 @@ SalaryImgChart.prototype.init = function (props) {
 
 
 
-Vcore.install(SalaryImgChart);
+Vcore.install('SalaryImgChart'.toLowerCase(), SalaryImgChart);
 
 // cons
