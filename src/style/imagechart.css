@@ -1,0 +1,30 @@
+.image-chart text{
+    font-size: 10px;
+}
+
+.image-chart-ox {
+    fill: none;
+    stroke: #4472c4;
+    stroke-width: 1;
+}
+
+.image-chart-base{
+    fill:#7bc0f7;
+    stroke: none;
+}
+
+.image-chart-bonus{
+    fill:#ffcc7f;
+    stroke: none;
+}
+
+.image-chart-range{
+    stroke: black;
+    stroke-width:1; 
+}
+
+.image-chart-range-limit{
+    fill: none;
+    stroke: #000000;
+    stroke-width: 1;
+}

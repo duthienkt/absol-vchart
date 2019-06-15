@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Demo</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script src='../dist/vchart.js?'></script>
+</head>
+
+<body>
+    <style>
+    svg{
+        border: solid 1px black;
+    }</style>
+    <script>
+        var sic = vchart._('salaryimgchart').addTo(document.body);
+        sic.bonus = 40;
+    </script>
+</body>
+
+</html>
