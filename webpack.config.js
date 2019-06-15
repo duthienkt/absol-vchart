@@ -31,7 +31,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.(tpl|txt|xml|rels)$/i,
+                test: /\.(tpl|txt|xml|rels|svg)$/i,
                 use: 'raw-loader',
             },
             {
