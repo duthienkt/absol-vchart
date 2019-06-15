@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="560" height="320" version="1.1" viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <defs>
+  <marker id="Arrow1Send" overflow="visible" orient="auto">
+   <path transform="scale(.2) rotate(180) translate(6)" d="m0 0 5-5-17.5 5 17.5 5-5-5z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
+  </marker>
+  <marker id="Arrow1Sstart" overflow="visible" orient="auto">
+   <path transform="scale(.2) translate(6)" d="m0 0 5-5-17.5 5 17.5 5-5-5z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
+  </marker>
+  <marker id="Arrow2Mend" overflow="visible" orient="auto">
+   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill-rule="evenodd" stroke="#000" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow2Mstart" overflow="visible" orient="auto">
+   <path transform="scale(.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill-rule="evenodd" stroke="#000" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow1Sstart-8" overflow="visible" orient="auto">
+   <path transform="matrix(.2 0 0 .2 1.2 0)" d="m0 0 5-5-17.5 5 17.5 5z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
+  </marker>
+  <marker id="Arrow1Send-3" overflow="visible" orient="auto">
+   <path transform="matrix(-.2 0 0 -.2 -1.2 0)" d="m0 0 5-5-17.5 5 17.5 5z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
+  </marker>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ </g>
+</svg>

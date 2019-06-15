@@ -293,3 +293,11 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
         }
     }).addStyle(outerParam.style||{});
 }
+
+/**
+ * 
+ * @param {String} text 
+ */
+export function pathTokenize(text){
+    return text.match(/[a-zA-Z]+|(\-?[0-9\.]+(e\-?[0-9]+)?)/g)
+}
