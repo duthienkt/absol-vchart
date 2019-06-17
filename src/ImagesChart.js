@@ -20,11 +20,12 @@ SalaryImgChart.property = {};
 SalaryImgChart.prototype.preInit = function () {
     //this is defaul and can not be change
     this.bonus = 20;
+    this.distance = 400;
+    this.minDistance = 10;
     this.colTexts = ['Bậc 1', 'Bậc n -1', 'Bậc n'];
     this.distText = 'Khoảng cách lương';
     this.minDistText = 'Khoảng cách tối thiểu';
     this.bonusText = 'Hệ số ưu đãi (20%)';
-
 };
 
 
@@ -55,20 +56,24 @@ SalaryImgChart.prototype.initComp = function () {
         return text('', 0, 0).attr('text-anchor', 'middle').addTo(this);
     }.bind(this));
 
+
 }
 
 SalaryImgChart.prototype.updateComp = function () {
     var width = 560;
     var height = 320;
+    var maxColHeight = 288;
     var _this = this;
     this.oxY = height - 20;
 
+    this.colWidth = 40;
+
     this.oxSeg = [10, 100, 260, 500];
     this.xCols = [37, 272, 373];
-    this.heightCols = [60, 264, 288];
 
+    this.heightCols = [maxColHeight / (1 + this.distance/100), maxColHeight / (1 + this.minDistance/100), maxColHeight];
+    console.log(this.heightCols)
 
-    this.colWidth = 40;
 
 
 

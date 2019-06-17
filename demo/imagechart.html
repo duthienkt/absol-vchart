@@ -11,12 +11,19 @@
 
 <body>
     <style>
-    svg{
-        border: solid 1px black;
-    }</style>
+        svg {
+            border: solid 1px black;
+        }
+    </style>
     <script>
-        var sic = vchart._('salaryimgchart').addTo(document.body);
-        sic.bonus = 40;
+        var sic = vchart._({
+            tag: 'salaryimgchart',
+            props: {
+                bonus: 10,//pecent
+                minDistance: 10,//pecent
+                distance: 30//pecent
+            }
+        }).addTo(document.body);
     </script>
 </body>
 
