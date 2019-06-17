@@ -21,7 +21,37 @@
             props: {
                 bonus: 10,//pecent
                 minDistance: 10,//pecent
-                distance: 30//pecent
+                distance: 300,//pecent,
+                colTexts: ['Bậc 1', 'Bậc 4', 'Bậc 5'],
+                distText : 'Khoảng cách lương',
+                minDistText : 'Khoảng cách tối thiểu',
+                bonusText : 'Hệ số ưu đãi (10%)'
+            }
+        }).addTo(document.body);
+
+        var sic = vchart._({
+            tag: 'salaryimgchart',
+            props: {
+                bonus: 30,//pecent
+                minDistance: 10,//pecent
+                distance: 30,//pecent,
+                colTexts: ['Bậc 1', 'Bậc 5', 'Bậc 6'],
+                distText : 'Khoảng cách lương',
+                minDistText : 'Khoảng cách tối thiểu',
+                bonusText : 'Hệ số ưu đãi (30%)'
+            }
+        }).addTo(document.body);
+
+        var sic = vchart._({
+            tag: 'salaryimgchart',
+            props: {
+                bonus: 50,//pecent
+                minDistance: 20,//pecent
+                distance: 70,//pecent,
+                colTexts: ['Bậc 1', 'Bậc 9', 'Bậc 10'],
+                distText : 'Khoảng cách lương',
+                minDistText : 'Khoảng cách tối thiểu',
+                bonusText : 'Hệ số ưu đãi (50%)'
             }
         }).addTo(document.body);
     </script>
