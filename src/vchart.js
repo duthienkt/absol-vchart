@@ -1,8 +1,11 @@
 import vchart from ".";
 
 import * as helper from './helper';
+import * as tl from './template';
 
 Object.assign(vchart, helper);
+vchart.tl = tl;
+
 if ('absol' in window) {
     if (absol.ShareCreator) {
         Object.assign(
