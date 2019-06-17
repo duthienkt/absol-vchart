@@ -95,10 +95,10 @@ SunburstChart.prototype.initBackComp = function () {
 
 
 SunburstChart.prototype.updateBackComp = function () {
-    this.cx = this.canvasWidth / 2;
-    this.cy = this.canvasHeight / 2;
-    this.cr = Math.min(this.canvasHeight, this.canvasWidth) / 2 - this.paddingContent;
-    this.$content.attr('transform', translate(this.cx, this.cy));
+    // this.cx = this.canvasWidth / 2;
+    // this.cy = this.canvasHeight / 2;
+    // this.cr = Math.min(this.canvasHeight, this.canvasWidth) / 2 - this.paddingContent;
+    this.$content.attr('transform', translate(0, 0));
 };
 
 
@@ -236,13 +236,52 @@ SunburstChart.prototype.updateNode = function ($node) {
             .closePath()
             .end();
     }
+};
+
+SunburstChart.prototype.tryDrawNode = function ($node) {
+    if ($node.$childNodes)
+        $node.$childNodes.forEach(this.updateNode.bind(this));
+    if ($node.level > 0) {
+        var r0 = this.radiuses[0] + ($node.level - 1) * this.segmentLength;
+        var r1 = r0 + this.segmentLength * ($node.chartDataNode.span || 1);
+        $node.$shape.begin()
+            .moveTo(r0 * Math.cos($node.chartAngle[0]), r0 * Math.sin($node.chartAngle[0]))
+            .arcTo(r0 * Math.cos($node.chartAngle[1]), r0 * Math.sin($node.chartAngle[1]),
+                r0, r0,
+                $node.chartAngle[1] - $node.chartAngle[0] > Math.PI ? 1 : 0, 1)
+            .lineTo(r1 * Math.cos($node.chartAngle[1]), r1 * Math.sin($node.chartAngle[1]))
+            .arcTo(r1 * Math.cos($node.chartAngle[0]), r1 * Math.sin($node.chartAngle[0]),
+                r1, r1,
+                $node.chartAngle[1] - $node.chartAngle[0] > Math.PI ? 1 : 0, 0)
+            .closePath()
+            .end();
+    }
+};
+
+SunburstChart.prototype.meansure = function () {
+    this.$content.attr('transform', translate(0, 0));
+    var rootBox = this.$root.getBBox();
+    this.segmentLength = rootBox.width / 2;// (Math.min(this.canvasHeight, this.canvasWidth) - this.paddingContent * 2) / (this.depth * 2);
+    console.log(this.segmentLength)
+    this.tryDrawNode(this.$root);
+    var contentBox = this.$content.getBBox();
+    var availableWidth = this.canvasWidth - this.paddingContent * 2 - rootBox.width;
+    var availableHeight = this.canvasHeight - this.paddingContent * 2 - rootBox.height;
+    var outHeight = contentBox.height - rootBox.height;
+    var outWidth = contentBox.width - rootBox.width;
+    this.segmentLength = Math.min(this.segmentLength / outHeight * availableHeight, this.segmentLength / outWidth * availableWidth);
 
 };
 
 SunburstChart.prototype.updateComp = function () {
-    this.segmentLength = (this.cr - this.radiuses[0]) / ((this.depth - 1) + 0.000001);
+    this.meansure();
     this.updateNodeSession = new Date().getTime();
     this.updateNode(this.$root);
+    var contentBox = this.$content.getBBox();
+    var cx = contentBox.width/2 + contentBox.x;
+    var cy = contentBox.height/2 + contentBox.y;
+
+    this.$content.attr('transform', translate(this.canvasWidth/2 -cx, this.canvasHeight/2 -cy));
 };
 
 
