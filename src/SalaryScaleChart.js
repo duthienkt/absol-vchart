@@ -96,6 +96,11 @@ SalaryScaleChart.prototype.updateAxis = function () {
 SalaryScaleChart.prototype.updateCols = function () {
     var self = this;
     this.heightCols = [this.maxColHeight / (1 + this.distance / 100), this.maxColHeight / (1 + this.minDistance / 100), this.maxColHeight];
+    if (this.bonus < 0) {
+        this.heightCols = this.heightCols.map(function (x) {
+            return x * (100 + self.bonus) / 100;
+        });
+    }
     this.baseHeight = this.heightCols.map(function (h) {
         return h / (100 + self.bonus) * 100
     });
@@ -113,16 +118,28 @@ SalaryScaleChart.prototype.updateCols = function () {
             height: height
         });
     });
-
-    this.$bonuses.forEach(function (e, i) {
-        var height = self.bonusHeight[i];
-        e.attr({
-            x: self.colXs[i],
-            y: self.oy - self.heightCols[i],
-            width: self.colWidth,
-            height: height
+    if (this.bonus >= 0) {
+        this.$bonuses.forEach(function (e, i) {
+            var height = self.bonusHeight[i];
+            e.attr({
+                x: self.colXs[i],
+                y: self.oy - self.heightCols[i],
+                width: self.colWidth,
+                height: height
+            });
         });
-    });
+    }
+    else {
+        this.$bonuses.forEach(function (e, i) {
+            var height = self.bonusHeight[i];
+            e.attr({
+                x: self.colXs[i],
+                y: self.oy - self.heightCols[i] + height,
+                width: self.colWidth,
+                height: - height
+            });
+        });
+    }
 
 }
 

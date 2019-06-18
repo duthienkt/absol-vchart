@@ -18,16 +18,26 @@
     <script>
         var sic = vchart._({
             tag: 'salaryscalechart',
-            style:{
-                position:'fixed',
-                left:'30px',
-                top:'30px' ,
-                zIndex:-1
-            },
+           
             props: {
                 canvasWidth: 560,
                 canvasHeight: 320,
-                bonus: 10,//pecent
+                bonus: 50,//pecent
+                minDistance: 10,//pecent
+                distance: 300,//pecent,
+                colTexts: ['Bậc 1', 'Bậc 4', 'Bậc 5'],
+                distText : 'Khoảng cách lương',
+                minDistText : 'Khoảng cách tối thiểu',
+                bonusText : 'Hệ số ưu đãi (10%)'
+            }
+        }).addTo(document.body);
+        var sic = vchart._({
+            tag: 'salaryscalechart',
+           
+            props: {
+                canvasWidth: 560,
+                canvasHeight: 320,
+                bonus: -50,//pecent
                 minDistance: 10,//pecent
                 distance: 300,//pecent,
                 colTexts: ['Bậc 1', 'Bậc 4', 'Bậc 5'],
