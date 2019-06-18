@@ -72,9 +72,6 @@ SalaryImgChart.prototype.updateComp = function () {
     this.xCols = [37, 272, 373];
 
     this.heightCols = [maxColHeight / (1 + this.distance/100), maxColHeight / (1 + this.minDistance/100), maxColHeight];
-    console.log(this.heightCols)
-
-
 
 
     //<path d="m2.9298 290.03h21.626m43.891 0h51.013" fill="none" stroke="#4472c4" stroke-width=".26458px"/>
