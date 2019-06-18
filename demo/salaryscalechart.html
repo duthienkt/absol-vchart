@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Demo</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script src='../dist/vchart.js?'></script>
+</head>
+
+<body>
+    <style>
+        svg {
+            border: solid 1px black;
+        }
+    </style>
+    <script>
+        var sic = vchart._({
+            tag: 'salaryscalechart',
+            style:{
+                position:'fixed',
+                left:'30px',
+                top:'30px' ,
+                zIndex:-1
+            },
+            props: {
+                canvasWidth: 560,
+                canvasHeight: 320,
+                bonus: 10,//pecent
+                minDistance: 10,//pecent
+                distance: 300,//pecent,
+                colTexts: ['Bậc 1', 'Bậc 4', 'Bậc 5'],
+                distText : 'Khoảng cách lương',
+                minDistText : 'Khoảng cách tối thiểu',
+                bonusText : 'Hệ số ưu đãi (10%)'
+            }
+        }).addTo(document.body);
+
+    </script>
+</body>
+
+</html>
