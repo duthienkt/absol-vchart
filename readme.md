@@ -712,8 +712,8 @@ var x = vchart._({
 
 
 ## SalaryScaleChart
-[![Live-Demo](./doc/assets/salaryscalechart.PNG)](https://volcanion.cf/vchart/demo/squarechart.html)
-[![Live-Demo](./doc/assets/salaryscalechart1.PNG)](https://volcanion.cf/vchart/demo/squarechart.html)
+[![Live-Demo](./doc/assets/salaryscalechart.PNG)](https://volcanion.cf/vchart/demo/salaryscalechart.html)
+[![Live-Demo](./doc/assets/salaryscalechart1.PNG)](https://volcanion.cf/vchart/demo/salaryscalechart.html)
 
 ```js
     var sic = vchart._({
