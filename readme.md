@@ -708,3 +708,40 @@ var x = vchart._({
 }).addTo(document.body);
 
 ```
+
+
+
+## SalaryScaleChart
+[![Live-Demo](./doc/assets/salaryscalechart.PNG)](https://volcanion.cf/vchart/demo/squarechart.html)
+[![Live-Demo](./doc/assets/salaryscalechart1.PNG)](https://volcanion.cf/vchart/demo/squarechart.html)
+
+```js
+    var sic = vchart._({
+            tag: 'salaryscalechart',
+           
+            props: {
+                canvasWidth: 400,
+                canvasHeight: 320,
+                bonus: -50,//pecent
+                minDistance: 10,//pecent
+                distance: 500,//pecent,
+                colTexts: ['Bậc 1', 'Bậc 4', 'Bậc 5'],
+            }
+        }).addTo(document.body);
+
+    var sic1 = vchart._({
+            tag: 'salaryscalechart',
+           
+            props: {
+                canvasWidth: 560,
+                canvasHeight: 320,
+                bonus: 50,//pecent
+                minDistance: 10,//pecent
+                distance: 500,//pecent,
+                colTexts: ['Bậc 1', 'Bậc 4', 'Bậc 5'],
+                distText : 'Khoảng cách lương',
+                minDistText : 'Khoảng cách tối thiểu',
+                bonusText : 'Hệ số ưu đãi (10%)'
+            }
+        }).addTo(document.body);
+```
