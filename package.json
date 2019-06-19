@@ -1,6 +1,6 @@
 {
   "name": "absol-vchart",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "svg chart, by absol.js",
   "main": "scr/index.js",
   "directories": {
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/duthienkt/vchart#readme",
   "dependencies": {
-    "absol": "^1.3.1",
+    "absol": "^1.3.3",
     "absol-acomp": "^0.1.10"
   },
   "devDependencies": {
