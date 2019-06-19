@@ -10,7 +10,7 @@ var x = vchart._({
         canvasWidth: 700,
         canvasHeight: 600,
         levels: ['0.0', '1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0', '8.0', '9.0', '10.0'],
-        keys: ['C/C++', 'Javascript', 'Matlab', 'CSS', 'C#', 'R', 'Python', 'ASM', 'Pascal'],
+        keys: ['C/C++', 'Javascript', 'Matlab', 'CSS', 'C#', 'R', 'Python', 'ASM', 'Pascal - basic programming language'],
         ranges: [
             [4, 7],
             [5, 7],
@@ -47,6 +47,7 @@ var x = vchart._({
    
 
 }).addTo(document.body);
+
 
 var a = vchart._({
     extendEvent: 'contextmenu',

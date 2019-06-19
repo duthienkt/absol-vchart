@@ -3,9 +3,12 @@ import Vcore from "./VCore";
 import Color from "absol/src/Color/Color";
 import BaseChart from "./BaseChart";
 import { rotate, translate } from "./template";
+import Vec2 from "absol/src/Math/Vec2";
+import Rectangle from "absol/src/Math/Rectangle";
 
 var _ = Vcore._;
 var $ = Vcore.$;
+
 
 function AssessmentChart() {
     var res = _({
@@ -82,13 +85,94 @@ AssessmentChart.prototype._createRangeLine = function () {
     return res;
 };
 
+/**
+ * @param {Array<Rectangle>} rects
+ * @returns {Rectangle}
+ */
+AssessmentChart.prototype._expectSize = function (rects, r, db) {
+    var cr = new Rectangle(0, 0, 0, 0);
+    var rect;
+    for (var i = 0; i < rects.length; ++i) {
+        var angle = Math.PI * 2 * i / rects.length - Math.PI / 2;
+        rect = rects[i];
+        if (i == 0) {
+            rect.x = rect.width / 2;
+            rect.y = - rect.height - r;
+        }
+        else if (rects.length % 4 == 0 && i == (rects.length >> 2)) {
+            rect.x = r;
+            rect.y = rect.height / 2;
+        }
+        else if (rects.length % 4 == 0 && i == (rects.length >> 2) * 3) {
+            rect.x = -r - rect.width;
+            rect.y = rect.height / 2;
+        }
+        else if (rects.length % 2 == 0 && i == (rects.length >> 1)) {
+            rect.x = rect.width / 2;
+            rect.y = r;
+        }
+        else if (i < rects.length / 4) {
+            rect.x = r * Math.cos(angle);
+            rect.y = r * Math.sin(angle) - rect.height;
+        }
+        else if (i < rects.length / 2) {
+            rect.x = r * Math.cos(angle);
+            rect.y = r * Math.sin(angle);
+        }
+        else if (i < rects.length / 4 * 3) {
+            rect.x = r * Math.cos(angle) - rect.width;
+            rect.y = r * Math.sin(angle);
+        }
+        else {
+            rect.x = r * Math.cos(angle) - rect.width;
+            rect.y = r * Math.sin(angle) - rect.height;
+        }
 
+        cr = cr.merge(rect);
+    }
+    return cr;
+
+};
+
+
+AssessmentChart.prototype.estimateSize = function () {
+    this.axisNameBBoxs = this.$axisNames.map(function (elt) {
+        return elt.getBBox();
+    });
+
+    var rects = this.axisNameBBoxs.map(function (box) {
+        return new Rectangle(box.x, box.y, box.width, box.height);
+    });
+
+    var titleBox = this.$title.getBBox();
+    var noteGroupBox = this.$noteGroup.getBBox();
+
+    var maxR = Math.min(this.canvasWidth, this.canvasHeight) / 2;
+    var minR = 20;//
+    var aWidth = this.canvasWidth - this.paddingContent * 2;
+    var aHeight = this.canvasHeight - this.paddingContent * 2 - titleBox.height * 1.5 + noteGroupBox.height * 1.5;
+    while (maxR - minR > 3) {
+        var midR = (minR + maxR) / 2;
+        var size = this._expectSize(rects, midR);
+        if (size.width < aWidth && size.height < aHeight) {
+            minR = midR;
+        }
+        else {
+            maxR = midR;
+        }
+    }
+
+    this.expectedSize = this._expectSize(rects, minR, true);
+    this.expectedRadius = minR;
+    this.axisLenth = this.expectedRadius - 30;
+};
 
 
 AssessmentChart.prototype.updateSize = BaseChart.prototype.updateSize;
 
 AssessmentChart.prototype.update = function () {
     this.updateSize();
+    this.estimateSize()
     this.updateBackComp();
     this.updateComp();
     this.updateFrontComp();
@@ -97,6 +181,7 @@ AssessmentChart.prototype.update = function () {
 AssessmentChart.prototype.initBackComp = function () {
     this.$title = text(this.title, 20, 20, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
     this.$content = _('g').addTo(this);
+    this.$noteGroup = _('g').addTo(this);
     this.$axisLines = this.keys.map(function (u, i) {
         var res = _('hlinearrow');
         res.resize(200);
@@ -117,7 +202,7 @@ AssessmentChart.prototype.initBackComp = function () {
     }.bind(this));
 
     this.$notes = this.areas.map(function (area, i) {
-        return this._createLineNote(area.name, this.autoColor(i)).addTo(this);
+        return this._createLineNote(area.name, this.autoColor(i)).addTo(this.$noteGroup);
     }.bind(this));
 
 
@@ -128,21 +213,18 @@ AssessmentChart.prototype.updateBackComp = function () {
     this.$title.attr('x', this.canvasWidth / 2);
     this.axisTop = 30 + this.axisNameMarging + 30;
     this.axisBottom = this.canvasHeight - 25 - 30 - this.axisNameMarging;
-    var axisNameWidth = this.$axisNames.reduce(function (ac, e) {
-        return Math.max(e.getBBox().width, ac);
-    }, 0);
 
-    this.axisLenth = Math.min(this.axisBottom - this.axisTop - this.paddingMaxAxis * 2, this.canvasWidth - axisNameWidth * 2 - this.axisNameMarging - this.paddingMaxAxis) / 2;
-    this.cx = this.canvasWidth / 2;
-    this.cy = (this.axisBottom + this.axisTop) / 2;
-    this.$content.attr('transform', translate(this.cx, this.cy));
+
+
+
+    // this.$content.attr('transform', translate(this.cx, this.0));
     this.$axisLines.forEach(function ($axisLine) {
-        $axisLine.resize(this.mapRadius(this.levels.length - 1) + this.paddingMaxAxis);
+        $axisLine.resize(this.axisLenth + 20);
     }.bind(this));
     this.$axisNames.forEach(function ($axisName, i) {
         var angle = (-90 + i * 360 / this.keys.length) * Math.PI / 180;
-        var x = (this.mapRadius(this.levels.length - 1) + this.axisNameMarging + this.paddingMaxAxis) * Math.cos(angle);
-        var y = (this.mapRadius(this.levels.length - 1) + this.axisNameMarging + this.paddingMaxAxis) * Math.sin(angle) + 5;
+        var x = (this.axisLenth + 30) * Math.cos(angle);
+        var y = (this.axisLenth + 30) * Math.sin(angle) + 5;
         $axisName.attr({ x: x, y: y });
     }.bind(this));
 
@@ -167,6 +249,12 @@ AssessmentChart.prototype.updateBackComp = function () {
         $note.attr('transform', translate(x + this.noteMarginH, this.canvasHeight - 7));
         return x + maxNoteWidth + this.noteMarginH * 2;
     }.bind(this), this.canvasWidth / 2 - ((maxNoteWidth + 2 * this.noteMarginH) * this.areas.length) / 2);
+
+    var contentBound = new Rectangle(this.paddingContent, this.$title.getBBox().height * 1.5, this.canvasWidth - this.paddingContent * 2, this.$noteGroup.getBBox().y);
+    contentBound.height -= contentBound.y;
+    var centerBound = contentBound.centerPoint();
+
+    this.$content.attr('transform', translate(centerBound.x + (- this.expectedSize.x - this.expectedSize.width / 2), centerBound.y + (- this.expectedSize.y - this.expectedSize.height / 2)));
 };
 
 AssessmentChart.prototype.initComp = function () {
@@ -286,6 +374,7 @@ AssessmentChart.prototype.preInit = function () {
     this.paddingMaxAxis = 20;
     this.axisNameMarging = 7;
     this.rangePlotRadius = 5;
+    this.paddingContent = 10;
 };
 
 AssessmentChart.prototype.prepareData = function () {
