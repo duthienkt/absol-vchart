@@ -247,7 +247,7 @@ export function toLocalString(fixedRight) {
 };
 
 export function map(x, l, h, L, H) {
-    return L + (x - l) / (h - l) * (H - L);
+    return L + (x - l) * (H - L) / (h - l);
 }
 
 
@@ -297,13 +297,13 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
 export function paddingLeft(text, char, length) {
     while (text.length < length) text = char + '' + text;
     return text;
-} 
+}
 
 /**
  * 
  * @param {String} text 
  */
-export function pathTokenize(text){
+export function pathTokenize(text) {
     return text.match(/[a-zA-Z]+|(\-?[0-9\.]+(e\-?[0-9]+)?)/g)
 }
 
@@ -311,8 +311,8 @@ export function pathTokenize(text){
  * @argument {Array<SVGElement>}
  * @returns {Number}
  */
-export function getMinWidthBox(){
-    return Array.prototype.reduce.call(arguments, function(ac, elt){
+export function getMinWidthBox() {
+    return Array.prototype.reduce.call(arguments, function (ac, elt) {
         return Math.min(ac, elt.getBBox().width);
     }, 100000000);
 }
@@ -321,8 +321,8 @@ export function getMinWidthBox(){
  * @argument {Array<SVGElement>}
  * @returns {Number}
  */
-export function getMinHeightBox(){
-    return Array.prototype.reduce.call(arguments, function(ac, elt){
+export function getMinHeightBox() {
+    return Array.prototype.reduce.call(arguments, function (ac, elt) {
         return Math.min(ac, elt.getBBox().height);
     }, 100000000);
 }
@@ -331,8 +331,8 @@ export function getMinHeightBox(){
  * @argument {Array<SVGElement>}
  * @returns {Number}
  */
-export function getMaxWidthBox(){
-    return Array.prototype.reduce.call(arguments, function(ac, elt){
+export function getMaxWidthBox() {
+    return Array.prototype.reduce.call(arguments, function (ac, elt) {
         return Math.max(ac, elt.getBBox().width);
     }, -100000000);
 }
@@ -341,8 +341,8 @@ export function getMaxWidthBox(){
  * @argument {Array<SVGElement>}
  * @returns {Number}
  */
-export function getMaxHeightBox(){
-    return Array.prototype.reduce.call(arguments, function(ac, elt){
+export function getMaxHeightBox() {
+    return Array.prototype.reduce.call(arguments, function (ac, elt) {
         return Math.max(ac, elt.getBBox().height);
     }, -100000000);
 }
