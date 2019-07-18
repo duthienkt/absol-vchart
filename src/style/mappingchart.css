@@ -1,5 +1,10 @@
 .mapping-chart{
     border: solid 1px gray;
+    background-color: aliceblue;
+}
+
+.mapping-chart-map-line-hitbox.vchart-hitbox{
+    stroke-width: 8;
 }
 
 .mapping-chart-range-text{
@@ -9,15 +14,16 @@
 }
 
 .mapping-chart-range-plot{
-    fill:cyan;
-    stroke: red;
-    stroke-width: 0.54;
+    fill:none;
+    stroke: black;
+    stroke-width: 2px;
 }
 
 .mapping-chart-line-plot{
     fill:green;
     stroke: red;
     stroke-width: 0.54;
+    cursor: pointer;
 }
 
 .mapping-chart-title{
@@ -33,15 +39,16 @@
 
 .mapping-chart-marker{
     font-size: 14px;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 .mapping-chart-marker:hover .mapping-chart-marker-box{
-    fill: rgba(17, 230, 88, 0.788);
+    /* fill: rgba(17, 230, 88, 0.788); */
 }
 
 .mapping-chart-marker-box{
-    fill: rgba(17, 187, 230, 0.788);
+    /* fill: rgba(17, 187, 230, 0.788); */
+    fill: none;
     stroke: none;
 }
 
@@ -54,7 +61,7 @@ svg:not(.mapping-chart-hover-bot) .mapping-chart-marker.bot{
 .mapping-chart-marker.bot:hover .mapping-chart-marker-box,
 .mapping-chart-marker.top:hover .mapping-chart-marker-box
 {
-    fill: rgba(17, 187, 230, 0.788);
+    /* fill: rgba(17, 187, 230, 0.788); */
 }
 
 svg:not(.mapping-chart-hover-top)  .mapping-chart-marker.top{
@@ -63,10 +70,9 @@ svg:not(.mapping-chart-hover-top)  .mapping-chart-marker.top{
 
 .mapping-chart-map-line{
     stroke: black;
-    stroke-width: 3;
+    stroke-width: 2;
 }
 
 .mapping-chart-map-line.selected-line{
     stroke: red;
-    stroke-width: 3;
 }
