@@ -1,6 +1,6 @@
 {
   "name": "absol-vchart",
-  "version": "0.9.6",
+  "version": "0.9.8",
   "description": "svg chart, by absol.js",
   "main": "scr/index.js",
   "directories": {
