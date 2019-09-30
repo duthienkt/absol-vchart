@@ -5,6 +5,8 @@
 
 .mapping-chart-map-line-hitbox.vchart-hitbox{
     stroke-width: 8;
+    stroke: transparent;
+    cursor: pointer;
 }
 
 .mapping-chart-range-text{

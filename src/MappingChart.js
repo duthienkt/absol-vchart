@@ -46,7 +46,7 @@ MappingChart.prototype.preInit = function () {
 
 }
 
-MappingChart.prototype.numberToString = function(number){
+MappingChart.prototype.numberToString = function (number) {
     return number + '';
 }
 
@@ -58,22 +58,22 @@ MappingChart.prototype.numberToString = BaseChart.prototype.numberToString;
 
 
 MappingChart.prototype.initAxis = function () {
-    
+
     this.$topMinPlot = _('shape.mapping-chart-range-plot').addTo(this.$background);
     this.$topMaxPlot = _('shape.mapping-chart-range-plot').addTo(this.$background);
-    
+
     this.$botMinPlot = _('shape.mapping-chart-range-plot').addTo(this.$background);
     this.$botMaxPlot = _('shape.mapping-chart-range-plot').addTo(this.$background);
 
     this.$topLine = hline(50, 50, 500, 'mapping-chart-range-line').addTo(this.$background);
     this.$botLine = hline(50, 50, 500, 'mapping-chart-range-line').addTo(this.$background);
-    
+
     this.$topMinText = text(this.numberToString(this.min), 20, 20, 'mapping-chart-range-text').addTo(this.$background);
     this.$topMaxText = text(this.numberToString(this.max), 30, 20, 'mapping-chart-range-text').addTo(this.$background);
 
     this.$botMinText = text(this.numberToString(this.min), 20, 50, 'mapping-chart-range-text').addTo(this.$background);
     this.$botMaxText = text(this.numberToString(this.max), 30, 50, 'mapping-chart-range-text').addTo(this.$background);
-    
+
 
     this.$title = text(this.title, 0, 25, 'mapping-chart-title').addTo(this.$background).attr('text-anchor', 'middle');
 
@@ -266,13 +266,13 @@ MappingChart.prototype.addMarkerBottom = function (mapValue) {
         cy: y1
     });
 
-    
+
     this._tempLine.$line.begin()
         .moveTo(this._tempLine.x0, this._tempLine.y0)
         .lineTo(x1, y1)
         .end();
     this._tempLine.$line_hitbox.attr('d', this._tempLine.$line.attr('d'));
-    
+
     var tempLine = this._tempLine;
     this.settupEvent(tempLine);
 
@@ -383,7 +383,7 @@ MappingChart.prototype.cancelCMD = function () {
         this._tempLine = undefined;
     }
     else {
-        
+
     }
 };
 MappingChart.prototype.deleteCMD = function () {
@@ -415,9 +415,11 @@ MappingChart.prototype.eventKeyDownHandler = function (event) {
     }
 };
 
-MappingChart.prototype.settupEvent = function(tempLine){
+MappingChart.prototype.settupEvent = function (tempLine) {
     var self = this;
     function clickLineHandler(event) {
+
+
         if (self._selectedLine !== undefined) {
             self._selectedLine.$line.removeClass('selected-line');
             self._selectedLine = undefined;
@@ -425,22 +427,24 @@ MappingChart.prototype.settupEvent = function(tempLine){
         self._selectedLine = tempLine;
         tempLine.$line.addClass('selected-line');
 
+        function unSelectLine() {
+            tempLine.$line.removeClass('selected-line');
+            if (self._selectedLine !== undefined)
+                if (self._selectedLine.$line == tempLine.$line)
+                    self._selectedLine = undefined;
+            self.off('click', clickOutHandler);
+            self.off('keydown', cancelFocusHandler);
+        }
+
         function clickOutHandler(event) {
             if (event.target != tempLine.$line) {
-                if (event.target)
-                    tempLine.$line.removeClass('selected-line');
-                if (self._selectedLine !== undefined)
-                    if (self._selectedLine.$line == tempLine.$line)
-                        self._selectedLine = undefined;
-                self.off('click', clickOutHandler);
+               unSelectLine();
             }
         }
 
         function cancelFocusHandler(event) {
             if (event.key == "Escape") {
-                tempLine.$line.removeClass('selected-line');
-                self._selectedLine = undefined;
-                self.off('keydown', cancelFocusHandler);
+                unSelectLine();
             }
         }
 
@@ -662,7 +666,7 @@ MappingChart.prototype.setLineElt = function (value, mapValue) {
 }
 
 
-MappingChart.prototype.removeElementInObject = function(object){
+MappingChart.prototype.removeElementInObject = function (object) {
     Object.keys(object).forEach(function (key) {
         if (typeof object[key].remove == 'function') object[key].remove();
     })

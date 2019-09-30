@@ -16,8 +16,9 @@ vchart._({
             {value: 7000000, mapValue: 12000000},
             {value: 30000000, mapValue: 40000000},
             {value: 55000000, mapValue: 70000000}
-        ]
-        // collision: 1
+        ],
+        // collision: 1,
+        precision: 1/1
     },
     on: {
 
