@@ -9,6 +9,10 @@
     display: none;
 }
 
+.assessment-chart:not(.show-range-segment) .assessment-chart-range-segment {
+    display: none;
+}
+
 .assessment-chart-area {
     stroke-width: 3;
 }

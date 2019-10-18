@@ -75,7 +75,8 @@ AssessmentChart.prototype.mapLevel = function (value) {
 
 AssessmentChart.prototype._createRangeLine = function () {
     var res = _({
-        tag: 'g'
+        tag: 'g',
+        class: 'assessment-chart-range-segment'
     });
 
     res.$min = circle(0, 0, this.rangePlotRadius, 'assessment-chart-range-plot').addTo(res);
@@ -214,13 +215,24 @@ AssessmentChart.prototype.updateBackComp = function () {
     this.axisTop = 30 + this.axisNameMarging + 30;
     this.axisBottom = this.canvasHeight - 25 - 30 - this.axisNameMarging;
 
-
-
-
     // this.$content.attr('transform', translate(this.cx, this.0));
     this.$axisLines.forEach(function ($axisLine) {
         $axisLine.resize(this.axisLenth + 20);
     }.bind(this));
+
+    if (this.axisWeight && this.axisWeight.forEach) {
+        this.axisWeight.forEach(function (value, i) {
+            var axisLineElt = this.$axisLines[i];
+            if (axisLineElt) {
+                if (value >= 0) {
+                    axisLineElt.addStyle('strokeWidth', value + '');
+                }
+                else {
+                    axisLineElt.remove('strokeWidth');
+                }
+            }
+        }.bind(this));
+    }
     this.$axisNames.forEach(function ($axisName, i) {
         var angle = (-90 + i * 360 / this.keys.length) * Math.PI / 180;
         var x = (this.axisLenth + 30) * Math.cos(angle);
@@ -410,6 +422,19 @@ AssessmentChart.property = {
         get: function () {
             return this.containsClass('simple-mode');
         }
+    },
+    rangeSegment: {
+        set: function (value) {
+            if (value)
+                this.addClass('show-range-segment');
+            else
+                this.removeClass('show-range-segment');
+        },
+        get: function () {
+            return this.containsClass('show-range-segment');
+        }
     }
-}
+};
+
+
 Vcore.creator.assessmentchart = AssessmentChart;
