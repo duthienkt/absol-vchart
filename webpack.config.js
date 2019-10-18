@@ -46,7 +46,8 @@ module.exports = {
     performance: {
         hints: false
     },
-    plugins: [
-        new MinifyPlugin()
-    ]
+    optimization: {
+        // We don't want to minimize our code.
+        minimize: false
+    },
 };
