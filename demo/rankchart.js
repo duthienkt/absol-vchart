@@ -1,7 +1,6 @@
 
 var y = vchart._({
     tag: 'rankchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Biểu đồ bậc lương',
         valueName: 'lương',

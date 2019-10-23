@@ -1,7 +1,6 @@
 
     var y = vchart._({
         tag: 'rangechart',
-        style: { background: 'rgb(230, 230, 232)', width: '1024px', height: 1024 * 600 / 700 + 'px' },
         props: {
             title: 'Biểu đồ lương chức danh',
             valueName: 'lương',
@@ -58,7 +57,6 @@
 
     var x = vchart._({
         tag: 'rangechart',
-        style: { background: 'rgb(230, 230, 232)' },
         props: {
             title: 'Biểu đồ không có median',
             valueName: 'lương',
@@ -109,7 +107,6 @@
 
     var z = vchart._({
         tag: 'rangechart',
-        style: { background: 'rgba(0,0,0,0.01)' },
         props: {
             title: 'Biểu đồ không có normal',
             valueName: 'lương',
@@ -161,7 +158,6 @@
 
     var t = vchart._({
         tag: 'rangechart',
-        style: { background: 'rgb(230, 230, 232)' },
         props: {
             title: 'Biểu đồ chỉ có min max',
             valueName: 'lương',
@@ -207,7 +203,7 @@
 
     var u = vchart._({
         tag: 'rangechart',
-        style: { background: 'rgb(230, 230, 232)', 'border-radius':'10px' },
+        style: { 'border-radius':'10px' },
         props: {
             title: 'Biểu đồ chỉ có min max (giá trị trong đồ thị)',
             valueName: 'lương',

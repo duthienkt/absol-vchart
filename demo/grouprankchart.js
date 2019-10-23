@@ -1,6 +1,5 @@
 var y = vchart._({
     tag: 'grouprankchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Biểu đồ lương nhóm chức danh',
         valueName: 'lương',
@@ -61,7 +60,6 @@ var y = vchart._({
 
 var x = vchart._({
     tag: 'grouprankchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Biểu đồ lương nhóm chức danh',
         valueName: 'lương',

@@ -209,7 +209,7 @@ vchart._({
 ```js
    var y = vchart._({
         tag: 'rangechart',
-        style: { background: 'rgb(230, 230, 232)', width: '1024px', height: 1024 * 600 / 700 + 'px' },
+        style: { width: '1024px', height: 1024 * 600 / 700 + 'px' },
         props: {
             title: 'Biểu đồ lương chức danh',
             valueName: 'lương',
@@ -275,7 +275,6 @@ vchart._({
 
 var x = vchart._({
     tag: 'assessmentchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         simpleMode:true,
         title: 'Programming skill',
@@ -307,7 +306,6 @@ var x = vchart._({
 var a = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Programming skill',
         canvasWidth: 900,
@@ -347,7 +345,6 @@ var a = vchart._({
 ```js
 var a = vchart._({
         tag: 'columnchart',
-        style: { background: 'rgb(230, 230, 232)' },
         props: {
             title: 'Biểu đồ độ ẩm',
             valueName: '%',
@@ -433,7 +430,6 @@ var a = vchart._({
 ```js
 var x = vchart._({
     tag: 'rangegroupchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Biểu đồ lương chức danh',
         valueName: 'lương',
@@ -648,7 +644,6 @@ var y = vchart._({
 
 var x = vchart._({
     tag: 'grouprankchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Biểu đồ lương nhóm chức danh',
         valueName: 'lương',

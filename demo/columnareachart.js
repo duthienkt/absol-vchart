@@ -101,7 +101,6 @@ var c = vchart._({
 
 var d = vchart._({
     tag: 'columnareachart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Biểu đồ độ ẩm',
         valueName: '%',
@@ -120,7 +119,6 @@ var d = vchart._({
 }).addTo(document.body);
 var a = vchart._({
     tag: 'columnchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Biểu đồ độ ẩm',
         valueName: '%',
@@ -142,7 +140,6 @@ var a = vchart._({
 
 var b = vchart._({
     tag: 'columnchart',
-    style: { background: 'rgb(230, 230, 232)' },
     props: {
         title: 'Biểu đồ độ ẩm',
         valueName: '%',

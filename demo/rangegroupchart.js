@@ -1,6 +1,6 @@
 var x = vchart._({
     tag: 'rangegroupchart',
-    style: { background: 'rgb(230, 230, 232)' },
+    
     props: {
         title: 'Biểu đồ lương chức danh',
         valueName: 'lương',
@@ -83,7 +83,7 @@ var x = vchart._({
 
 var y = vchart._({
     tag: 'rangegroupchart',
-    style: { background: 'rgb(230, 230, 232)' },
+    
     props: {
         title: 'Biểu đồ lương chức danh',
         valueName: 'lương',
@@ -167,7 +167,7 @@ var y = vchart._({
 
 var z = vchart._({
     tag: 'rangegroupchart',
-    style: { background: 'rgb(230, 230, 232)' },
+    
     props: {
         title: 'Biểu đồ lương chức danh',
         valueName: 'lương',
