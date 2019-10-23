@@ -10,32 +10,35 @@ var $ = Vcore.$;
 function BaseChart() {
     var _ = vchart._;
     var $ = vchart.$;
-    var suffix = (Math.random() + '').replace(/\./g, '');
     var res = _({
         tag: 'svg',
         class: 'base-chart',
         child: [
-            'axis',
-            {
-                tag: 'mask',
-                attr: { id: 'contentMask' + suffix },
-                child: '<rect id="maskRect" x="0" y="0" width="1800" height="1024" fill="white" />'
 
-            },
             {
                 tag: 'g',
                 attr: {
-                    id: 'contentBox',
-                    mask: 'url(#contentMask' + suffix + ')'
+                    id: 'contentBox'
                 },
                 child: 'g#content'
             },
+            {
+                tag: 'path',
+                class: 'base-chart-white-mask',
+                attr: {
+                    fill: 'white',
+                    stroke: 'white',
+                    'fill-rule': 'evenodd',
+                    d: 'M0,0  0,2000 2000,2000 2000,0zM100,0  0,200 200,200 200,0z'
+                }
+            },
+            'axis',
             'hscrollbar'
         ]
     });
     res.sync = res.afterAttached();
     res.$axis = $('axis', res);
-    res.$maskRect = $('rect#maskRect', res);
+    res.$whiteBoxMask = $('.base-chart-white-mask', res);
     res.$content = $('g#content', res);
     res.eventHandler = OOP.bindFunctions(res, BaseChart.eventHandler);
     // res.on('wheel', res.eventHandler.wheel);
@@ -187,12 +190,15 @@ BaseChart.prototype.updateAxis = function () {
         y: 30,
         'text-anchor': 'end'
     });
-    this.$maskRect.attr({
-        x: this.oxyLeft,
-        y: 10,
-        height: this.canvasHeight - 10,
-        width: this.canvasWidth - 10 - this.oxyLeft,
-    });
+
+    this.$whiteBoxMask.attr('d', 'M0,0  0,cvh cvw,cvh cvw,0zMleft,top  left,bottom right,bottom right,topz'
+        .replace(/cvh/g, this.canvasHeight)
+        .replace(/cvw/g, this.canvasWidth)
+        .replace(/left/g, this.oxyLeft)
+        .replace(/top/g, 10)
+        .replace(/bottom/g, this.canvasHeight)
+        .replace(/right/g, this.canvasWidth - 10)
+    )
 
     this.$content.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
     this.$oxName.attr({ x: this.canvasWidth - this.$oxName.getBBox().width - 3, y: this.oxyBottom - 9 });

@@ -5,33 +5,35 @@ import OOP from "absol/src/HTML5/OOP";
 var _ = Vcore._;
 var $ = Vcore.$;
 function RangeChart() {
-    var suffix = (Math.random() + '').replace(/\./g, '');
     var res = _({
         tag: 'svg',
         class: 'range-chart',
         child: [
-            'axis',
-            {
-                tag: 'mask',
-                attr: { id: 'contentMask' + suffix },
-                child: '<rect id="maskRect" x="0" y="0" width="1800" height="1024" fill="white" />'
-
-            },
             {
                 tag: 'g',
                 attr: {
-                    id: 'contentBox',
-                    mask: 'url(#contentMask' + suffix + ')'
+                    id: 'contentBox'
                 },
                 child: 'g#content'
             },
+            {
+                tag: 'path',
+                class: 'base-chart-white-mask',
+                attr: {
+                    fill: 'white',
+                    stroke: 'white',
+                    'fill-rule': 'evenodd',
+                    d: 'M0,0  0,2000 2000,2000 2000,0zM100,0  0,200 200,200 200,0z'
+                }
+            },
+            'axis',
             'hscrollbar'
         ]
     });
 
     res.sync = res.afterAttached(500);
     res.$axis = $('axis', res);
-    res.$maskRect = $('rect#maskRect', res);
+    res.$whiteBoxMask = $('.base-chart-white-mask', res);
     res.$content = $('g#content', res);
     res.eventHandler = OOP.bindFunctions(res, RangeChart.eventHandler);
     // res.on('wheel', res.eventHandler.wheel);
@@ -341,12 +343,14 @@ RangeChart.prototype.updateOyValues = function () {
 RangeChart.prototype.updateAxis = function () {
     this.$axis.moveTo(this.oxyLeft, this.oxyBottom);
     this.$axis.resize(this.oxLength + 14, this.oyLength + 14);
-    this.$maskRect.attr({
-        x: this.oxyLeft,
-        y: 10,
-        height: this.canvasHeight - 10,
-        width: this.canvasWidth - this.oxyLeft,
-    });
+    this.$whiteBoxMask.attr('d', 'M0,0  0,cvh cvw,cvh cvw,0zMleft,top  left,bottom right,bottom right,topz'
+        .replace(/cvh/g, this.canvasHeight)
+        .replace(/cvw/g, this.canvasWidth)
+        .replace(/left/g, this.oxyLeft)
+        .replace(/top/g, 10)
+        .replace(/bottom/g, this.canvasHeight)
+        .replace(/right/g, this.canvasWidth - 10)
+    )
 
     this.$content.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
     this.$oyName.attr({ x: this.oxyLeft - this.$oyName.getBBox().width / 2, y: 40 });
@@ -471,7 +475,7 @@ RangeChart.prototype.updateScrollArrows = function () {
     this.$scrollArrows.attr('transform', 'translate(' + (this.oxyLeft + 7) + ', ' + (this.oxyBottom - this.oyLength / 2) + ')');
     this.$scrollArrows.$rightArrow.attr('transform', 'translate(' + (this.oxLength - 15) + ', 0)');
     this.scrollLeft = this.scrollLeft;//update
-    this.$hscrollbar.innerWidth =  this.oxSegmentLength * this.ranges.length;
+    this.$hscrollbar.innerWidth = this.oxSegmentLength * this.ranges.length;
     this.$hscrollbar.scrollLeft = this.scrollLeft;//update
 
 };
