@@ -347,7 +347,7 @@ RangeChart.prototype.updateAxis = function () {
         .replace(/cvh/g, this.canvasHeight)
         .replace(/cvw/g, this.canvasWidth)
         .replace(/left/g, this.oxyLeft)
-        .replace(/top/g, 10)
+        .replace(/top/g, 1)
         .replace(/bottom/g, this.canvasHeight)
         .replace(/right/g, this.canvasWidth - 10)
     )
