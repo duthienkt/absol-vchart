@@ -84,8 +84,8 @@ BaseChart.prototype.scrollBy = function (dX) {
 
 
 
-BaseChart.prototype._createOyValues = function (minValue, step, segmentCout, extendOY) {
-    var child = Array(segmentCout + 1 + (extendOY ? 1 : 0)).fill(0).map(function (u, i) {
+BaseChart.prototype._createOyValues = function (minValue, step, segmentCount, extendOY) {
+    var child = Array(segmentCount + 1 + (extendOY ? 1 : 0)).fill(0).map(function (u, i) {
         var value;
         if (extendOY) {
             if (i == 0) {
@@ -278,7 +278,7 @@ BaseChart.prototype.beautifyMinMax = function () {
 
     var btSgmt = calBeautySegment(this.maxSegment, this.minValue, this.maxValue);
 
-    this.oySegmentCount = btSgmt.segmentCout;
+    this.oySegmentCount = btSgmt.segmentCount;
     this.oyMinValue = btSgmt.minValue;
     this.oyMaxValue = btSgmt.maxValue;
     this.extendOY = !!(this.zeroOY && (this.oyMinValue > 0));

@@ -49,3 +49,5 @@ Axis.prototype.init = function (props) {
 
 
 Vcore.creator.axis = Axis;
+
+export default Axis;
