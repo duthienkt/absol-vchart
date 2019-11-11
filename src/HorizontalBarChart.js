@@ -15,6 +15,7 @@ function HorizontalBarChart() {
     this._oy = 0;
     this._oxLength = 0;
     this._oyLength = 0;
+    this._oyTop = 25;
     this._padding = 5;
     this._barWidth = 35;
     this._rangeWidth = 15;
@@ -29,7 +30,7 @@ function HorizontalBarChart() {
      * @type {import('./Axis').default}
      */
     this.$axis = $('axis', this);
-
+    this.$title = $('text.vc-horizontal-bar-title', this);
     this.$whiteBoxMask = $('.base-chart-white-mask', this);
     this.$content = $('.vc-horizontal-bar-chart-content', this);
     this.$oneBarNoteContainer = $('g.vc-horizontal-bar-one-bar-note-container', this);
@@ -158,11 +159,12 @@ HorizontalBarChart.prototype.updateCanvasSize = function () {
         this._canvasWidth = bound.width;
     if (this._canvasHeight < 0)
         this._canvasHeight = bound.height;
-
+    this._oyTop = 25 + this.$title.getBBox().height * 1.5;
+    this.$title.attr('x', this._canvasWidth/2);
     this._ox = this._padding;
     this._oy = this._canvasHeight - this._padding;
     this._oxLength = this._canvasWidth - this._padding - this._ox - 20;
-    this._oyLength = this._oy - this._padding - 25;
+    this._oyLength = this._oy - this._padding - this._oyTop;
 };
 
 HorizontalBarChart.prototype.updateOneBarNotePosition = function () {
@@ -181,7 +183,7 @@ HorizontalBarChart.prototype.updateOneBarNotePosition = function () {
     var bbox = this.$oneBarNoteContainer.getBBox();
     this.$oneBarNoteContainer.attr('transform', translate(this._padding, this._canvasHeight - this._padding - bbox.height));
     this._oy = this._canvasHeight - this._padding - bbox.height - 5;
-    this._oyLength = this._oy - this._padding - 25;
+    this._oyLength = this._oy - this._padding - this._oyTop;
 };
 
 
@@ -208,7 +210,7 @@ HorizontalBarChart.prototype.updateKeysNotePosition = function () {
     var bbox = this.$keysNoteContainer.getBBox();
     this.$keysNoteContainer.attr('transform', translate(0, this._oy - bbox.height));
     this._oy -= bbox.height + 5;
-    this._oyLength = this._oy - this._padding - 25;
+    this._oyLength = this._oy - this._padding - this._oyTop;
 };
 
 
@@ -231,7 +233,7 @@ HorizontalBarChart.prototype.updateAxisTextPosition = function () {
     this._ox = Math.ceil(maxWidthKey) + 0.5 + this._padding + 5;
     this._oxLength = this._canvasWidth - this._padding - this._ox - 20;
     this._oy -= 21;
-    this._oyLength = this._oy - this._padding - 25;
+    this._oyLength = this._oy - this._padding - this._oyTop;
     var barMargin = Math.max(this._barMargin, (this._oyLength / this._keys.length - this._barWidth) / 2);
     var i;
     for (i = 0; i < this.$keys.length; ++i) {
@@ -375,6 +377,7 @@ HorizontalBarChart.property.ranges = {
 HorizontalBarChart.property.title = {
     set: function (value) {
         this._title = value || '';
+        this.$title.innerHTML = this._title;
         this.notifyDataChange();
     },
     get: function () {
@@ -403,7 +406,7 @@ HorizontalBarChart.render = function () {
             'g.vc-horizontal-bar-one-bar-note-container',
             'g.vc-horizontal-bar-keys-note-container',
             'g.vc-horizontal-bar-segment-text-container',
-            'text.vc-horizontal-bar-title'
+            'text.vc-horizontal-bar-title[y="20"]'
 
         ]
     });

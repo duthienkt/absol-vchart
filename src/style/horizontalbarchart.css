@@ -19,34 +19,36 @@ g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range {
     fill: rgb(157, 195, 230);
 }
 
-g.vc-horizontal-bar-one-bar-note-container{
-}
+g.vc-horizontal-bar-one-bar-note-container {}
 
-g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range-min-line{
+g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range-min-line {
     stroke: rgb(47, 82, 143);
     stroke-width: 1px;
     stroke-dasharray: 2;
 }
 
-.vc-horizontal-bar-chart-key{
+.vc-horizontal-bar-chart-key {
     text-anchor: end;
 }
 
-g.vc-horizontal-bar-keys-note-container{
+g.vc-horizontal-bar-keys-note-container {}
 
-}
-
-g.vc-horizontal-bar-key-note{
-}
+g.vc-horizontal-bar-key-note {}
 
 
 
-.vc-horizontal-bar-chart-segment-text{
+.vc-horizontal-bar-chart-segment-text {
     text-anchor: middle;
 }
 
 
-.vc-horizontal-bar-chart-range{
+.vc-horizontal-bar-chart-range {
     stroke: rgb(47, 82, 143);
     stroke-width: 1;
+}
+
+
+text.vc-horizontal-bar-title {
+    font-size: 15px;
+    font-weight: bold;
 }
