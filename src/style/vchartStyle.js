@@ -12,5 +12,6 @@ import './squarechart.css';
 import './grouprankchart.css';
 import './mappingchart.css';
 import './imagechart.css';
+import './horizontalbarchart.css';
 
 export default {};

@@ -1,0 +1,52 @@
+.vc-horizontal-bar-chart {
+    border: 1px solid black;
+    font-size: 14px;
+}
+
+.vc-horizontal-bar-chart .base-chart-white-mask {
+    /* fill: rgba(255, 0, 0, 0.4); */
+}
+
+g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-bar {
+    stroke: rgb(47, 82, 143);
+    stroke-width: 1;
+    fill: white;
+}
+
+g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range {
+    stroke: rgb(47, 82, 143);
+    stroke-width: 1;
+    fill: rgb(157, 195, 230);
+}
+
+g.vc-horizontal-bar-one-bar-note-container{
+}
+
+g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range-min-line{
+    stroke: rgb(47, 82, 143);
+    stroke-width: 1px;
+    stroke-dasharray: 2;
+}
+
+.vc-horizontal-bar-chart-key{
+    text-anchor: end;
+}
+
+g.vc-horizontal-bar-keys-note-container{
+
+}
+
+g.vc-horizontal-bar-key-note{
+}
+
+
+
+.vc-horizontal-bar-chart-segment-text{
+    text-anchor: middle;
+}
+
+
+.vc-horizontal-bar-chart-range{
+    stroke: rgb(47, 82, 143);
+    stroke-width: 1;
+}
