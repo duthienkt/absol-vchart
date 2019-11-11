@@ -356,3 +356,16 @@ export function getMaxHeightBox() {
         return Math.max(ac, elt.getBBox().height);
     }, -100000000);
 }
+
+
+/**
+ * 
+ * @param {import ('absol/src/Color/Color').default} color
+ * @returns {import ('absol/src/Color/Color').default}
+ */
+export function lighterColor(color, delta) {
+    delta = delta || 0;
+    var hsla = color.toHSLA();
+    hsla[2] = Math.max(0, Math.min(1, hsla[2] + delta));
+    return Color.fromHSLA.apply(Color, hsla);
+}
