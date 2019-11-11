@@ -262,7 +262,8 @@ AssessmentChart.prototype.updateBackComp = function () {
         return x + maxNoteWidth + this.noteMarginH * 2;
     }.bind(this), this.canvasWidth / 2 - ((maxNoteWidth + 2 * this.noteMarginH) * this.areas.length) / 2);
 
-    var contentBound = new Rectangle(this.paddingContent, this.$title.getBBox().height * 1.5, this.canvasWidth - this.paddingContent * 2, this.$noteGroup.getBBox().y);
+
+    var contentBound = new Rectangle(this.paddingContent, this.$title.getBBox().height * 1.5, this.canvasWidth - this.paddingContent * 2, Math.max(this.$content.getBBox().height + 20, this.$noteGroup.getBBox().y));
     contentBound.height -= contentBound.y;
     var centerBound = contentBound.centerPoint();
 
