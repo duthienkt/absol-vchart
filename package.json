@@ -27,8 +27,8 @@
   },
   "homepage": "https://github.com/duthienkt/vchart#readme",
   "dependencies": {
-    "absol": "^1.6.1",
-    "absol-acomp": "^0.1.34"
+    "absol": "^1.9.1",
+    "absol-acomp": "^0.7.9"
   },
   "devDependencies": {
     "@babel/core": "7.2.2",
