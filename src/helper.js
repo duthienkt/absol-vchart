@@ -79,6 +79,16 @@ export function moveHLine(e, x, y, length) {
     return e.attr('d', 'm' + x + ' ' + y + 'h' + length);
 };
 
+
+/**
+ * 
+ * @param {Number} x 
+ * @param {Number} y 
+ * @param {Number} width 
+ * @param {Number} height 
+ * @param {Number} eClss
+ * @returns {SVGRect} 
+ */
 export function rect(x, y, width, height, eClss) {
     var option = {
         tag: 'rect',
@@ -107,14 +117,14 @@ export function line(x0, y0, x1, y1) {
 
 export function calBeautySegment(maxSegment, minValue, maxValue) {
     var i = 0;
-    var res = { step: 1, segmentCout: maxValue - minValue, maxValue: maxValue, minValue: minValue };
+    var res = { step: 1, segmentCount: maxValue - minValue, maxValue: maxValue, minValue: minValue };
     while (i < beautyStep.length) {
         var step = beautyStep[i];
         var bot = Math.floor(minValue / step);
         var top = Math.ceil(maxValue / step);
         if (top - bot <= maxSegment) {
             res.step = step;
-            res.segmentCout = top - bot;
+            res.segmentCount = top - bot;
             res.maxValue = top * step;
             res.minValue = bot * step;
             break;
