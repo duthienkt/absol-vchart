@@ -211,7 +211,7 @@ export function generateBackgroundColors(n) {
             ac.push(tail);
         }
 
-        var color = Color.fromHSL(i / n, 0.296, 0.46);
+        var color = Color.fromHSL(i / n, 0.5, 0.5);
         tail.push(color);
         return ac;
     }, [[]]);
