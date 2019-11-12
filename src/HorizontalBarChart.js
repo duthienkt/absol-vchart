@@ -8,6 +8,7 @@ var $ = Vcore.$;
 
 function HorizontalBarChart() {
     this._bars = [];
+    this._vLines = [];
     this._title = '';
 
     this._dataUpdateTimeout = -1;
@@ -26,6 +27,7 @@ function HorizontalBarChart() {
     this._barMargin = 10;
     this._zeroOY = true;
     this._maxSegment = 8;
+
     /**
      * @type {import('./Axis').default}
      */
@@ -36,10 +38,14 @@ function HorizontalBarChart() {
     this.$oneBarNoteContainer = $('g.vc-horizontal-bar-one-bar-note-container', this);
     this.$keysNoteContainer = $('g.vc-horizontal-bar-keys-note-container', this);
     this.$segmentTextContainer = $('g.vc-horizontal-bar-segment-text-container', this);
+    this.$vLineContainer = $('g.vc-horizontal-bar-vline-container', this);
+    this.$valueLineContainer = $('.vc-horizontal-bar-chart-value-line-container', this);
     this.$keys = [];
     this.$segmentTexts = [];
+    this.$valueLines = [];
     this.$bars = [];
     this.$ranges = [];
+    this.$vLines = [];
 }
 
 
@@ -84,6 +90,7 @@ HorizontalBarChart.prototype._createKeyNote = function (color, keyName) {
     });
 };
 
+
 HorizontalBarChart.prototype.initKeysNote = function () {
     var self = this;
     this.$keysNoteContainer.clearChild();
@@ -117,6 +124,12 @@ HorizontalBarChart.prototype.initAxisText = function () {
     for (var i = 0; i < this.$segmentTexts.length; ++i) {
         this.$segmentTexts[i].innerHTML = this._beautiSegment.minValue + this._beautiSegment.step * i + '';
     }
+
+    this.$valueLineContainer.clearChild();
+    this.$valueLines = Array(this.$segmentTexts.length - 1).fill(0).map(function () {
+        return vline(0, 0, 0, 'vc-horizontal-bar-chart-value-line').addTo(this.$valueLineContainer);
+    }.bind(this));
+
 };
 
 HorizontalBarChart.prototype.initBars = function () {
@@ -144,6 +157,15 @@ HorizontalBarChart.prototype.initRanges = function () {
 };
 
 
+HorizontalBarChart.prototype.initVLines = function () {
+    var self = this;
+    this.$vLineContainer.clearChild();
+    this.$vLines = this._vLines.map(function (vLineData) {
+        return vline(0, 0, 0, 'vc-horizontal-bar-vline').addStyle('stroke', vLineData.color).addTo(self.$vLineContainer);
+    });
+};
+
+
 HorizontalBarChart.prototype.notifyDataChange = function () {
     if (this._dataUpdateTimeout >= 0) return;
     var self = this;
@@ -160,7 +182,7 @@ HorizontalBarChart.prototype.updateCanvasSize = function () {
     if (this._canvasHeight < 0)
         this._canvasHeight = bound.height;
     this._oyTop = 25 + this.$title.getBBox().height * 1.5;
-    this.$title.attr('x', this._canvasWidth/2);
+    this.$title.attr('x', this._canvasWidth / 2);
     this._ox = this._padding;
     this._oy = this._canvasHeight - this._padding;
     this._oxLength = this._canvasWidth - this._padding - this._ox - 20;
@@ -251,6 +273,10 @@ HorizontalBarChart.prototype.updateAxisTextPosition = function () {
         })
     }
 
+    for (i = 0; i < this.$valueLines.length; ++i) {
+        moveVLine(this.$valueLines[i], this._ox + this._segmentLength * (i + 1), this._oy - this._oyLength, this._oyLength);
+    }
+
     this.$content.attr('transform', translate(this._ox, this._oy));
 };
 
@@ -272,6 +298,12 @@ HorizontalBarChart.prototype.updateRangesPosition = function () {
     }
 };
 
+HorizontalBarChart.prototype.updateVLinesPosition = function () {
+    for (var i = 0; i < this.$vLines.length; ++i) {
+        moveVLine(this.$vLines[i], this._ox + map(this._vLines[i].value, this._beautiSegment.minValue, this._beautiSegment.maxValue, 0, this._oxLength), this._oy - this._oyLength, this._oyLength)
+    }
+};
+
 HorizontalBarChart.prototype.updatePosition = function () {
     this.updateCanvasSize();
     this.updateOneBarNotePosition();
@@ -279,6 +311,7 @@ HorizontalBarChart.prototype.updatePosition = function () {
     this.updateAxisTextPosition();
     this.updateBarsPosition();
     this.updateRangesPosition();
+    this.updateVLinesPosition();
 
     this.updateAxisPosition();
 };
@@ -290,6 +323,7 @@ HorizontalBarChart.prototype.update = function () {
     this.initAxisText();
     this.initBars();
     this.initRanges();
+    this.initVLines();
 
     this.updatePosition();
 };
@@ -371,7 +405,23 @@ HorizontalBarChart.property.ranges = {
     get: function () {
         return this._ranges;
     }
-}
+};
+
+
+HorizontalBarChart.property.vLines = {
+    set: function (value) {
+        this._vLines = value || [];
+        if (this._keyColors.length < this._vLines.length) {
+            this._keyColors = generateBackgroundColors(this._vLines.length);
+        }
+
+        this.notifyDataChange();
+    },
+    get: function () {
+        return this._vLines;
+    }
+};
+
 
 
 HorizontalBarChart.property.title = {
@@ -391,6 +441,7 @@ HorizontalBarChart.render = function () {
         tag: 'svg',
         class: ['vc-horizontal-bar-chart', 'base-chart'],
         child: [
+            '.vc-horizontal-bar-chart-value-line-container',
             '.vc-horizontal-bar-chart-content',
             {
                 tag: 'path',
@@ -406,6 +457,7 @@ HorizontalBarChart.render = function () {
             'g.vc-horizontal-bar-one-bar-note-container',
             'g.vc-horizontal-bar-keys-note-container',
             'g.vc-horizontal-bar-segment-text-container',
+            'g.vc-horizontal-bar-vline-container',
             'text.vc-horizontal-bar-title[y="20"]'
 
         ]

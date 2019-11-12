@@ -52,3 +52,14 @@ text.vc-horizontal-bar-title {
     font-size: 15px;
     font-weight: bold;
 }
+
+
+.vc-horizontal-bar-vline{
+    stroke-width: 1;
+}
+
+
+.vc-horizontal-bar-chart-value-line{
+    stroke: darkgray;
+    stroke-width: 0.5;
+}
