@@ -17,21 +17,24 @@ function HorizontalBarChart() {
     this._includeValues = [];
 
     this._dataUpdateTimeout = -1;
+    this._padding = 5;
     this._ox = 0;
     this._oy = 0;
     this._oxLength = 0;
     this._oyLength = 0;
     this._oyTop = 25;
-    this._padding = 5;
+    this._oxRight = this._padding;
     this._barWidth = 35;
     this._rangeWidth = 15;
     this._minValue = 0;
     this._maxValue = 10;
     this._keys = [];
     this._keyColors = [];
-    this._barMargin = 10;
+    this._barMargin = 5;
     this._zeroOY = true;
     this._maxSegment = 10;
+    this._minRangeText = "Min";
+    this._maxRangeText = "Max";
 
     /**
      * @type {import('./Axis').default}
@@ -40,8 +43,13 @@ function HorizontalBarChart() {
     this.$title = $('text.vc-horizontal-bar-title', this);
     this.$whiteBoxMask = $('.base-chart-white-mask', this);
     this.$content = $('.vc-horizontal-bar-chart-content', this);
+
+    this.$noteContainer = $('g.vc-horizontal-bar-note-container', this);
+    this.$noteBox = $('.vc-horizontal-bar-vline-note-box', this);
+
     this.$oneBarNoteContainer = $('g.vc-horizontal-bar-one-bar-note-container', this);
-    this.$keysNoteContainer = $('g.vc-horizontal-bar-keys-note-container', this);
+    // this.$keysNoteContainer = $('g.vc-horizontal-bar-keys-note-container', this);
+
     this.$vLinesNoteContainer = $('g.vc-horizontal-bar-vline-note-container', this);
     this.$segmentTextContainer = $('g.vc-horizontal-bar-segment-text-container', this);
     this.$vLineContainer = $('g.vc-horizontal-bar-vline-container', this);
@@ -61,6 +69,27 @@ function HorizontalBarChart() {
     });
     this.sync.then(this.notifyDataChange.bind(this));
 }
+
+
+HorizontalBarChart.prototype._createKeyNote = function (color, keyName) {
+    return _({
+        class: 'vc-horizontal-bar-key-note',
+        child: [
+            rect(0, 0, 14, 14).addStyle('fill', color),
+            text(keyName, 17, 12)
+        ]
+    });
+};
+
+HorizontalBarChart.prototype._createVLineNote = function (color, keyName) {
+    return _({
+        class: 'vc-horizontal-bar-vline-note',
+        child: [
+            hline(0, 7, 20).addStyle('stroke', color),
+            text(keyName, 25, 12)
+        ]
+    });
+};
 
 
 HorizontalBarChart.prototype.processData = function () {
@@ -86,56 +115,55 @@ HorizontalBarChart.prototype.processData = function () {
 };
 
 HorizontalBarChart.prototype.initBarNote = function () {
-    this.$oneBarNoteContainer.$minText = text('Điểm đánh giá tối thiểu', 0, 14).addTo(this.$oneBarNoteContainer);
-    this.$oneBarNoteContainer.$maxText = text('Điểm đánh giá tối đa', 111, 14).addTo(this.$oneBarNoteContainer);
+    this.$oneBarNoteContainer.$minText = text(this._minRangeText, 0, 14).addTo(this.$oneBarNoteContainer);
+    this.$oneBarNoteContainer.$maxText = text(this._maxRangeText, 0, 14 + 10 + this._barWidth + 10 + 14).addTo(this.$oneBarNoteContainer);
     this.$oneBarNoteContainer.$bar = this.$oneBarNoteContainer.$bar
-        || rect(0.5, 25.5, 100, this._barWidth, 'vc-horizontal-bar-chart-bar').addTo(this.$oneBarNoteContainer);
+        || rect(0.5, 14 + 10 + 0.5, 100, this._barWidth - 1, 'vc-horizontal-bar-chart-bar').addTo(this.$oneBarNoteContainer);
+
     this.$oneBarNoteContainer.$range = this.$oneBarNoteContainer.$range
-        || rect(80.5, 25.5 + Math.floor((this._barWidth - this._rangeWidth) / 3) + 0.5, 30, this._rangeWidth, 'vc-horizontal-bar-chart-range').addTo(this.$oneBarNoteContainer);
-    this.$oneBarNoteContainer.$minLine = vline(80.5, 8 + Math.floor((this._barWidth - this._rangeWidth) / 3), 17.5 - 2, 'vc-horizontal-bar-chart-range-min-line').addTo(this.$oneBarNoteContainer);
-    this.$oneBarNoteContainer.$maxLine = vline(80.5 + 30, 8 + Math.floor((this._barWidth - this._rangeWidth) / 3), 17.5 - 2, 'vc-horizontal-bar-chart-range-min-line').addTo(this.$oneBarNoteContainer);
+        || rect(80.5, 14 + 10 + Math.floor((this._barWidth - this._rangeWidth) / 2) + 0.5, 30, this._rangeWidth - 1, 'vc-horizontal-bar-chart-range').addTo(this.$oneBarNoteContainer);
+
+    this.$oneBarNoteContainer.$minLine = vline(
+        80.5,
+        14 + 10 + Math.floor((this._barWidth - this._rangeWidth) / 3),
+        - Math.floor((this._barWidth - this._rangeWidth) / 3) - 5,
+        'vc-horizontal-bar-chart-range-min-line')
+        .addTo(this.$oneBarNoteContainer);
+
+    this.$oneBarNoteContainer.$maxLine = vline(
+        80.5 + 30,
+        14 + 10 + this._barWidth - Math.floor((this._barWidth - this._rangeWidth) / 2),
+        Math.floor((this._barWidth - this._rangeWidth) / 2) + 8,
+        'vc-horizontal-bar-chart-range-max-line'
+    ).addTo(this.$oneBarNoteContainer);
 };
 
 
 HorizontalBarChart.prototype.updateOneBarNotePosition = function () {
     var minTextBox = this.$oneBarNoteContainer.$minText.getBBox();
-    if (minTextBox.width + 2 > 80.5) {
-        this.$oneBarNoteContainer.$bar.attr('x', Math.floor(minTextBox.width - 80.5) + 0.5 + 2 + '');
-        this.$oneBarNoteContainer.$range.attr('x', Math.floor(minTextBox.width - 80.5) + 0.5 + 80 + 2 + '');
-        this.$oneBarNoteContainer.$maxText.attr('x', Math.floor(minTextBox.width - 80.5) + 0.5 + 80 + 30 + 2 + 2 + '');
-        moveVLine(this.$oneBarNoteContainer.$minLine, Math.floor(minTextBox.width - 80.5) + 0.5 + 80 + 2, 8 + Math.floor((this._barWidth - this._rangeWidth) / 3), 27.5 - 2);
-        moveVLine(this.$oneBarNoteContainer.$maxLine, Math.floor(minTextBox.width - 80.5) + 0.5 + 80 + 30 + 2, 8 + Math.floor((this._barWidth - this._rangeWidth) / 3), 27.5 - 2);
+    var maxTextBox = this.$oneBarNoteContainer.$maxText.getBBox();
+    var maxTextLength = Math.max(minTextBox.width, maxTextBox.width);
+    if (minTextBox.width / 2 > 80.5) {
+        this.$oneBarNoteContainer.$bar.attr('x', Math.floor(maxTextLength / 2 - 80.5) + 0.5 + '');
+        this.$oneBarNoteContainer.$range.attr('x', Math.floor(maxTextLength / 2 - 80.5) + 0.5 + 80 + '');
+
+        moveVLine(this.$oneBarNoteContainer.$minLine,
+            Math.floor(minTextBox.width / 2 - 80.5) + 0.5 + 80,
+            14 + 10 + Math.floor((this._barWidth - this._rangeWidth) / 3),
+            - Math.floor((this._barWidth - this._rangeWidth) / 3) - 5);
+
+        moveVLine(this.$oneBarNoteContainer.$maxLine,
+            Math.floor(minTextBox.width / 2 - 80.5) + 0.5 + 80 + 30,
+            14 + 10 + this._barWidth - Math.floor((this._barWidth - this._rangeWidth) / 2),
+            Math.floor((this._barWidth - this._rangeWidth) / 2) + 8,
+        );
     }
     else {
-        this.$oneBarNoteContainer.$minText.attr(x, 80.5 - 2 - minTextBox.width);
-        this.$oneBarNoteContainer.$maxText.attr(x, 80.5 + 2 + 30);
+        this.$oneBarNoteContainer.$minText.attr('x', 80.5 - minTextBox.width / 2);
+        this.$oneBarNoteContainer.$maxText.attr('x', 80.5 + 30 - maxTextBox.width / 2);
     }
-    var bbox = this.$oneBarNoteContainer.getBBox();
-    this.$oneBarNoteContainer.attr('transform', translate(this._padding, this._canvasHeight - this._padding - bbox.height - 5));
-    this._oy = this._canvasHeight - this._padding - bbox.height - 20;
-    this._oyLength = this._oy - this._padding - this._oyTop;
 };
 
-
-HorizontalBarChart.prototype._createKeyNote = function (color, keyName) {
-    return _({
-        class: 'vc-horizontal-bar-key-note',
-        child: [
-            rect(0, 0, 14, 14).addStyle('fill', color),
-            text(keyName, 17, 12)
-        ]
-    });
-};
-
-HorizontalBarChart.prototype._createVLineNote = function (color, keyName) {
-    return _({
-        class: 'vc-horizontal-bar-vline-note',
-        child: [
-            hline(0, 7, 20).addStyle('stroke', color),
-            text(keyName, 25, 12)
-        ]
-    });
-};
 
 
 
@@ -149,13 +177,44 @@ HorizontalBarChart.prototype.initKeysNote = function () {
     });
 };
 
+
 HorizontalBarChart.prototype.initVLinesNote = function () {
     var self = this;
     this.$vLinesNoteContainer.clearChild();
     this.$vLineNotes = this._vLines.map(function (vline, i) {
-        return self._createVLineNote(vline.color, vline.name + '').addTo(self.$vLinesNoteContainer);
+        return self._createVLineNote(vline.color, vline.name + '').addTo(self.$vLinesNoteContainer).attr('transform', translate(0, i * 20));
     });
 };
+
+
+HorizontalBarChart.prototype.initNote = function () {
+    this.initVLinesNote();
+    this.initBarNote();
+
+};
+
+HorizontalBarChart.prototype.updateNotePosition = function () {
+    this.updateOneBarNotePosition();
+    var y = this._padding;
+    var x = this._padding;
+    this.$vLinesNoteContainer.attr('transform', translate(x, y));
+    y += this.$vLinesNoteContainer.getBBox().height + 5 + this._padding;
+    this.$oneBarNoteContainer.attr('transform', translate(this._padding, y));
+    this.$noteBox.attr({
+        width: '1',
+        height: '1'
+    })
+    //align right
+    var box = this.$noteContainer.getBBox();
+    this.$noteBox.attr({
+        width: box.width + this._padding - 1 + '',
+        height: box.height + this._padding - 1 + ''
+    })
+    this.$noteContainer.attr('transform', translate(this._canvasWidth - this._padding - box.width - this._padding, this._canvasHeight / 3 - (box.height + this._padding) / 2));
+    this._oxRight = this._canvasWidth - box.width - this._padding * 2;
+};
+
+
 
 
 HorizontalBarChart.prototype.initAxisText = function () {
@@ -249,65 +308,7 @@ HorizontalBarChart.prototype.updateCanvasSize = function () {
     this.$title.attr('x', this._canvasWidth / 2);
     this._ox = this._padding;
     this._oy = this._canvasHeight - this._padding;
-    this._oxLength = this._canvasWidth - this._padding - this._ox - 25;
-    this._oyLength = this._oy - this._padding - this._oyTop;
-};
-
-
-HorizontalBarChart.prototype.updateKeysNotePosition = function () {
-    var maxWidth = getMaxWidthBox.apply(null, this.$keyNotes);
-    var boundWidth = this._canvasWidth - this._padding * 2;
-    var noteSpacing = 25;
-    var rows = 1;
-    var eltPerRow;
-    while (rows <= this.$keyNotes.length) {
-        eltPerRow = Math.ceil(this.$keyNotes.length / rows);
-        if (eltPerRow * (maxWidth + noteSpacing) - noteSpacing < boundWidth) break;
-        ++rows;
-    }
-
-    noteSpacing = Math.min(100, (boundWidth - maxWidth * eltPerRow) / Math.max(1, eltPerRow - 1));
-    var i = 0;
-    var keyNoteElt;
-    for (var r = 0; r < rows; ++r)
-        for (var c = 0; c < eltPerRow; ++c) {
-            if (i >= this.$keyNotes.length) break;
-            keyNoteElt = this.$keyNotes[i++];
-            keyNoteElt.attr('transform', translate(this._padding + c * (maxWidth + noteSpacing), r * 21));
-        }
-
-    var bbox = this.$keysNoteContainer.getBBox();
-    this.$keysNoteContainer.attr('transform', translate((this._canvasWidth - bbox.width) / 2, this._oy - bbox.height));
-    this._oy -= bbox.height + 5;
-    this._oyLength = this._oy - this._padding - this._oyTop;
-};
-
-
-HorizontalBarChart.prototype.updateVLinesNotePosition = function () {
-    var maxWidth = getMaxWidthBox.apply(null, this.$vLineNotes);
-    var boundWidth = this._canvasWidth - this._padding * 2;
-    var noteSpacing = 25;
-    var rows = 1;
-    var eltPerRow;
-    while (rows <= this.$vLineNotes.length) {
-        eltPerRow = Math.ceil(this.$vLineNotes.length / rows);
-        if (eltPerRow * (maxWidth + noteSpacing) - noteSpacing < boundWidth) break;
-        ++rows;
-    }
-
-    noteSpacing = Math.min(100, (boundWidth - maxWidth * eltPerRow) / Math.max(1, eltPerRow - 1));
-    var i = 0;
-    var vLineNoteElt;
-    for (var r = 0; r < rows; ++r)
-        for (var c = 0; c < eltPerRow; ++c) {
-            if (i >= this.$vLineNotes.length) break;
-            vLineNoteElt = this.$vLineNotes[i++];
-            vLineNoteElt.attr('transform', translate(this._padding + c * (maxWidth + noteSpacing), r * 21));
-        }
-
-    var bbox = this.$vLinesNoteContainer.getBBox();
-    this.$vLinesNoteContainer.attr('transform', translate((this._canvasWidth - bbox.width) / 2, this._oy - bbox.height));
-    this._oy -= bbox.height + 5;
+    this._oxLength = this._oxRight - this._padding - this._ox;
     this._oyLength = this._oy - this._padding - this._oyTop;
 };
 
@@ -329,7 +330,7 @@ HorizontalBarChart.prototype.updateAxisPosition = function () {
 HorizontalBarChart.prototype.updateAxisTextPosition = function () {
     var maxWidthKey = getMaxWidthBox.apply(null, this.$keys);
     this._ox = Math.ceil(maxWidthKey) + 0.5 + this._padding + 5;
-    this._oxLength = this._canvasWidth - this._padding - this._ox - 25;
+    this._oxLength = this._oxRight - this._padding - this._ox;
     this._oy -= 21;
     this._oyLength = this._oy - this._padding - this._oyTop;
     var barMargin = Math.max(this._barMargin, (this._oyLength / this._keys.length - this._barWidth) / 2);
@@ -337,7 +338,7 @@ HorizontalBarChart.prototype.updateAxisTextPosition = function () {
     for (i = 0; i < this.$keys.length; ++i) {
         this.$keys[i].attr({ x: - 5, y: -(i + 0.5) * (barMargin * 2 + this._barWidth) + 7 });
         this.$bars[i].attr('y', - i * (barMargin * 2 + this._barWidth) - barMargin - this._barWidth);
-        this.$ranges[i].attr('y', - i * (barMargin * 2 + this._barWidth) - barMargin - this._barWidth + Math.floor((this._barWidth - this._rangeWidth) / 3));
+        this.$ranges[i].attr('y', - i * (barMargin * 2 + this._barWidth) - barMargin - this._barWidth + Math.floor((this._barWidth - this._rangeWidth) / 2));
     }
 
     this._segmentLength = this._oxLength / this._beautiSegment.segmentCount;
@@ -382,9 +383,7 @@ HorizontalBarChart.prototype.updateVLinesPosition = function () {
 
 HorizontalBarChart.prototype.updatePosition = function () {
     this.updateCanvasSize();
-    this.updateOneBarNotePosition();
-    // this.updateKeysNotePosition();
-    this.updateVLinesNotePosition();
+    this.updateNotePosition();
     this.updateAxisTextPosition();
     this.updateBarsPosition();
     this.updateRangesPosition();
@@ -395,9 +394,7 @@ HorizontalBarChart.prototype.updatePosition = function () {
 
 HorizontalBarChart.prototype.update = function () {
     this.processData();
-    this.initBarNote();
-    // this.initKeysNote();
-    this.initVLinesNote();
+    this.initNote();
     this.initAxisText();
     this.initBars();
     this.initRanges();
@@ -531,6 +528,38 @@ HorizontalBarChart.property.title = {
     }
 };
 
+HorizontalBarChart.property.minRangeText = {
+    set: function (value) {
+        this._minRangeText = value || '';
+        this.notifyDataChange();
+    },
+    get: function () {
+        return this._minRangeText;
+    }
+};
+
+HorizontalBarChart.property.maxRangeText = {
+    set: function (value) {
+        this._maxRangeText = value || '';
+        this.notifyDataChange();
+    },
+    get: function () {
+        return this._maxRangeText;
+    }
+};
+
+
+HorizontalBarChart.property.title = {
+    set: function (value) {
+        this._title = value || '';
+        this.$title.innerHTML = this._title;
+        this.notifyDataChange();
+    },
+    get: function () {
+        return this._title;
+    }
+};
+
 
 HorizontalBarChart.render = function () {
     return _({
@@ -550,11 +579,16 @@ HorizontalBarChart.render = function () {
                 }
             },
             'axis',
-            'g.vc-horizontal-bar-one-bar-note-container',
-            'g.vc-horizontal-bar-keys-note-container',
             'g.vc-horizontal-bar-segment-text-container',
             'g.vc-horizontal-bar-vline-container',
-            'g.vc-horizontal-bar-vline-note-container',
+            {
+                class: 'vc-horizontal-bar-note-container',
+                child: [
+                    rect(0.5, 0.5, 1, 1, 'vc-horizontal-bar-vline-note-box'),
+                    'g.vc-horizontal-bar-vline-note-container',
+                    'g.vc-horizontal-bar-one-bar-note-container'
+                ]
+            },
             'text.vc-horizontal-bar-title[y="20"]',
             'sattachhook'
         ]

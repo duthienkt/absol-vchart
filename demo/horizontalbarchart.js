@@ -5,6 +5,8 @@ var skillChartProps = {
     bars: [4.2, 2.3, 4.5, 4.4, 3.6, 2.5, 4.3],
     title: 'Mô tả năng lực ABC',
     includeValues:[0, 5],
+    minRangeText:"Điểm đánh giá tối thiểu",
+    maxRangeText:"Điểm đánh giá tối đa",
     ranges: [
         [3.7, 4.5],
         [1.5, 2.9],
