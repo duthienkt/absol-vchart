@@ -1,15 +1,19 @@
 import Vcore from "./VCore";
 import { rect, text, line, vline, moveHLine, moveVLine, generateBackgroundColors, getMaxWidthBox, calBeautySegment, map, lighterColor } from "./helper";
 import { translate } from "./template";
+import Dom from "absol/src/HTML5/Dom";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
 
 function HorizontalBarChart() {
+    var self = this;
     this._bars = [];
     this._vLines = [];
     this._title = '';
+
+    this._includeValues = [];
 
     this._dataUpdateTimeout = -1;
     this._ox = 0;
@@ -46,6 +50,14 @@ function HorizontalBarChart() {
     this.$bars = [];
     this.$ranges = [];
     this.$vLines = [];
+    this.$attachhook = $("sattachhook", this).on('error', function (error) {
+        this.updateSize = this.updateSize || self.updatePosition.bind(self);
+        Dom.addToResizeSystem(this);
+    });
+    this.sync = new Promise(function (rs) {
+        self.$attachhook.on('error', rs);
+    });
+    this.sync.then(this.notifyDataChange.bind(this));
 }
 
 
@@ -177,10 +189,17 @@ HorizontalBarChart.prototype.notifyDataChange = function () {
 
 HorizontalBarChart.prototype.updateCanvasSize = function () {
     var bound = this.getBoundingClientRect();
-    if (this._canvasWidth < 0)
+    this._canvasHeight = this.__canvasHeight;
+    this._canvasWidth = this.__canvasWidth;
+    if (!(this._canvasWidth > 0)) {
         this._canvasWidth = bound.width;
-    if (this._canvasHeight < 0)
+    }
+    if (!(this._canvasHeight > 0)) {
         this._canvasHeight = bound.height;
+    }
+    this.attr('width', this._canvasWidth + '');
+    this.attr('height', this._canvasHeight + '');
+
     this._oyTop = 25 + this.$title.getBBox().height * 1.5;
     this.$title.attr('x', this._canvasWidth / 2);
     this._ox = this._padding;
@@ -226,9 +245,11 @@ HorizontalBarChart.prototype.updateKeysNotePosition = function () {
     var keyNoteElt;
     for (var r = 0; r < rows; ++r)
         for (var c = 0; c < eltPerRow; ++c) {
+            if (i >= this.$keyNotes.length) break;
             keyNoteElt = this.$keyNotes[i++];
             keyNoteElt.attr('transform', translate(this._padding + c * (maxWidth + noteSpacing), r * 21));
         }
+
     var bbox = this.$keysNoteContainer.getBBox();
     this.$keysNoteContainer.attr('transform', translate(0, this._oy - bbox.height));
     this._oy -= bbox.height + 5;
@@ -335,8 +356,8 @@ HorizontalBarChart.property = {};
 HorizontalBarChart.property.canvasWidth = {
     set: function (value) {
         if (value >= 0) {
-            this.attr('width', value);
-            this._canvasWidth = value;
+            this.attr('width', undefined);
+            this.__canvasWidth = value;
         }
         else {
             this._canvasWidth = -1;
@@ -344,23 +365,23 @@ HorizontalBarChart.property.canvasWidth = {
         this.notifyDataChange();
     },
     get: function () {
-        return this._canvasWidth;
+        return this.__canvasWidth;
     }
 };
 
 HorizontalBarChart.property.canvasHeight = {
     set: function (value) {
         if (value >= 0) {
-            this.attr('height', value);
-            this._canvasHeight = value;
+            this.attr('height', undefined);
+            this.__canvasHeight = value;
         }
         else {
-            this._canvasHeight = -1;
+            this.__canvasHeight = -1;
         }
         this.notifyDataChange();
     },
     get: function () {
-        return this._canvasHeight;
+        return this.__canvasHeight;
     }
 };
 
@@ -422,7 +443,15 @@ HorizontalBarChart.property.vLines = {
     }
 };
 
-
+HorizontalBarChart.property.includeValues = {
+    set: function (value) {
+        this._includeValues = value || [];
+        this.notifyDataChange();
+    },
+    get: function () {
+        return this._includeValues;
+    }
+}
 
 HorizontalBarChart.property.title = {
     set: function (value) {
@@ -458,8 +487,8 @@ HorizontalBarChart.render = function () {
             'g.vc-horizontal-bar-keys-note-container',
             'g.vc-horizontal-bar-segment-text-container',
             'g.vc-horizontal-bar-vline-container',
-            'text.vc-horizontal-bar-title[y="20"]'
-
+            'text.vc-horizontal-bar-title[y="20"]',
+            'sattachhook'
         ]
     });
 };
