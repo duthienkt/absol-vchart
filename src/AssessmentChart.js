@@ -13,10 +13,23 @@ var $ = Vcore.$;
 function AssessmentChart() {
     var res = _({
         tag: 'svg',
-        class: ['base-chart', 'assessment-chart']
+        class: ['base-chart', 'assessment-chart'],
+        child:'sattachhook'
     });
 
-    res.sync = res.afterAttached(200);
+    res.$attachhook = $("sattachhook", res).on('error', function (error) {
+        this.updateSize = this.updateSize || res.update.bind(res);
+        Dom.addToResizeSystem(this);
+    });
+
+    res.sync = new Promise(function (rs) {
+        res.$attachhook.on('error', rs);
+    });
+
+    res.sync.then(function(){
+        res.update();
+    });
+    
     return res;
 };
 
@@ -439,3 +452,5 @@ AssessmentChart.property = {
 
 
 Vcore.creator.assessmentchart = AssessmentChart;
+
+export default AssessmentChart;
