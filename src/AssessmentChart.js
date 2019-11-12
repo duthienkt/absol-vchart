@@ -5,6 +5,7 @@ import BaseChart from "./BaseChart";
 import { rotate, translate } from "./template";
 import Vec2 from "absol/src/Math/Vec2";
 import Rectangle from "absol/src/Math/Rectangle";
+import Dom from "absol/src/HTML5/Dom";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -59,7 +60,6 @@ AssessmentChart.prototype.mapAngle = function (i, deg) {
 };
 
 AssessmentChart.prototype.mapRadius = function (level) {
-
     return this.axisLenth * (level / (this.levels.length - 1));
 };
 
@@ -164,7 +164,7 @@ AssessmentChart.prototype.estimateSize = function () {
     var maxR = Math.min(this.canvasWidth, this.canvasHeight) / 2;
     var minR = 20;//
     var aWidth = this.canvasWidth - this.paddingContent * 2;
-    var aHeight = this.canvasHeight - this.paddingContent * 2 - titleBox.height * 1.5 + noteGroupBox.height * 1.5;
+    var aHeight = this.canvasHeight - this.paddingContent * 2 - titleBox.height * 3 + noteGroupBox.height * 1.5;
     while (maxR - minR > 3) {
         var midR = (minR + maxR) / 2;
         var size = this._expectSize(rects, midR);
