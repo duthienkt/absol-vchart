@@ -4,6 +4,7 @@ var skillChartProps = {
     keys: ['Bạn', 'Quản lý', 'Cấp trên', 'Đồng nghiệp', 'Cấp dưới', 'Khách hàng', 'Mọi người'],
     bars: [4.2, 2.3, 4.5, 4.4, 3.6, 2.5, 4.3],
     title: 'Mô tả năng lực ABC',
+    includeValues:[0, 5],
     ranges: [
         [3.7, 4.5],
         [1.5, 2.9],
@@ -16,11 +17,14 @@ var skillChartProps = {
     vLines: [
         {
             value: 1.5,
-            color: 'red'
+            color: 'red',
+            name:"Chưa đạt yêu cầu"
         },
         {
             color: 'blue',
-            value: 3.5
+            value: 3.5,
+            name:"Đạt yêu cầu"
+
         }
     ]
 };
