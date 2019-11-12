@@ -54,12 +54,16 @@ text.vc-horizontal-bar-title {
 }
 
 
-.vc-horizontal-bar-vline{
+.vc-horizontal-bar-vline {
     stroke-width: 1;
 }
 
 
-.vc-horizontal-bar-chart-value-line{
+.vc-horizontal-bar-chart-value-line {
     stroke: darkgray;
     stroke-width: 0.5;
+}
+
+.vc-horizontal-bar-vline-note>path {
+    stroke-width: 2;
 }
