@@ -369,3 +369,10 @@ export function lighterColor(color, delta) {
     hsla[2] = Math.max(0, Math.min(1, hsla[2] + delta));
     return Color.fromHSLA.apply(Color, hsla);
 }
+
+export function fresherColor(color, delta) {
+    delta = delta || 0.2;
+    var hsla = color.toHSLA();
+    hsla[1] = Math.max(0, Math.min(1, hsla[1] + delta));
+    return Color.fromHSLA.apply(Color, hsla);
+}

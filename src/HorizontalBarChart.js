@@ -1,5 +1,5 @@
 import Vcore from "./VCore";
-import { rect, text, line, vline, moveHLine, moveVLine, generateBackgroundColors, getMaxWidthBox, calBeautySegment, map, lighterColor, hline } from "./helper";
+import { rect, text, line, vline, moveHLine, moveVLine, generateBackgroundColors, getMaxWidthBox, calBeautySegment, map, lighterColor, hline, fresherColor } from "./helper";
 import { translate } from "./template";
 import Dom from "absol/src/HTML5/Dom";
 
@@ -443,7 +443,9 @@ HorizontalBarChart.property.keys = {
     set: function (value) {
         this._keys = value || [];
         if (this._keyColors.length < this._keys.length) {
-            this._keyColors = generateBackgroundColors(this._keys.length);
+            this._keyColors = generateBackgroundColors(this._keys.length).map(function (c) {
+                return fresherColor(c);
+            });
         }
 
         this.notifyDataChange();
@@ -458,7 +460,9 @@ HorizontalBarChart.property.bars = {
     set: function (value) {
         this._bars = value || [];
         if (this._keyColors.length < this._bars.length) {
-            this._keyColors = generateBackgroundColors(this._bars.length);
+            this._keyColors = generateBackgroundColors(this._bars.length).map(function (c) {
+                return fresherColor(c);
+            });
         }
 
         this.notifyDataChange();
@@ -472,7 +476,9 @@ HorizontalBarChart.property.ranges = {
     set: function (value) {
         this._ranges = value || [];
         if (this._keyColors.length < this._ranges.length) {
-            this._keyColors = generateBackgroundColors(this._ranges.length);
+            this._keyColors = generateBackgroundColors(this._ranges.length).map(function (c) {
+                return fresherColor(c);
+            });
         }
 
         this.notifyDataChange();
@@ -486,9 +492,6 @@ HorizontalBarChart.property.ranges = {
 HorizontalBarChart.property.vLines = {
     set: function (value) {
         this._vLines = value || [];
-        if (this._keyColors.length < this._vLines.length) {
-            this._keyColors = generateBackgroundColors(this._vLines.length);
-        }
 
         this.notifyDataChange();
     },
