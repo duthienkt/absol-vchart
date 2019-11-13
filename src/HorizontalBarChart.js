@@ -305,7 +305,6 @@ HorizontalBarChart.prototype.updateCanvasSize = function () {
     this.attr('height', this._canvasHeight + '');
 
     this._oyTop = 25 + this.$title.getBBox().height * 1.5;
-    this.$title.attr('x', this._canvasWidth / 2);
     this._ox = this._padding;
     this._oy = this._canvasHeight - this._padding;
     this._oxLength = this._oxRight - this._padding - this._ox;
@@ -324,6 +323,7 @@ HorizontalBarChart.prototype.updateAxisPosition = function () {
         .replace(/bottom/g, this._oy)
         .replace(/right/g, this._canvasWidth - 10)
     );
+    this.$title.attr('x', (this._oxRight + this._ox) / 2 + '');
 };
 
 
