@@ -22,8 +22,7 @@ g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range {
 g.vc-horizontal-bar-one-bar-note-container {}
 
 g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range-min-line,
-g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range-max-line
- {
+g.vc-horizontal-bar-one-bar-note-container .vc-horizontal-bar-chart-range-max-line {
     stroke: rgb(47, 82, 143);
     stroke-width: 1px;
     stroke-dasharray: 2;
@@ -72,8 +71,13 @@ text.vc-horizontal-bar-title {
 }
 
 
-.vc-horizontal-bar-vline-note-box{
+.vc-horizontal-bar-vline-note-box {
     stroke-width: 1;
-    stroke:black;
+    stroke: black;
     fill: none;
+}
+
+.vc-horizontal-bar-vline-container>path {
+    stroke-width: 2;
+    stroke: black;
 }

@@ -165,7 +165,14 @@ HorizontalBarChart.prototype.updateOneBarNotePosition = function () {
 };
 
 
-
+HorizontalBarChart.prototype.generateColor = function () {
+    var colorLength = Math.max(this._keys.length, this._bars.length) + this._ranges.length;
+    if (this._keyColors.length < colorLength) {
+        this._keyColors = generateBackgroundColors(colorLength).map(function (c) {
+            return fresherColor(c);
+        });
+    }
+};
 
 
 HorizontalBarChart.prototype.initKeysNote = function () {
@@ -182,7 +189,7 @@ HorizontalBarChart.prototype.initVLinesNote = function () {
     var self = this;
     this.$vLinesNoteContainer.clearChild();
     this.$vLineNotes = this._vLines.map(function (vline, i) {
-        return self._createVLineNote(vline.color, vline.name + '').addTo(self.$vLinesNoteContainer).attr('transform', translate(0, i * 20));
+        return self._createVLineNote(vline.color || self._keyColors[self._keys.length + i], vline.name + '').addTo(self.$vLinesNoteContainer).attr('transform', translate(0, i * 20));
     });
 };
 
@@ -276,8 +283,8 @@ HorizontalBarChart.prototype.initRanges = function () {
 HorizontalBarChart.prototype.initVLines = function () {
     var self = this;
     this.$vLineContainer.clearChild();
-    this.$vLines = this._vLines.map(function (vLineData) {
-        return vline(0, 0, 0, 'vc-horizontal-bar-vline').addStyle('stroke', vLineData.color).addTo(self.$vLineContainer);
+    this.$vLines = this._vLines.map(function (vLineData, i) {
+        return vline(0, 0, 0, 'vc-horizontal-bar-vline').addStyle('stroke', vLineData.color || lighterColor(self._keyColors[self._keys.length + i], -0.2)).addTo(self.$vLineContainer);
     });
 };
 
@@ -381,6 +388,7 @@ HorizontalBarChart.prototype.updateVLinesPosition = function () {
     }
 };
 
+
 HorizontalBarChart.prototype.updatePosition = function () {
     this.updateCanvasSize();
     this.updateNotePosition();
@@ -393,6 +401,7 @@ HorizontalBarChart.prototype.updatePosition = function () {
 };
 
 HorizontalBarChart.prototype.update = function () {
+    this.generateColor();
     this.processData();
     this.initNote();
     this.initAxisText();
@@ -423,6 +432,7 @@ HorizontalBarChart.property.canvasWidth = {
     }
 };
 
+
 HorizontalBarChart.property.canvasHeight = {
     set: function (value) {
         if (value >= 0) {
@@ -439,48 +449,31 @@ HorizontalBarChart.property.canvasHeight = {
     }
 };
 
+
 HorizontalBarChart.property.keys = {
     set: function (value) {
         this._keys = value || [];
-        if (this._keyColors.length < this._keys.length) {
-            this._keyColors = generateBackgroundColors(this._keys.length).map(function (c) {
-                return fresherColor(c);
-            });
-        }
-
         this.notifyDataChange();
     },
     get: function () {
         return this._keys;
     }
-
 };
 
 HorizontalBarChart.property.bars = {
     set: function (value) {
         this._bars = value || [];
-        if (this._keyColors.length < this._bars.length) {
-            this._keyColors = generateBackgroundColors(this._bars.length).map(function (c) {
-                return fresherColor(c);
-            });
-        }
-
         this.notifyDataChange();
     },
     get: function () {
         return this._bars;
     }
-}
+};
+
 
 HorizontalBarChart.property.ranges = {
     set: function (value) {
         this._ranges = value || [];
-        if (this._keyColors.length < this._ranges.length) {
-            this._keyColors = generateBackgroundColors(this._ranges.length).map(function (c) {
-                return fresherColor(c);
-            });
-        }
-
         this.notifyDataChange();
     },
     get: function () {
@@ -492,7 +485,6 @@ HorizontalBarChart.property.ranges = {
 HorizontalBarChart.property.vLines = {
     set: function (value) {
         this._vLines = value || [];
-
         this.notifyDataChange();
     },
     get: function () {
@@ -518,7 +510,8 @@ HorizontalBarChart.property.maxSegment = {
     get: function () {
         return this._maxSegment;
     }
-}
+};
+
 
 HorizontalBarChart.property.title = {
     set: function (value) {
@@ -531,6 +524,7 @@ HorizontalBarChart.property.title = {
     }
 };
 
+
 HorizontalBarChart.property.minRangeText = {
     set: function (value) {
         this._minRangeText = value || '';
@@ -540,6 +534,7 @@ HorizontalBarChart.property.minRangeText = {
         return this._minRangeText;
     }
 };
+
 
 HorizontalBarChart.property.maxRangeText = {
     set: function (value) {
