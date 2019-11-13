@@ -189,7 +189,7 @@ HorizontalBarChart.prototype.initVLinesNote = function () {
     var self = this;
     this.$vLinesNoteContainer.clearChild();
     this.$vLineNotes = this._vLines.map(function (vline, i) {
-        return self._createVLineNote(vline.color || self._keyColors[self._keys.length + i], vline.name + '').addTo(self.$vLinesNoteContainer).attr('transform', translate(0, i * 20));
+        return self._createVLineNote(vline.color || lighterColor(self._keyColors[self._keys.length + i], -0.2), vline.name + '').addTo(self.$vLinesNoteContainer).attr('transform', translate(0, i * 20));
     });
 };
 
