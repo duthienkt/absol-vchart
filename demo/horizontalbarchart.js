@@ -19,11 +19,9 @@ var skillChartProps = {
     vLines: [
         {
             value: 1.5,
-            color: 'red',
             name:"Chưa đạt yêu cầu"
         },
         {
-            color: 'blue',
             value: 3.5,
             name:"Đạt yêu cầu"
 
@@ -31,11 +29,11 @@ var skillChartProps = {
     ]
 };
 
-vchart._({
-    tag: 'horizontalbarchart',
-    style:{
-        width:'80vw',
-        height:'80vh'
-    }, 
-    props: skillChartProps
-}).addTo(document.body);
+    vchart._({
+        tag: 'horizontalbarchart',
+        style:{
+            width:'80vw',
+            height:'80vh'
+        }, 
+        props: skillChartProps
+    }).addTo(document.body);

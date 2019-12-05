@@ -166,7 +166,7 @@ HorizontalBarChart.prototype.updateOneBarNotePosition = function () {
 
 
 HorizontalBarChart.prototype.generateColor = function () {
-    var colorLength = Math.max(this._keys.length, this._bars.length) + this._ranges.length;
+    var colorLength = Math.max(this._keys.length, this._bars.length) + this._vLines.length;
     if (this._keyColors.length < colorLength) {
         this._keyColors = generateBackgroundColors(colorLength).map(function (c) {
             return fresherColor(c);
