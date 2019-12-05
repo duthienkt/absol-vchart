@@ -1,3 +1,5 @@
+import Acore from "absol-acomp/ACore";
+
 absol.ShareCreator.draggerdiv = function () {
     var res = absol._('div');
     res.defineEvent(['press', 'drag', 'release']);
@@ -87,7 +89,7 @@ absol.ShareCreator.resizablediv.prototype.clearChild = function () {
     this.$content.clearChild();
 };
 
-
+Acore.install(absol.ShareCreator.resizablediv);
 
 absol.ShareCreator.resizablediv.eventHandler = {};
 

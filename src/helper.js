@@ -282,9 +282,8 @@ export function getSubNumberArray(arr) {
 
 export function wrapChartInWHResizer(chartElt, outerParam) {
     outerParam = outerParam || {};
-    return _({
-        tag: 'widthheightresizer',
-        child: chartElt,
+    var res =  AComp._({
+        tag: 'resizablediv',
         style: {
             display: 'inline-block',
             verticalAlign: 'top'
@@ -302,6 +301,8 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
             }
         }
     }).addStyle(outerParam.style || {});
+    res.addChild(chartElt);
+    return res;
 }
 
 export function paddingLeft(text, char, length) {
