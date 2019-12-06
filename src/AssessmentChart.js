@@ -45,7 +45,7 @@ AssessmentChart.prototype._createLevelValue = function (value) {
     var res = _('g.assessment-chart-level-value');
     res.$bound = rect(0, -6, 0, 13).attr({ rx: '4', ry: '4' }).addTo(res);
     res.$text = text(value + '', 0, 4).attr({ 'text-anchor': 'middle' }).addTo(res);
-    if (value === '' || value === undefined || value === null) res.addStyle('display', 'none');
+    if (value === '' || value === undefined || value === null) res.addStyle('visibility', 'hidden');
     return res;
 };
 
