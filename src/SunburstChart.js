@@ -262,7 +262,6 @@ SunburstChart.prototype.meansure = function () {
     this.$content.attr('transform', translate(0, 0));
     var rootBox = this.$root.getBBox();
     this.segmentLength = rootBox.width / 2;// (Math.min(this.canvasHeight, this.canvasWidth) - this.paddingContent * 2) / (this.depth * 2);
-    console.log(this.segmentLength)
     this.tryDrawNode(this.$root);
     var contentBox = this.$content.getBBox();
     var availableWidth = this.canvasWidth - this.paddingContent * 2 - rootBox.width;
