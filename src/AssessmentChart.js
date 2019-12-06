@@ -15,8 +15,8 @@ function AssessmentChart() {
     var res = _({
         tag: 'svg',
         class: ['base-chart', 'assessment-chart'],
-        child:'sattachhook'
-    });
+        child: 'sattachhook'
+    }, true);
 
     res.$attachhook = $("sattachhook", res).on('error', function (error) {
         this.updateSize = this.updateSize || res.update.bind(res);
@@ -27,10 +27,10 @@ function AssessmentChart() {
         res.$attachhook.on('error', rs);
     });
 
-    res.sync.then(function(){
+    res.sync.then(function () {
         res.update();
     });
-    
+
     return res;
 };
 
@@ -45,7 +45,7 @@ AssessmentChart.prototype._createLevelValue = function (value) {
     var res = _('g.assessment-chart-level-value');
     res.$bound = rect(0, -6, 0, 13).attr({ rx: '4', ry: '4' }).addTo(res);
     res.$text = text(value + '', 0, 4).attr({ 'text-anchor': 'middle' }).addTo(res);
-
+    if (value === '' || value === undefined || value === null) res.addStyle('display', 'none');
     return res;
 };
 
@@ -185,6 +185,7 @@ AssessmentChart.prototype.estimateSize = function () {
 AssessmentChart.prototype.updateSize = BaseChart.prototype.updateSize;
 
 AssessmentChart.prototype.update = function () {
+
     this.updateSize();
     this.estimateSize()
     this.updateBackComp();

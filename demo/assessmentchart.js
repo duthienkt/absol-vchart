@@ -1,6 +1,6 @@
 
 
-var x = vchart._({
+var x = vchart.wrapChartInWHResizer(vchart._({
     tag: 'assessmentchart',
     extendEvent: 'contextmenu',
     props: {
@@ -8,7 +8,7 @@ var x = vchart._({
         title: 'Programming skill',
         canvasWidth: 700,
         canvasHeight: 600,
-        levels: ['0.0', '1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0', '8.0', '9.0', '10.0'],
+        levels: ['', '1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0', '8.0', '9.0', '10.0'],
         keys: ['C/C++', 'Javascript', 'Matlab', 'CSS', 'C#', 'R', 'Python', 'ASM', 'Pascal - basic programming language'],
         axisWeight: [1, 2, 3, 4, 1, 2, 7, 3, 4, 2, 5],
         ranges: [
@@ -30,14 +30,12 @@ var x = vchart._({
         ]
     }
 
-
-}).addTo(document.body);
-
+})).addTo(document.body);
 
 var a = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-    
+
     props: {
         title: 'Programming skill',
         canvasWidth: 900,
@@ -72,7 +70,7 @@ var a = vchart._({
 var b = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-    
+
     props: {
         title: 'Programming skill',
         canvasWidth: 300,
@@ -108,7 +106,7 @@ var b = vchart._({
 var y = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-    
+
     props: {
         title: 'Programming skill',
         canvasWidth: 400,
@@ -144,7 +142,7 @@ var y = vchart._({
 var z = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-    
+
     props: {
         title: 'Programming skill',
         canvasWidth: 300,
@@ -214,7 +212,7 @@ var t = vchart._({
 var m = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-    
+
     props: {
         title: 'Programming skill',
         canvasWidth: 400,
@@ -254,7 +252,7 @@ function div2(x) {
 var m = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-    
+
     props: {
         title: 'Programming skill',
         canvasWidth: 500,
@@ -288,7 +286,7 @@ var m = vchart._({
 var m = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-    
+
     props: {
         title: 'Programming skill',
         canvasWidth: 1300,
