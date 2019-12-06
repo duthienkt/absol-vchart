@@ -3,8 +3,7 @@ import Color from 'absol/src/Color/Color';
 import Vec2 from 'absol/src/Math/Vec2';
 
 import AComp from 'absol-acomp/AComp';
-Vcore.creator.widthheightresizer = AComp.creator.widthheightresizer;
-
+import './vchart.resizablediv';
 var _ = Vcore._;
 
 
@@ -282,26 +281,26 @@ export function getSubNumberArray(arr) {
 
 export function wrapChartInWHResizer(chartElt, outerParam) {
     outerParam = outerParam || {};
-    var res =  AComp._({
+    
+    var res = AComp._({
         tag: 'resizablediv',
         style: {
             display: 'inline-block',
             verticalAlign: 'top'
         },
+        child: chartElt,
         on: {
             sizechange: function (event) {
-                var data = event.data;
-                if (data.width) {
-                    chartElt.canvasWidth = parseFloat(data.width.replace('px', '')) - 4;
+                if (event.width) {
+                    chartElt.canvasWidth = event.width;
                 }
-                if (data.height) {
-                    chartElt.canvasHeight = parseFloat(data.height.replace('px', '')) - 4;
+                if (event.height) {
+                    chartElt.canvasHeight = event.height ;
                 }
                 chartElt.update();
             }
         }
-    }).addStyle(outerParam.style || {});
-    res.addChild(chartElt);
+    }, false, true).addStyle(outerParam.style || {});
     return res;
 }
 

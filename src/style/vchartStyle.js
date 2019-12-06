@@ -13,5 +13,6 @@ import './grouprankchart.css';
 import './mappingchart.css';
 import './imagechart.css';
 import './horizontalbarchart.css';
+import './resizeablediv.css';
 
 export default {};

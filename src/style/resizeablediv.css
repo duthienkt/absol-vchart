@@ -1,0 +1,16 @@
+.vchart-resizable-div {
+    position: relative;
+    box-sizing: border-box;
+}
+
+.vchart-resizable-div .as-resize-box {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+}
+
+.vchart-resizable-div.vchart-resizable-div-active .as-resize-box {
+    display: block;
+}
