@@ -194,7 +194,7 @@ AssessmentChart.prototype.update = function () {
 };
 
 AssessmentChart.prototype.initBackComp = function () {
-    this.$title = text(this.title, 20, 20, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = text(this.title||'', 20, 20, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
     this.$content = _('g').addTo(this);
     this.$noteGroup = _('g').addTo(this);
     this.$axisLines = this.keys.map(function (u, i) {

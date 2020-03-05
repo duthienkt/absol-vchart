@@ -75,7 +75,7 @@ MappingChart.prototype.initAxis = function () {
     this.$botMaxText = text(this.numberToString(this.max), 30, 50, 'mapping-chart-range-text').addTo(this.$background);
 
 
-    this.$title = text(this.title, 0, 25, 'mapping-chart-title').addTo(this.$background).attr('text-anchor', 'middle');
+    this.$title = text(this.title||'', 0, 25, 'mapping-chart-title').addTo(this.$background).attr('text-anchor', 'middle');
 
 };
 

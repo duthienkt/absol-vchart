@@ -337,7 +337,7 @@ GroupRankChart.prototype.initComp = function () {
     this.$oySegmentLines = this._createOYSegmentLines(this.oySegmentCount + 1 + (this.extendOY ? 1 : 0)).addTo(this);
 
 
-    this.$title = vchart.text(this.title, 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = vchart.text(this.title||'', 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
 
     this.$oyName = vchart.text(this.valueName || '', 0, 0, 'base-chart-oxy-text').addTo(this);
     this.$oxName = vchart.text(this.keyName || '', 0, 0, 'base-chart-oxy-text').addTo(this);

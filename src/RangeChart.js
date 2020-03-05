@@ -568,7 +568,7 @@ RangeChart.prototype.initComp = function () {
     }.bind(this));
 
 
-    this.$title = text(this.title, 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = text(this.title||'', 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
 
     this.$scrollArrows = this._createScrollArrow()
         .addTo(this)
