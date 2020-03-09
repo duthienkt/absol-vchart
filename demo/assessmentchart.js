@@ -22,10 +22,32 @@ var x = vchart.wrapChartInWHResizer(vchart._({
             [4, 7],
             [7, 9]
         ],
+        rangeFillColor: 'orange',
+        rangeMaxStrokeColor: 'lightgreen',
+        rangeMinStrokeColor: 'ligthred',
+        
         areas: [
             {
                 name: 'FirstYear',
-                values: [5, 0.5, 3.5, 2, 2, 3, 0.7, 8.2, 7]
+                values: [5, 0, 3, 2, 2, 3, 0, 0],
+                color:'red'
+            },
+            {
+                name: 'ThirdYear',
+                values: [6, 2, 4, 3, 6, 1, 3, 3],
+                color:'green'
+
+            },
+            {
+                name: 'FifthtYear',
+                values: [8, 5, 5, 6, 5, 1, 4, 2],
+                color:'blue',
+
+            },
+            {
+                name: 'FinalYear',
+                values: [7, 9, 3, 8, 5, 0, 3, 0],
+                color:'violet'
             }
         ]
     }
@@ -262,20 +284,26 @@ var m = vchart._({
         areas: [
             {
                 name: 'FirstYear',
-                values: [5, 0, 3, 2, 2, 3, 0, 0, 7].map(div2)
+                values: [5, 0, 3, 2, 2, 3, 0, 0, 7].map(div2),
+                color:'red'
             },
             {
                 name: 'ThirdYear',
-                values: [6, 2, 4, 3, 6, 1, 3, 3, 3].map(div2)
-
+                values: [6, 2, 4, 3, 6, 1, 3, 3, 3].map(div2),
+                color:'green'
             },
             {
                 name: 'FifthtYear',
-                values: [8, 5, 5, 6, 5, 1, 4, 2, 2].map(div2)
+                values: [8, 5, 5, 6, 5, 1, 4, 2, 2].map(div2),
+
+                color:'blue'
+
             },
             {
                 name: 'FinalYear',
-                values: [7, 9, 3, 8, 5, 0, 3, 0, 2].map(div2)
+                values: [7, 9, 3, 8, 5, 0, 3, 0, 2].map(div2),
+                color:'yellow'
+
             }
         ]//,
         // numberToString: vchart.lambda.toLocalString(0)
