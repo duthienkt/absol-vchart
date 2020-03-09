@@ -64,7 +64,7 @@ ColumnChart.prototype.initComp = function () {
 ColumnChart.prototype.updateComp = function () {
     this.$columes.forEach(function ($colume, i) {
         if (isNumber(this.values[i])) {
-            $colume.$rect.removeStyle('display');
+            $colume.removeStyle('display');
             var height = - this.mapOYValue(this.values[i]);
             // x: (i + 0.5) * this.oxSegmentLength - this.columnWidth / 2
             $colume.$rect.attr({
@@ -77,7 +77,7 @@ ColumnChart.prototype.updateComp = function () {
             });
         }
         else {
-            $colume.$rect.addStyle('display', 'none');
+            $colume.addStyle('display', 'none');
         }
 
     }.bind(this));
