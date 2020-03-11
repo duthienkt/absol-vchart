@@ -194,7 +194,7 @@ AssessmentChart.prototype.update = function () {
 };
 
 AssessmentChart.prototype.initBackComp = function () {
-    this.$title = text(this.title||'', 20, 20, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = text(this.title || '', 20, 20, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
     this.$content = _('g').addTo(this);
     this.$noteGroup = _('g').addTo(this);
     this.$axisLines = this.keys.map(function (u, i) {
@@ -350,6 +350,7 @@ AssessmentChart.prototype.updateComp = function () {
 
     this.$areas.forEach(function ($area, i) {
         var area = this.areas[i];
+
         var points = area.values.reduce(function (ac, value, i) {
             var angle = this.mapAngle(i);
             var level = this.mapLevel(value);
@@ -361,6 +362,9 @@ AssessmentChart.prototype.updateComp = function () {
         }.bind(this), []);
         var d = 'M' + points.join('L') + 'Z';
         $area.attr('d', d);
+        if (typeof (area.strokeWidth) == "number") {
+            $area.addStyle('stroke-width', area.strokeWidth + '');
+        }
     }.bind(this));
 };
 

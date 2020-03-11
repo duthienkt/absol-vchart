@@ -45,20 +45,26 @@ var a = vchart._({
         areas: [
             {
                 name: 'FirstYear',
-                values: [5, 0, 3, 2, 2, 3, 0, 0]
+                values: [5, 0, 3, 2, 2, 3, 0, 0],
+                strokeWidth: 5
             },
             {
                 name: 'ThirdYear',
-                values: [6, 2, 4, 3, 6, 1, 3, 3]
+                values: [6, 2, 4, 3, 6, 1, 3, 3],
+                strokeWidth: 2
+
 
             },
             {
                 name: 'FifthtYear',
-                values: [8, 5, 5, 6, 5, 1, 4, 2]
+                values: [8, 5, 5, 6, 5, 1, 4, 2],
+                strokeWidth: 1
+
             },
             {
                 name: 'FinalYear',
-                values: [7, 9, 3, 8, 5, 0, 3, 0]
+                values: [7, 9, 3, 8, 5, 0, 3, 0],
+                strokeWidth: 7
             }
         ]//,
         // numberToString: vchart.lambda.toLocalString(0)
@@ -116,7 +122,8 @@ var y = vchart._({
         areas: [
             {
                 name: 'FirstYear',
-                values: [5, 0, 3, 2, 2, 3, 0, 0, 7]
+                values: [5, 0, 3, 2, 2, 3, 0, 0, 7],
+                strokeWidth: 5
             },
             {
                 name: 'ThirdYear',
