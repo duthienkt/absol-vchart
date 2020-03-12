@@ -1,7 +1,12 @@
 import Vcore from "./VCore";
 import './style/spiderchart.css';
-import { rotate } from "./template";
+import { rotate, translate } from "./template";
 import { hline, text } from "./helper";
+
+import './StrokeNote';
+import './RectNote';
+import './NoteGrid';
+
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -28,13 +33,18 @@ function SpiderChart() {
     this._viewOption = {
         // noteLineLength: 15,
         // noteBoxHight: 14
-    }
+    };
+
+    this.$noteGrid = $('notegrid', this);
 }
+
+
 
 
 SpiderChart.render = function () {
     return _({
         tag: 'svg',
+        class: 'vchart-base',
         child: [
             {
                 class: 'vchart-spider-chart-background',
@@ -51,6 +61,33 @@ SpiderChart.render = function () {
                     'text.base-chart-title',
                     '.vchart-spider-chart-note-ctn'
                 ]
+            },
+            {
+                tag: 'notegrid',
+                attr:{
+                    itemMargin: 20,
+                    padding: 5
+                }, 
+                child: [{
+                    tag: 'strokenote',
+                    attr: {
+                        transform: translate(10, 20)
+                    },
+                    props: {
+                        text: 'Long long text',
+                        color: 'red'
+                    }
+                },
+                {
+                    tag: 'rectnote',
+                    attr: {
+                        transform: translate(10, 40)
+                    },
+                    props: {
+                        text: 'Long long text',
+                        color: 'red'
+                    }
+                }]
             }
         ]
     });
@@ -203,7 +240,7 @@ SpiderChart.prototype._createBoxNote = function (obj) {
 SpiderChart.prototype.recreateNotes = function () {
     var thisChart = this;
     this.$noteCtn.clearChild();
-    this.$notes =  this.objects.map(function(obj){
+    this.$notes = this.objects.map(function (obj) {
         var noteElt = thisChart._createLineNote(obj);
 
         noteElt.addTo(thisChart.$noteCtn);
@@ -218,6 +255,8 @@ SpiderChart.prototype.recreateTitle = function () {
 
 SpiderChart.prototype.updateSize = function (force) {
     if (!force && !this.updateCanvasSize()) return;// nothing change
+    this.$noteGrid.updateSize();
+    
 
 };
 
