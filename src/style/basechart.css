@@ -16,3 +16,28 @@
     fill: rgba(22, 129, 216, 0.247);
     stroke: rgba(22, 129, 216, 0.87);
 }
+
+
+.vchart-base{
+    font-size: 14px;
+    font-family: Arial;
+}
+
+
+.vchart-stroke-note-line {
+    stroke-width: 2;
+}
+
+.vchart-stroke-note-text,
+.vchart-rect-note-text
+{
+    font-size: 14px;
+}
+
+.vchart-rect-note-rect{
+    stroke:none;
+}
+
+rect.vchart-node-grid-box{
+    fill: burlywood;
+}
