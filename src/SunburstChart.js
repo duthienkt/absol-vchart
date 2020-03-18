@@ -8,12 +8,33 @@ var _ = Vcore._;
 var $ = Vcore.$;
 
 function SunburstChart() {
-    var res = _('svg.sunburst-chart.base-chart');
-    res.$content = _('g').addTo(res);
-    res.sync = res.afterAttached();
-    return res;
+    this.$title = $('.base-chart-title', this);
+    this.$content = $('.sunburst-chart-content', this);
+    this.$attachhook = _('attachhook').addTo(this);
+    var thisChart = this;
+    this.sync = new Promise(function (rs) {
+        thisChart.$attachhook.on('error', rs);
+    });
 };
 
+
+SunburstChart.render = function () {
+    return _({
+        tag: 'svg',
+        class: ['sunburst-chart', 'base-chart'],
+        child: [{
+            tag: 'text',
+            class: 'base-chart-title',
+            attr:{
+                'text-anchor':'middle',
+                y: 20
+            }
+        },
+        {
+            class: 'sunburst-chart-content'
+        }]
+    });
+};
 
 
 SunburstChart.prototype.updateSize = BaseChart.prototype.updateSize;
@@ -95,9 +116,9 @@ SunburstChart.prototype.initBackComp = function () {
 
 
 SunburstChart.prototype.updateBackComp = function () {
-    // this.cx = this.canvasWidth / 2;
-    // this.cy = this.canvasHeight / 2;
-    // this.cr = Math.min(this.canvasHeight, this.canvasWidth) / 2 - this.paddingContent;
+    this.$title.attr({
+        x: this.canvasWidth/2
+    })
     this.$content.attr('transform', translate(0, 0));
 };
 
@@ -155,12 +176,11 @@ SunburstChart.prototype.calDepth = function (node) {
 };
 
 SunburstChart.prototype.initComp = function () {
-
-
     this.$root.chartDataNode = this.root;
     this.$root.chartAngle = [-Math.PI / 2, Math.PI * 3 / 2];
     this.$root.level = 0;
     this.depth = this.calDepth(this.root);
+    this.$title.clearChild().addChild(_({ text: this.title || '' }))
     this.initChartNode(this.$root);
 };
 
@@ -265,7 +285,7 @@ SunburstChart.prototype.meansure = function () {
     this.tryDrawNode(this.$root);
     var contentBox = this.$content.getBBox();
     var availableWidth = this.canvasWidth - this.paddingContent * 2 - rootBox.width;
-    var availableHeight = this.canvasHeight - this.paddingContent * 2 - rootBox.height;
+    var availableHeight = this.canvasHeight - this.paddingContent * 2 - rootBox.height - 30;
     var outHeight = contentBox.height - rootBox.height;
     var outWidth = contentBox.width - rootBox.width;
     this.segmentLength = Math.min(this.segmentLength / outHeight * availableHeight, this.segmentLength / outWidth * availableWidth);
@@ -277,10 +297,12 @@ SunburstChart.prototype.updateComp = function () {
     this.updateNodeSession = new Date().getTime();
     this.updateNode(this.$root);
     var contentBox = this.$content.getBBox();
-    var cx = contentBox.width/2 + contentBox.x;
-    var cy = contentBox.height/2 + contentBox.y;
+    var titleBox = this.$title.getBBox();
 
-    this.$content.attr('transform', translate(this.canvasWidth/2 -cx, this.canvasHeight/2 -cy));
+    var cx = contentBox.width / 2 + contentBox.x;
+    var cy = (contentBox.height - 30) / 2 + contentBox.y;
+
+    this.$content.attr('transform', translate(this.canvasWidth / 2 - cx, this.canvasHeight / 2 - cy));
 };
 
 
@@ -291,7 +313,6 @@ SunburstChart.prototype.preInit = function (props) {
     this.titleLineHeight = 22;
     this.titleCirclePadding = 4;
     this.segmentLength = 100;
-
 };
 
 
