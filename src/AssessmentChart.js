@@ -111,7 +111,7 @@ AssessmentChart.prototype._expectSize = function (rects, r, db) {
         rect = rects[i];
         if (i == 0) {
             rect.x = rect.width / 2;
-            rect.y = - rect.height - r;
+            rect.y = - rect.height - r - 7;
         }
         else if (rects.length % 4 == 0 && i == (rects.length >> 2)) {
             rect.x = r;
@@ -123,7 +123,7 @@ AssessmentChart.prototype._expectSize = function (rects, r, db) {
         }
         else if (rects.length % 2 == 0 && i == (rects.length >> 1)) {
             rect.x = rect.width / 2;
-            rect.y = r;
+            rect.y = r + 7;
         }
         else if (i < rects.length / 4) {
             rect.x = r * Math.cos(angle);
@@ -251,6 +251,12 @@ AssessmentChart.prototype.updateBackComp = function () {
         var angle = (-90 + i * 360 / this.keys.length) * Math.PI / 180;
         var x = (this.axisLenth + 30) * Math.cos(angle);
         var y = (this.axisLenth + 30) * Math.sin(angle) + 5;
+        if (this.keys.length % 2 == 0 && i == (this.keys.length >> 1)) {
+            y += 7;
+        }
+        else if (i == 0) {
+            y -= 7;
+        }
         $axisName.attr({ x: x, y: y });
     }.bind(this));
 
