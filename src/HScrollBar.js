@@ -1,7 +1,7 @@
 import Vcore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
 import Draggable from "absol-acomp/js/Draggable";
-import { translate } from "./template";
+import {translate} from "./template";
 
 var _ = Vcore._;
 
@@ -9,35 +9,40 @@ var $ = Vcore.$;
 
 
 function HScrollBar() {
-    var res = _(
-        {
-            tag: 'g',
-            extendEvent: ['scroll'],
-            class: 'vchart-vscrollbar',
-            child: [
-                {
-                    tag: 'rect',
-                    class: 'vchart-vscrollbar-bar',
-                    attr: {
-                        x: '0',
-                        y: '0'
-                    }
-                },
-                {
-                    tag: 'rect',
-                    class: 'vchart-vscrollbar-button'
-
-                }
-            ]
+    var res = _({
+            tag: 'hanger',
+            elt: this
         }
     );
-    res._scrollLeft = 0;
-    res.eventHandler = OOP.bindFunctions(res, HScrollBar.eventHandler);
-    Draggable(res).on('predrag', res.eventHandler.predrag)
+    this._scrollLeft = 0;
+    this.on('predrag', res.eventHandler.predrag)
         .on('drag', res.eventHandler.drag);
-    res.$bar = $('.vchart-vscrollbar-bar', res);
-    res.$button = $('.vchart-vscrollbar-button', res);
-    return res;
+    this.$bar = $('.vchart-vscrollbar-bar', this);
+    this.$button = $('.vchart-vscrollbar-button', this);
+}
+
+
+HScrollBar.render = function () {
+    return _({
+        tag: 'g',
+        extendEvent: ['scroll'],
+        class: 'vchart-vscrollbar',
+        child: [
+            {
+                tag: 'rect',
+                class: 'vchart-vscrollbar-bar',
+                attr: {
+                    x: '0',
+                    y: '0'
+                }
+            },
+            {
+                tag: 'rect',
+                class: 'vchart-vscrollbar-button'
+
+            }
+        ]
+    });
 }
 
 HScrollBar.eventHandler = {};
@@ -69,7 +74,6 @@ HScrollBar.eventHandler.drag = function (event) {
     this.updateButtonPosition();
     this.emit('scroll', event, this);
 };
-
 
 
 HScrollBar.prototype.updateButtonPosition = function () {
