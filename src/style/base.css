@@ -1,6 +1,7 @@
 .av-title {
     font-weight: bold;
     font-size: 15px;
+    text-anchor: middle;
 }
 
 .av-chart {

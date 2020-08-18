@@ -229,9 +229,9 @@ FunnelChart.prototype._alignContent = function () {
         x: this._cavasWidth / 2,
         y: 14 + this._contentMargin
     });
-    this.$content.attr('transform', translate(this._contentMargin, this._contentMargin + 20));
+    this.$content.attr('transform', translate(this._contentMargin, this._contentMargin + 50));
     this._contentWidth = this._cavasWidth - this._contentMargin * 2;
-    this._contentHeight = this._canvasHeight - this._contentMargin * 2 - 20;
+    this._contentHeight = this._canvasHeight - this._contentMargin * 2 - 50;
     this._alignNote();
     this._alignFunnel();
 };
