@@ -26,6 +26,7 @@ function FunnelChart() {
     this.$content = $('.av-funnel-content', this);
     this.$funnelCtn = $('.av-funnel-ctn', this);
     this.$noteCtn = $('.av-funnel-note-ctn', this);
+    this.$notes = [];
     this._contentMargin = 5;
     this._contentWidth = 0;
     this._contentHeight = 0;
@@ -90,9 +91,15 @@ FunnelChart.prototype.updateSize = function () {
 
 FunnelChart.prototype._normalizeData = function () {
     var blockColor = generateBackgroundColors(this.blocks.length);
+    var sum = this.blocks.reduce(function (ac, cr) {
+        return ac + cr.value;
+    }, 0);
     this.blocks.forEach(function (block, i) {
         block.color = block.color || blockColor[i];
+        block.percent = block.value * 100 / sum;
     });
+
+
 };
 
 
@@ -150,6 +157,12 @@ FunnelChart.prototype._makeNote = function (block) {
 };
 
 FunnelChart.prototype._makeBlock = function (block) {
+    var valueColor = Color.parse(block.color + '').getContrastYIQ();
+    var percenColor = valueColor.clone();
+    percenColor.rgba[0] = (percenColor.rgba[0] + Math.sqrt(0.5)) / 2;
+    percenColor.rgba[1] = (percenColor.rgba[1] + Math.sqrt(0.5)) / 2;
+    percenColor.rgba[2] = (percenColor.rgba[2] + Math.sqrt(0.5)) / 2;
+
     var $block = _({
         class: 'av-funnel-block',
         child: [
@@ -164,16 +177,28 @@ FunnelChart.prototype._makeBlock = function (block) {
                 tag: 'text',
                 class: 'av-funnel-block-value',
                 attr: {
-                    y: 35
+                    y: 25
                 },
                 style: {
-                    fill: Color.parse(block.color + '').getContrastYIQ() + ''
+                    fill: valueColor + ''
                 },
                 child: {
                     text: block.value
                 }
+            },
+            {
+                tag: 'text',
+                class: 'av-funnel-block-percent',
+                attr: {
+                    y: 55
+                },
+                style: {
+                    fill: percenColor + ''
+                },
+                child: {
+                    text: block.percent.toFixed(1) + '%'
+                }
             }
-
         ]
     });
 
@@ -252,7 +277,7 @@ FunnelChart.eventHandler = {};
 
 FunnelChart.eventHandler.attached = function () {
     ResizeSystem.add(this.$attachhook);
-    this._updateCanvasSize();
+    this.updateSize();
 };
 
 
