@@ -1,3 +1,27 @@
 .av-funnel-chart {
 
 }
+
+.av-funnel {
+
+}
+
+.av-funnel-item-block {
+
+}
+
+.av-funnel-note-name {
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.av-funnel-block-shape {
+    stroke: white;
+    stroke-width: 2;
+}
+
+.av-funnel-block-value {
+    text-anchor: middle;
+    font-size: 30px;
+}

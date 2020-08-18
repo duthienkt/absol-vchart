@@ -26,6 +26,7 @@ import './ImagesChart';
 import './SalaryScaleChart';
 import './HorizontalBarChart';
 import './SpiderChart';
+import './FunnelChart';
 
 
 import { isNumber, toLocalString, text, circle, rect, vline, hline, moveVLine, moveHLine, autoCurve } from "./helper";
