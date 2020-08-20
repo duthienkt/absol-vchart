@@ -27,7 +27,7 @@ import './SalaryScaleChart';
 import './HorizontalBarChart';
 import './SpiderChart';
 import './FunnelChart';
-
+import './BarStackChart';
 
 import { isNumber, toLocalString, text, circle, rect, vline, hline, moveVLine, moveHLine, autoCurve } from "./helper";
 import { showTooltip, closeTooltip } from "./ToolTip";
