@@ -49,6 +49,11 @@
 
 .assessment-chart-range-area {
     fill: rgba(200, 200, 0, 0.3);
+    stroke: none;
+}
+
+.assessment-chart-range-area-stroke{
+    fill: none;
     stroke: rgb(255, 150, 0);
     stroke-width: 1.5;
 }

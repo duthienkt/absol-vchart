@@ -111,7 +111,7 @@ AssessmentChart.prototype._expectSize = function (rects, r, db) {
         rect = rects[i];
         if (i == 0) {
             rect.x = rect.width / 2;
-            rect.y = - rect.height - r;
+            rect.y = - rect.height - r - 7;
         }
         else if (rects.length % 4 == 0 && i == (rects.length >> 2)) {
             rect.x = r;
@@ -123,7 +123,7 @@ AssessmentChart.prototype._expectSize = function (rects, r, db) {
         }
         else if (rects.length % 2 == 0 && i == (rects.length >> 1)) {
             rect.x = rect.width / 2;
-            rect.y = r;
+            rect.y = r + 7;
         }
         else if (i < rects.length / 4) {
             rect.x = r * Math.cos(angle);
@@ -217,7 +217,7 @@ AssessmentChart.prototype.initBackComp = function () {
     }.bind(this));
 
     this.$notes = this.areas.map(function (area, i) {
-        return this._createLineNote(area.name, this.autoColor(i)).addTo(this.$noteGroup);
+        return this._createLineNote(area.name, area.color || this.autoColor(i)).addTo(this.$noteGroup);
     }.bind(this));
 
 
@@ -251,6 +251,12 @@ AssessmentChart.prototype.updateBackComp = function () {
         var angle = (-90 + i * 360 / this.keys.length) * Math.PI / 180;
         var x = (this.axisLenth + 30) * Math.cos(angle);
         var y = (this.axisLenth + 30) * Math.sin(angle) + 5;
+        if (this.keys.length % 2 == 0 && i == (this.keys.length >> 1)) {
+            y += 7;
+        }
+        else if (i == 0) {
+            y -= 7;
+        }
         $axisName.attr({ x: x, y: y });
     }.bind(this));
 
@@ -287,9 +293,25 @@ AssessmentChart.prototype.updateBackComp = function () {
 AssessmentChart.prototype.initComp = function () {
     if (this.ranges && this.ranges.length > 0) {
         this.$rangeArea = _('shape.assessment-chart-range-area').addStyle('fill-rule', "evenodd").addTo(this.$content);
+        if (this.rangeFillColor) {
+            var rangeFillColor = Color.parse(this.rangeFillColor);
+            rangeFillColor.rgba[3] = 0.3;
+            this.$rangeArea.addStyle({
+                fill: rangeFillColor.toString()
+            })
+        }
         this.$ranges = this.ranges.map(function (range, i, arr) {
             return this._createRangeLine().addTo(this.$content);
         }.bind(this));
+
+        this.$rangeMax = _('shape.assessment-chart-range-area-stroke').addTo(this.$content).addStyle({
+            stroke: this.rangeMaxStrokeColor || 'rgba(255, 150, 0, 0.3)',
+        });
+
+
+        this.$rangeMin = _('shape.assessment-chart-range-area-stroke').addTo(this.$content).addStyle({
+            stroke: this.rangeMinStrokeColor || 'rgba(200, 200, 0, 0.3)',
+        });
     }
 
     this.$areas = this.areas.map(function (area, i, arr) {
@@ -298,6 +320,9 @@ AssessmentChart.prototype.initComp = function () {
             stroke: area.stroke || this.autoColor(i, 0.8),
         });
     }.bind(this));
+
+
+
 };
 
 AssessmentChart.prototype.updateComp = function () {
@@ -318,6 +343,8 @@ AssessmentChart.prototype.updateComp = function () {
         }.bind(this));
 
         this.$rangeArea.begin();
+        this.$rangeMax.begin();
+        this.$rangeMin.begin();
         this.ranges.forEach(function (range, i, arr) {
             var angle = this.mapAngle(i);
             var levelMax = this.mapLevel(range[1]);
@@ -325,11 +352,16 @@ AssessmentChart.prototype.updateComp = function () {
             var yMax = this.mapRadius(levelMax) * Math.sin(angle);
             if (i == 0) {
                 this.$rangeArea.moveTo(xMax, yMax);
+                this.$rangeMax.moveTo(xMax, yMax);
             }
             else {
                 this.$rangeArea.lineTo(xMax, yMax);
+                this.$rangeMax.lineTo(xMax, yMax);
             }
-            if (i + 1 == arr.length) this.$rangeArea.closePath();
+            if (i + 1 == arr.length) {
+                this.$rangeArea.closePath();
+                this.$rangeMax.closePath();
+            }
         }.bind(this))
 
         this.ranges.forEach(function (range, i, arr) {
@@ -339,12 +371,19 @@ AssessmentChart.prototype.updateComp = function () {
             var yMin = this.mapRadius(levelMax) * Math.sin(angle);
             if (i == 0) {
                 this.$rangeArea.moveTo(xMin, yMin);
+                this.$rangeMin.moveTo(xMin, yMin);
             }
             else {
                 this.$rangeArea.lineTo(xMin, yMin);
+                this.$rangeMin.lineTo(xMin, yMin);
             }
-            if (i + 1 == arr.length) this.$rangeArea.closePath();
+            if (i + 1 == arr.length) {
+                this.$rangeArea.closePath();
+                this.$rangeMin.closePath();
+            }
         }.bind(this))
+        this.$rangeMax.end();
+        this.$rangeMin.end();
         this.$rangeArea.end();
     }
 

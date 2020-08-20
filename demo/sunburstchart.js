@@ -1,7 +1,7 @@
 var x = vchart._({
     tag: 'sunburstchart',
     props: {
-        // title: 'absol js code analysis',
+        title: 'Đánh giá năng lực',
         canvasWidth: 900,
         canvasHeight: 600,
         zeroOY: true,
@@ -59,7 +59,7 @@ var x = vchart._({
 var y = vchart._({
     tag: 'sunburstchart',
     props: {
-        // title: 'absol js code analysis',
+        title: 'Đánh giá năng lực',
         canvasWidth: 900,
         canvasHeight: 600,
         zeroOY: true,
