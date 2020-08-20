@@ -4,3 +4,5 @@
 webpack-cli*
 webpack.cmd
 webpack
+.idea
+package-lock.json
