@@ -1,3 +1,20 @@
-.vc-bar-stack-chart{
+.vc-bar-stack-chart {
 
+}
+
+
+.vc-bar-stack-note-name {
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.vc-bar-stack-block-value {
+    font-size: 30px;
+    text-anchor: middle;
+}
+
+.vc-bar-stack-block-percent {
+    text-anchor: middle;
+    font-size: 25px;
 }
