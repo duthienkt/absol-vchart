@@ -149,7 +149,6 @@ BaseChart.prototype.updateSize = function () {
 
 
 BaseChart.prototype.updateOyValues = function () {
-
     this.oyLength = this.oxyBottom - 70 - this.paddingnAxisBottom;
     this.oySegmentLength = this.oyLength / (this.oySegmentCount + (this.extendOY ? 1 : 0));
     Array.prototype.forEach.call(this.$oyValues.childNodes, function (e, i) {
@@ -161,7 +160,7 @@ BaseChart.prototype.updateOyValues = function () {
 
     var oyValuesBox = this.$oyValues.getBBox();
     this.oxyLeft = Math.max(this.oxyLeft, oyValuesBox.width + 14, this.$oyName.getBBox().width);
-    this.oxLength = this.canvasWidth - this.oxyLeft - 24;
+    this.oxLength = this.oxLength || this.canvasWidth - this.oxyLeft - 50;
     this.$oyValues.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
 };
 
@@ -177,7 +176,6 @@ BaseChart.prototype.updateBackComp = function () {
     this.$title.attr('x', this.canvasWidth / 2);
     this.updateOyValues();
     this.updateOYSegmentLines();
-
 };
 
 
@@ -223,6 +221,7 @@ BaseChart.prototype.update = function () {
         this.canvasWidth = 300;
         this.autoWidth = true;
     }
+    this.oxLength = 0;//init
     this.updateSize();
     this.updateBackComp();
     this.updateAxis();
