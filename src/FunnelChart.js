@@ -30,7 +30,7 @@ function FunnelChart() {
     this._contentMargin = 5;
     this._contentWidth = 0;
     this._contentHeight = 0;
-    this.$title = $('.av-title', this);
+    this.$title = $('.vc-title', this);
     this.$blocks = [];
     this.blocks = [];
     this._cavasWidth = 0;
@@ -48,7 +48,7 @@ FunnelChart.render = function () {
         child: [
             {
                 tag: 'text',
-                class: 'av-title',
+                class: 'vc-title',
                 child: { text: '' }
             },
             {
