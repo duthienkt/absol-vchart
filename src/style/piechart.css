@@ -1,0 +1,9 @@
+.vc-piece{
+    stroke-width: 2;
+    stroke: white;
+}
+
+.vc-piece-value{
+    font-size: 25px;
+    text-anchor: middle;
+}

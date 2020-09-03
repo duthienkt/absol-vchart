@@ -3,7 +3,6 @@ import Vcore from "./VCore";
 import './style/vchartStyle';
 
 import './Axis';
-import './Shape';
 import './ScrollArrow';
 import './BaseChart';
 import './ToolTip';
@@ -28,6 +27,7 @@ import './HorizontalBarChart';
 import './SpiderChart';
 import './FunnelChart';
 import './BarStackChart';
+import './PieChart';
 
 import { isNumber, toLocalString, text, circle, rect, vline, hline, moveVLine, moveHLine, autoCurve } from "./helper";
 import { showTooltip, closeTooltip } from "./ToolTip";
