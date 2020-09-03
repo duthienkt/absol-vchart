@@ -196,7 +196,7 @@ PieChart.prototype._updateNotesPosition = function () {
             y += 20;
         }
         pieceElt.box.setPosition(x, y);
-        x += noteBoundWidth;
+        x += noteBoundWidth + 15;
     }
     var noteCtnBound = this.$notesCtn.getBBox();
     this.$notesCtn.box.setPosition(this.box.width / 2 - noteCtnBound.width / 2, this.box.height - 10 - noteCtnBound.height);
