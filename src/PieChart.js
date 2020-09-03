@@ -15,6 +15,7 @@ var $ = Vcore.$;
  * @property {number} value
  * @property {string} valueText
  * @property {string} fillColor
+ * @property {boolean} separated
  */
 
 /***
@@ -205,34 +206,71 @@ PieChart.prototype._updatePiePosition = function () {
     this.$pieCtn.box.setSize(this.box.width - 20, this.$notesCtn.box.y - 40);
     this.$pieCtn.box.setPosition(10, 30);
 
-    this.$pie.box.setPosition(this.$pieCtn.box.width / 2, this.$pieCtn.box.height / 2);
+    // this.$pie.box.setPosition(this.$pieCtn.box.width / 2, this.$pieCtn.box.height / 2);
     var piece, pieceElt;
     var sum = this.pieces.reduce(function (ac, cr) {
         return ac + cr.value;
     }, 0);
-    var startAngle = -Math.PI / 2;
-    var endAngle = 0;
-    var valueElt;
-    var valueBound;
-    var r = Math.min(this.$pieCtn.box.width, this.$pieCtn.box.height) / 2;
-    for (var i = 0; i < this.pieces.length; ++i) {
-        piece = this.pieces[i];
-        pieceElt = this.$pieces[i];
-        valueElt = this.$pieceValues[i];
-        endAngle = startAngle + Math.PI * 2 * piece.value / sum;
-        pieceElt.begin()
-            .moveTo(0, 0)
-            .lineTo(r * Math.cos(startAngle), r * Math.sin(startAngle))
-            .arcTo(r * Math.cos(endAngle), r * Math.sin(endAngle), r, r, piece.value > sum / 2 ? 1 : 0, 1, 0)
-            .closePath()
-            .end();
-        valueBound = valueElt.getBBox();
-        valueElt.attr({
-            x: (r - 20 - valueBound.width / 2) * Math.cos((startAngle + endAngle) / 2),
-            y: (r - 20 - valueBound.height / 2) * Math.sin((startAngle + endAngle) / 2)
-        })
-        startAngle = endAngle;
+
+    this.$pieCenter = _({
+        tag: 'circle',
+        attr: {
+            cx: 0,
+            cy: 0,
+            r: 1
+        },
+        style: {
+            fill: 'transparent'
+        }
+    });
+    this.$pie.addChild(this.$pieCenter);
+    var pieCenterBound = this.$pieCenter.getBBox();
+
+    var hasSeparatedPiece = this.pieces.reduce(function (ac, cr) {
+        return ac || cr.value;
+    }, false);
+    for (var k = 0; k < 50; ++k) {
+        var startAngle = -Math.PI / 2;
+        var endAngle = 0;
+        var valueElt;
+        var valueBound;
+        var x0, y0;
+        var r = Math.min(this.$pieCtn.box.width - 5, this.$pieCtn.box.height - 5) / 2 * (1 - k / 150);
+        var sr = Math.max(3, r / 15);
+        for (var i = 0; i < this.pieces.length; ++i) {
+            piece = this.pieces[i];
+            pieceElt = this.$pieces[i];
+            valueElt = this.$pieceValues[i];
+            endAngle = startAngle + Math.PI * 2 * piece.value / sum;
+            x0 = 0;
+            y0 = 0;
+            if (piece.separated) {
+                x0 += sr * Math.cos((startAngle + endAngle) / 2);
+                y0 += sr * Math.sin((startAngle + endAngle) / 2);
+            }
+            pieceElt.begin()
+                .moveTo(x0, y0, 0)
+                .lineTo(x0 + r * Math.cos(startAngle), y0 + r * Math.sin(startAngle))
+                .arcTo(x0 + r * Math.cos(endAngle), y0 + r * Math.sin(endAngle), r, r, piece.value > sum / 2 ? 1 : 0, 1, 0)
+                .closePath()
+                .end();
+            valueBound = valueElt.getBBox();
+            valueElt.attr({
+                x: x0 + (r - 20 - valueBound.width / 2) * Math.cos((startAngle + endAngle) / 2),
+                y: y0 + (r - 20 - valueBound.height / 2) * Math.sin((startAngle + endAngle) / 2)
+            })
+            startAngle = endAngle;
+        }
+        var piePound = this.$pie.getBBox();
+        if (piePound.width < this.$pieCtn.box.width && piePound.height < this.$pieCtn.box.height) {
+            this.$pie.box.setPosition(
+                this.$pieCtn.box.width / 2 - (piePound.width / 2 - (pieCenterBound.x + 1 - piePound.x)),
+                this.$pieCtn.box.height / 2 - (piePound.height / 2 - (pieCenterBound.y + 1 - piePound.y))
+            )
+            break;
+        }
     }
+
 };
 
 
