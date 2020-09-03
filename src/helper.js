@@ -4,6 +4,7 @@ import Vec2 from 'absol/src/Math/Vec2';
 
 import AComp from 'absol-acomp/AComp';
 import './vchart.resizablediv';
+
 var _ = Vcore._;
 
 
@@ -12,18 +13,17 @@ export var beautyStep = [
     0.01, 0.02, 0.025, 0.05,
     0.1, 0.2, 0.25, 0.5,
     1, 2, 5].concat((function () {
-        var res = [];
-        var h = 1;
-        while (h < 10000000000) {
-            res.push(10 * h);
-            res.push(20 * h);
-            res.push(25 * h);
-            res.push(50 * h);
-            h *= 10;
-        }
-        return res;
-    })());
-
+    var res = [];
+    var h = 1;
+    while (h < 10000000000) {
+        res.push(10 * h);
+        res.push(20 * h);
+        res.push(25 * h);
+        res.push(50 * h);
+        h *= 10;
+    }
+    return res;
+})());
 
 
 export function circle(x, y, r, eClss) {
@@ -80,13 +80,13 @@ export function moveHLine(e, x, y, length) {
 
 
 /**
- * 
- * @param {Number} x 
- * @param {Number} y 
- * @param {Number} width 
- * @param {Number} height 
+ *
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Number} width
+ * @param {Number} height
  * @param {Number} eClss
- * @returns {SVGRect} 
+ * @returns {SVGRect}
  */
 export function rect(x, y, width, height, eClss) {
     var option = {
@@ -114,19 +114,21 @@ export function line(x0, y0, x1, y1) {
 }
 
 
-export function calBeautySegment(maxSegment, minValue, maxValue) {
+export function calBeautySegment(maxSegment, minValue, maxValue, integerOnly) {
     var i = 0;
     var res = { step: 1, segmentCount: maxValue - minValue, maxValue: maxValue, minValue: minValue };
     while (i < beautyStep.length) {
         var step = beautyStep[i];
-        var bot = Math.floor(minValue / step);
-        var top = Math.ceil(maxValue / step);
-        if (top - bot <= maxSegment) {
-            res.step = step;
-            res.segmentCount = top - bot;
-            res.maxValue = top * step;
-            res.minValue = bot * step;
-            break;
+        if (!integerOnly || step >= 1) {
+            var bot = Math.floor(minValue / step);
+            var top = Math.ceil(maxValue / step);
+            if (top - bot <= maxSegment) {
+                res.step = step;
+                res.segmentCount = top - bot;
+                res.maxValue = top * step;
+                res.minValue = bot * step;
+                break;
+            }
         }
         ++i;
     }
@@ -134,13 +136,13 @@ export function calBeautySegment(maxSegment, minValue, maxValue) {
 };
 
 
-
 //x[i] < x[i+1]
 export function autoCurve(points, strong, free) {
     if (!(strong > 0)) strong = 0.5;
     if (points.length == 0) {
         return '';
-    };
+    }
+    ;
     var paddingLeft = points[0].slice();
     var paddingRight = points[points.length - 1].slice();
     if (typeof free == "number") {
@@ -198,7 +200,6 @@ export function autoCurve(points, strong, free) {
     }
     return Cs.join('');
 };
-
 
 
 export function generateBackgroundColors(n) {
@@ -281,7 +282,7 @@ export function getSubNumberArray(arr) {
 
 export function wrapChartInWHResizer(chartElt, outerParam) {
     outerParam = outerParam || {};
-    
+
     var res = AComp._({
         tag: 'resizablediv',
         style: {
@@ -295,7 +296,7 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
                     chartElt.canvasWidth = event.width;
                 }
                 if (event.height) {
-                    chartElt.canvasHeight = event.height ;
+                    chartElt.canvasHeight = event.height;
                 }
                 chartElt.update();
             }
@@ -310,8 +311,8 @@ export function paddingLeft(text, char, length) {
 }
 
 /**
- * 
- * @param {String} text 
+ *
+ * @param {String} text
  */
 export function pathTokenize(text) {
     return text.match(/[a-zA-Z]+|(\-?[0-9\.]+(e\-?[0-9]+)?)/g)
@@ -359,7 +360,7 @@ export function getMaxHeightBox() {
 
 
 /**
- * 
+ *
  * @param {import ('absol/src/Color/Color').default} color
  * @returns {import ('absol/src/Color/Color').default}
  */

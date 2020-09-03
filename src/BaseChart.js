@@ -43,11 +43,12 @@ function BaseChart() {
     res.eventHandler = OOP.bindFunctions(res, BaseChart.eventHandler);
     // res.on('wheel', res.eventHandler.wheel);
     res.$hscrollbar = $('hscrollbar', res).on('scroll', res.eventHandler.scrollbarscroll);
-
+    res.integerOnly = false;
     return res;
 };
 
 
+BaseChart.prototype.integerOnly = false;
 
 BaseChart.eventHandler = {};
 BaseChart.eventHandler.wheel = function (event) {
@@ -248,6 +249,7 @@ BaseChart.prototype.initScroll = function () {
 };
 
 
+
 BaseChart.prototype.preInit = function () {
     this.canvasWidth = 900;
     this.canvasHeight = 600;
@@ -275,7 +277,7 @@ BaseChart.prototype.beautifyMinMax = function () {
     }
     if (this.maxValue == this.minValue) this.maxValue += this.maxSegment;
 
-    var btSgmt = calBeautySegment(this.maxSegment, this.minValue, this.maxValue);
+    var btSgmt = calBeautySegment(this.maxSegment, this.minValue, this.maxValue, this.integerOnly);
 
     this.oySegmentCount = btSgmt.segmentCount;
     this.oyMinValue = btSgmt.minValue;
