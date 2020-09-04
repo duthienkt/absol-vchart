@@ -241,6 +241,14 @@ PieChart.prototype._updatePiePosition = function () {
             piece = this.pieces[i];
             pieceElt = this.$pieces[i];
             valueElt = this.$pieceValues[i];
+            if (piece.value === 0) {
+                pieceElt.addStyle('display', 'none');
+                valueElt.addStyle('display', 'none');
+            }
+            else {
+                pieceElt.removeStyle('display');
+                valueElt.removeStyle('display');
+            }
             endAngle = startAngle + Math.PI * 2 * piece.value / sum;
             x0 = 0;
             y0 = 0;
@@ -248,10 +256,19 @@ PieChart.prototype._updatePiePosition = function () {
                 x0 += sr * Math.cos((startAngle + endAngle) / 2);
                 y0 += sr * Math.sin((startAngle + endAngle) / 2);
             }
-            pieceElt.begin()
-                .moveTo(x0, y0, 0)
-                .lineTo(x0 + r * Math.cos(startAngle), y0 + r * Math.sin(startAngle))
-                .arcTo(x0 + r * Math.cos(endAngle), y0 + r * Math.sin(endAngle), r, r, piece.value > sum / 2 ? 1 : 0, 1, 0)
+            pieceElt.begin();
+
+            if (piece.value < sum) {
+                pieceElt.moveTo(x0, y0);
+
+                pieceElt.lineTo(x0 + r * Math.cos(startAngle), y0 + r * Math.sin(startAngle))
+            }
+            else {
+                pieceElt.moveTo(x0 + r * Math.cos(startAngle), y0 + r * Math.sin(startAngle));
+            }
+
+            pieceElt.arcTo(x0 + r * Math.cos((startAngle + endAngle) / 2), y0 + r * Math.sin((startAngle + endAngle) / 2), r, r, 0, 1, 0)
+                .arcTo(x0 + r * Math.cos(endAngle), y0 + r * Math.sin(endAngle), r, r, 0, 1, 0)
                 .closePath()
                 .end();
             valueBound = valueElt.getBBox();
