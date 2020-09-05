@@ -272,10 +272,19 @@ PieChart.prototype._updatePiePosition = function () {
                 .closePath()
                 .end();
             valueBound = valueElt.getBBox();
-            valueElt.attr({
-                x: x0 + (r - 20 - valueBound.width / 2) * Math.cos((startAngle + endAngle) / 2),
-                y: y0 + (r - 20 - valueBound.height / 2) * Math.sin((startAngle + endAngle) / 2)
-            })
+            if (piece.value === sum) {
+                valueElt.attr({
+                    x: 0,
+                    y: 7
+                });
+            }
+            else {
+                valueElt.attr({
+                    x: x0 + (r - 20 - valueBound.width / 2) * Math.cos((startAngle + endAngle) / 2),
+                    y: y0 + (r - 20 - valueBound.height / 2) * Math.sin((startAngle + endAngle) / 2) + 7
+                });
+            }
+
             startAngle = endAngle;
         }
         var piePound = this.$pie.getBBox();
