@@ -228,7 +228,7 @@ BarStackChart.prototype._updateNotePosition = function () {
     this.$noteCtn.box.setPosition(this.$content.box.width - noteCtnBox.width, 0);
     var dy = this.$noteCtn.box.height / this.blocks.length;
     this.$notes.forEach(function (noteElt, i) {
-        noteElt.box.y = dy * i;
+        noteElt.box.y = dy * i + dy/2 - 7;
     });
 };
 
