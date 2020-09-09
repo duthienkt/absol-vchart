@@ -149,8 +149,8 @@ var b = vchart._({
         zeroOY: true,
         rotateText: false,
         numberToString: vchart.lambda.toLocalString(1),
-        keys: ['Tháng giêng', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5',
-            'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng chạp'],
+        keys: ['T 1', 'T 2', 'T 3', 'T 4', 'T 5',
+            'T 6', 'T 7', 'T 8', 'T 9', 'T 10', 'T11', 'T12'],
         values: Array(12).fill(0).map(function () {
             return 23 + 70 * Math.random();
         })
