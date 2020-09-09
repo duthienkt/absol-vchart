@@ -1,11 +1,17 @@
 import Vcore from "./VCore";
 import {rect, text, isNumber} from "./helper";
 import {translate} from "./template";
+import AElementNS from "absol/src/HTML5/AElementNS";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
 
+/***
+ *
+ * @returns {AElementNS}
+ * @constructor
+ */
 function ColumnChart() {
     return _('basechart.column-chart', true);
 };
