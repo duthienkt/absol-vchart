@@ -23,6 +23,7 @@ var $ = Vcore.$;
  * @constructor
  */
 function PieChart() {
+    this.contentPadding = 0;
     this.domSignal = new DomSignal($('sattachhook.vc-dom-signal', this));
     this.domSignal.on({
         updateContent: this.updateContent.bind(this)
@@ -176,7 +177,7 @@ PieChart.prototype._createContent = function () {
 PieChart.prototype._updateTitlePosition = function () {
     this.$title.attr({
         x: this.box.width / 2
-    })
+    });
 };
 
 PieChart.prototype._updateNotesPosition = function () {
@@ -185,7 +186,7 @@ PieChart.prototype._updateNotesPosition = function () {
         return Math.max(ac, box.width);
     }, 0);
 
-    var noteCtnMaxWidth = Math.max(this.box.width - 20, noteBoundWidth + 1);
+    var noteCtnMaxWidth = Math.max(this.box.width - this.contentPadding * 2, noteBoundWidth + 1);
     var x = 0;
     var y = 0;
     var pieceElt;
@@ -199,12 +200,15 @@ PieChart.prototype._updateNotesPosition = function () {
         x += noteBoundWidth + 15;
     }
     var noteCtnBound = this.$notesCtn.getBBox();
-    this.$notesCtn.box.setPosition(this.box.width / 2 - noteCtnBound.width / 2, this.box.height - 10 - noteCtnBound.height);
+    this.$notesCtn.box.setPosition(this.box.width / 2 - noteCtnBound.width / 2, this.box.height - this.contentPadding - noteCtnBound.height);
 };
 
 PieChart.prototype._updatePiePosition = function () {
-    this.$pieCtn.box.setSize(this.box.width - 20, this.$notesCtn.box.y - 40);
-    this.$pieCtn.box.setPosition(10, 30);
+    var titleHeight = this.$title.getBBox().height;
+    var top = this.contentPadding;
+    if (titleHeight > 0) top += titleHeight + 10;
+    this.$pieCtn.box.setSize(this.box.width - this.contentPadding * 2, this.$notesCtn.box.y - top - 10);
+    this.$pieCtn.box.setPosition(this.contentPadding, top);
 
     // this.$pie.box.setPosition(this.$pieCtn.box.width / 2, this.$pieCtn.box.height / 2);
     var piece, pieceElt;
