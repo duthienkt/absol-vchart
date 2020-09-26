@@ -1,13 +1,13 @@
 absol._({
     tag: 'piechart',
     style: {
-        width: '40vw',
-        height: '60vh',
-        minWidth: '300px',
-        minHeight: '300px'
+        width: '500px',
+        height: '450px',
+        verticalAlign: 'top',
+        backgroundColor:'gray'
     },
     props: {
-        title: 'Browser',
+        contentPadding:0,
         pieces: [
             {
                 name: 'IE',
