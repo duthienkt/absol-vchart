@@ -184,7 +184,7 @@ PieChart.prototype._updatePiePosition = function () {
 PieChart.prototype._updateBodyPosition = function (){
     BChart.prototype._updateBodyPosition.call(this);
     this._updatePiePosition();
-}
+};
 
 PieChart.prototype._normalizeData = function () {
     var blockColors = generateBackgroundColors(this.pieces.length);
