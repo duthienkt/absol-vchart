@@ -44,7 +44,7 @@ FunnelChart.tag = 'FunnelChart'.toLowerCase();
 FunnelChart.render = function () {
     return _({
         tag: 'svg',
-        class: ['av-chart', 'av-funnel-chart'],
+        class: ['vc-chart', 'av-funnel-chart'],
         child: [
             {
                 tag: 'text',
