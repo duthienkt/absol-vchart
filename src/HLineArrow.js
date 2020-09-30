@@ -1,21 +1,64 @@
 import Vcore from "./VCore";
-import { translate } from "./template";
-import { moveHLine } from "./helper";
+import {translate} from "./template";
+import {moveHLine} from "./helper";
+import AElementNS from "absol/src/HTML5/AElementNS";
+import GContainer from "absol-svg/js/svg/GContainer";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
+
+/***
+ * @extends AElementNS
+ * @constructor
+ */
 function HLineArrow() {
-    var res = _('g.vchart-line-arrow');
-    res.$line = _('path').addTo(res);
-    res.$arrow = _('<path id="ox-arrow" d="m-6.8 -5v10l6.8 -5z"/>').addTo(res);
-    return res;
+    this._length = 0;
+    this.$line = $('path.vchart-line-arrow-line', this);
+    this.$arrow = $('', this);
+    this.length = 0;
+}
+
+HLineArrow.render = function () {
+    return _({
+        tag: 'gcontainer',
+        class: 'vchart-line-arrow',
+        child: [
+            'path.vchart-line-arrow-line',
+            {
+                tag: 'path',
+                class: 'vchart-line-arrow-rect',
+                attr: {
+                    d: 'm-6.8 -5v10l6.8 -5z'
+                }
+            }
+        ]
+    });
 };
 
+
 HLineArrow.prototype.resize = function (length) {
-    this.$arrow.attr('transform',translate(length, 0));
+    if (typeof length !== 'number') length = parseFloat(length + '');
+    length = length || 0;
+    if (length < 0) length = 0;
+    this._length = length;
+    this.$arrow.attr('transform', translate(length, 0));
     moveHLine(this.$line, 0, 0, length);
+    this._length = length;
+
 };
+
+HLineArrow.property = {};
+
+HLineArrow.property.length = {
+    set: function (value) {
+        this.resize(this._length);
+    },
+    get: function () {
+        return this._length;
+    }
+}
+
 
 Vcore.creator.hlinearrow = HLineArrow;
 
