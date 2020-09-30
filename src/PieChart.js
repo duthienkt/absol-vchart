@@ -4,6 +4,8 @@ import DomSignal from "absol/src/HTML5/DomSignal";
 import Color from "absol/src/Color/Color";
 import {generateBackgroundColors} from "./helper";
 import './style/piechart.css';
+import BChart from "./BChart";
+import OOP from "absol/src/HTML5/OOP";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -18,119 +20,31 @@ var $ = Vcore.$;
  * @property {boolean} separated
  */
 
+
 /***
- * @extends SvgCanvas
+ * @extends BChart
  * @constructor
  */
 function PieChart() {
-    this.contentPadding = 0;
-    this.domSignal = new DomSignal($('sattachhook.vc-dom-signal', this));
-    this.domSignal.on({
-        updateContent: this.updateContent.bind(this)
-    });
-    this.$notesCtn = $('.vc-fill-note-ctn', this);
-    this.$pieCtn = $('.vc-pie-ctn', this);
-    this._layout = 0;
+    BChart.call(this);
+    this.$pieCtn = this.$body;
+    this.$pie = _('gcontainer');
+    this.$pieCtn.addChild(this.$pie);
     /***
      *
      * @type {VCPiece[]}
      */
     this.pieces = [];
-    this.$pie = $('.vc-pie', this);
-    this.$pieces = [];
-    this.$pieceValues = [];
-    this.$title = $('.vc-title', this);
-    this.title = '';
-    this.domSignal.emit('updateContent');
 }
 
+OOP.mixClass(PieChart, BChart);
 
-PieChart.tag = 'piechart';
-
-PieChart.prototype.updateSize = function () {
-    SvgCanvas.prototype.updateSize.call(this);
-    if (!this.$pieceNotes) return;
-    this._updateContentPosition();
-
-};
+PieChart.tag = 'PieChart'.toLowerCase();
 
 PieChart.render = function () {
-    return _({
-        tag: 'svgcanvas',
-        class: ['vc-pie-chart', 'av-chart'],
-        child: [
-            {
-                tag: 'text',
-                class: 'vc-title',
-                child: { text: '' },
-                attr: {
-                    y: 20
-                }
-            },
-            {
-                tag: 'gcontainer',
-                class: 'vc-fill-note-ctn'
-            },
-            {
-                tag: 'gcontainer',
-                class: 'vc-pie-ctn',
-                child: {
-                    tag: 'gcontainer',
-                    class: 'vc-pie'
-                }
-            },
-            'sattachhook.vc-dom-signal'
-        ]
-    });
+    return BChart.render();
 };
 
-
-/***
- *
- * @param {VCPiece} piece
- * @returns {GContainer}
- * @private
- */
-PieChart.prototype._makeNote = function (piece) {
-    var pieceElt = _({
-        tag: 'gcontainer',
-        class: 'vc-fill-note',
-        child: [
-            {
-                tag: 'rect',
-                attr: {
-                    x: 0,
-                    y: 0,
-                    width: 14,
-                    height: 14
-                },
-                style: {
-                    fill: piece.fillColor + ''
-                }
-            },
-            {
-                tag: 'text',
-                attr: {
-                    x: 20,
-                    y: 12
-                },
-                child: { text: piece.name }
-            }
-        ]
-    });
-
-    return pieceElt;
-}
-
-PieChart.prototype._createNotes = function () {
-    this.$notesCtn.clearChild();
-    var thisC = this;
-    this.$pieceNotes = this.pieces.map(function (piece) {
-        var pieceElt = thisC._makeNote(piece);
-        thisC.$notesCtn.addChild(pieceElt);
-        return pieceElt;
-    });
-};
 
 PieChart.prototype._createPie = function () {
     this.$pie.clearChild();
@@ -162,55 +76,22 @@ PieChart.prototype._createPie = function () {
 
 };
 
-PieChart.prototype._createTitle = function () {
-    this.$title.firstChild.data = this.title || '';
-}
-
-
-PieChart.prototype._createContent = function () {
-    this._createTitle();
-    this._createNotes();
-    this._createPie();
-};
-
-
-PieChart.prototype._updateTitlePosition = function () {
-    this.$title.attr({
-        x: this.box.width / 2
+PieChart.prototype.computeNotes = function (){
+    return this.pieces.map(function (piece){
+        return {
+          color:  piece.fillColor,
+            text: piece.name,
+            type: 'rect'
+        }
     });
 };
 
-PieChart.prototype._updateNotesPosition = function () {
-    var noteBoundWidth = this.$pieceNotes.reduce(function (ac, noteElt) {
-        var box = noteElt.getBBox();
-        return Math.max(ac, box.width);
-    }, 0);
-
-    var noteCtnMaxWidth = Math.max(this.box.width - this.contentPadding * 2, noteBoundWidth + 1);
-    var x = 0;
-    var y = 0;
-    var pieceElt;
-    for (var i = 0; i < this.$pieceNotes.length; ++i) {
-        pieceElt = this.$pieceNotes[i];
-        if (x + noteBoundWidth > noteCtnMaxWidth) {
-            x = 0;
-            y += 20;
-        }
-        pieceElt.box.setPosition(x, y);
-        x += noteBoundWidth + 15;
-    }
-    var noteCtnBound = this.$notesCtn.getBBox();
-    this.$notesCtn.box.setPosition(this.box.width / 2 - noteCtnBound.width / 2, this.box.height - this.contentPadding - noteCtnBound.height);
+PieChart.prototype._createContent = function () {
+    BChart.prototype._createContent.call(this);
+    this._createPie();
 };
 
 PieChart.prototype._updatePiePosition = function () {
-    var titleHeight = this.$title.getBBox().height;
-    var top = this.contentPadding;
-    if (titleHeight > 0) top += titleHeight + 10;
-    this.$pieCtn.box.setSize(this.box.width - this.contentPadding * 2, this.$notesCtn.box.y - top - 10);
-    this.$pieCtn.box.setPosition(this.contentPadding, top);
-
-    // this.$pie.box.setPosition(this.$pieCtn.box.width / 2, this.$pieCtn.box.height / 2);
     var piece, pieceElt;
     var sum = this.pieces.reduce(function (ac, cr) {
         return ac + cr.value;
@@ -230,9 +111,6 @@ PieChart.prototype._updatePiePosition = function () {
     this.$pie.addChild(this.$pieCenter);
     var pieCenterBound = this.$pieCenter.getBBox();
 
-    var hasSeparatedPiece = this.pieces.reduce(function (ac, cr) {
-        return ac || cr.value;
-    }, false);
     for (var k = 0; k < 50; ++k) {
         var startAngle = -Math.PI / 2;
         var endAngle = 0;
@@ -303,19 +181,10 @@ PieChart.prototype._updatePiePosition = function () {
 
 };
 
-
-PieChart.prototype._updateContentPosition = function () {
-    if (this.box.width / 1.2 > this.box.height) {
-        this._layout = 1;
-    }
-    else {
-        this._layout = 0;
-    }
-
-    this._updateTitlePosition();
-    this._updateNotesPosition();
+PieChart.prototype._updateBodyPosition = function (){
+    BChart.prototype._updateBodyPosition.call(this);
     this._updatePiePosition();
-};
+}
 
 PieChart.prototype._normalizeData = function () {
     var blockColors = generateBackgroundColors(this.pieces.length);
@@ -324,16 +193,7 @@ PieChart.prototype._normalizeData = function () {
     });
 };
 
-
-PieChart.prototype.updateContent = function () {
-    if (!this.isDescendantOf(document.body)) {
-        this.domSignal.emit('updateContent');
-        return;
-    }
-    this._normalizeData();
-    this._createContent();
-    this._updateContentPosition();
-};
+PieChart.property = Object.assign({}, BChart.property);
 
 Vcore.install(PieChart);
 
