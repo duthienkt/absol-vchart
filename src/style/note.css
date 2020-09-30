@@ -1,0 +1,15 @@
+.vc-note{
+
+}
+
+.vc-note-rect {
+    stroke: none;
+}
+
+.vc-note-line {
+    stroke-width: 2;
+}
+
+.vc-note-text {
+    font-size: 14px;
+}
