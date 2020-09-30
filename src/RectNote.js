@@ -7,17 +7,18 @@ var $ = Vcore.$;
 function RectNote() {
     this._text = '';
     this._color = 'black';
-    this.$rect = $('.vchart-rect-note-rect', this);
-    this.$text = $('.vchart-rect-note-text', this);
+    this.$rect = $('.vc-note-rect', this);
+    this.$text = $('.vc-note-text', this);
 }
 
 RectNote.render = function () {
     return _({
-        class: 'vchart-rect-note',
+        tag: 'gcontainer',
+        class: 'cv-note',
         child: [
             {
                 tag: 'rect',
-                class: 'vchart-rect-note-rect',
+                class: 'vc-note-rect',
                 attr: {
                     x:0,
                     y:0,
@@ -27,7 +28,7 @@ RectNote.render = function () {
             },
             {
                 tag: 'text',
-                class: 'vchart-rect-note-text',
+                class: 'vc-note-text',
                 attr: {
                     x: '30',
                     y: '11'

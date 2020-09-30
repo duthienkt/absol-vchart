@@ -1,3 +1,4 @@
+import './style/note.css';
 import Vcore from "./VCore";
 
 var _ = Vcore._;
@@ -7,24 +8,27 @@ var $ = Vcore.$;
 function StrokeNote() {
     this._text = '';
     this._color = 'black';
-    this.$line = $('.vchart-stroke-note-line', this);
-    this.$text = $('.vchart-stroke-note-text', this);
+    this.$line = $('.vc-note-line', this);
+    this.$text = $('.vc-note-text', this);
 }
+
+StrokeNote.tag = 'StrokeNote'.toLowerCase();
 
 StrokeNote.render = function () {
     return _({
-        class: 'vchart-stroke-note',
+        tag: 'gcontainer',
+        class: 'vc-note',
         child: [
             {
                 tag: 'path',
-                class: 'vchart-stroke-note-line',
+                class: 'vc-note-line',
                 attr: {
                     d: 'M0 7 h24'
                 }
             },
             {
                 tag: 'text',
-                class: 'vchart-stroke-note-text',
+                class: 'vc-note-text',
                 attr: {
                     x: '30',
                     y: '11'
