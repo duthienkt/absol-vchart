@@ -2,15 +2,22 @@ import Vcore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
 import Draggable from "absol-acomp/js/Draggable";
 import {translate} from "./template";
+import GContainer from "absol-svg/js/svg/GContainer";
+import Hanger from "absol-acomp/js/Hanger";
 
 var _ = Vcore._;
 
 var $ = Vcore.$;
 
 
+/**
+ * @augments Hanger
+ * @augments GContainer
+ * @constructor
+ */
 function HScrollBar() {
     var res = _({
-            tag: 'hanger',
+            tag: Hanger,
             elt: this
         }
     );
@@ -24,7 +31,7 @@ function HScrollBar() {
 
 HScrollBar.render = function () {
     return _({
-        tag: 'g',
+        tag: 'gcontainer',
         extendEvent: ['scroll'],
         class: 'vchart-vscrollbar',
         child: [
@@ -50,7 +57,7 @@ HScrollBar.eventHandler = {};
 HScrollBar.eventHandler.predrag = function (event) {
     var bBox = this.$bar.getBBox();
     var bound = this.$bar.getBoundingClientRect();
-    if (event.target != this.$button) {
+    if (event.target !== this.$button) {
         var centerOfset = Math.max(0, Math.min(1, (event.clientX - bound.left) / bound.width));
         var newScrollLeft = centerOfset * this.innerWidth - this.outterWidth / 2;
         newScrollLeft = Math.max(0, Math.min(this.innerWidth - this.outterWidth, newScrollLeft));
@@ -64,9 +71,11 @@ HScrollBar.eventHandler.predrag = function (event) {
 
 
 HScrollBar.eventHandler.drag = function (event) {
+    event.preventDefault();
     var bBox = this.$bar.getBBox();
     var bound = this.$bar.getBoundingClientRect();
     var scaleX = bBox.width / bound.width * this.innerWidth / this.outterWidth;
+    event.moveDX = event.currentPoint.sub(event.startingPoint).x
     var newScrollLeft = this.__predragScrollLeft + event.moveDX * scaleX;
 
     newScrollLeft = Math.max(0, Math.min(this.innerWidth - this.outterWidth, newScrollLeft));
@@ -186,3 +195,5 @@ HScrollBar.prototype.moveTo = function (x, y) {
 }
 
 Vcore.creator.hscrollbar = HScrollBar;
+
+export default HScrollBar;

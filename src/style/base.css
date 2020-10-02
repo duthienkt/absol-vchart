@@ -8,3 +8,16 @@
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
     font-size: 14px;
 }
+
+
+.vc-oy-value {
+    text-anchor: end;
+}
+
+.vc-ox-label {
+    text-anchor: middle;
+}
+
+.vc-white-mask {
+    fill: white;
+}

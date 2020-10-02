@@ -1,26 +1,36 @@
 import Vcore from "./VCore";
+import GContainer from "absol-svg/js/svg/GContainer";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
-function Axis() {
-    var res = vchart._(
-        [
-            '<g class="vchart-axis" id="axis">',
-            '    <path id="oy-arrow" d="m-5 0h10l-5-6.8z" />',
-            '    <path id="ox-arrow" d="m0 -5v10l6.8 -5z"/>',
-            '    <path id="oxy" d="m0 -1v1 h1" style="fill:none" />',
-            '</g>'
-        ].join('')
-    );
-    res.$oxy = $('#oxy', res);
-    res.$oxArrow = $('#ox-arrow', res);
-    res.$oyArrow = $('#oy-arrow', res);
-    res.oxLength = 1;
-    res.oyLength = 1;
-    return res;
-};
 
+/***
+ * @extends GContainer
+ * @constructor
+ */
+function Axis() {
+    this.$oxy = $('#oxy', this);
+    this.$oxArrow = $('#ox-arrow', this);
+    this.$oyArrow = $('#oy-arrow', this);
+    this.oxLength = 1;
+    this.oyLength = 1;
+}
+
+Axis.tag = 'Axis'.toLowerCase();
+
+Axis.render = function () {
+    return _(
+        {
+            tag: 'gcontainer',
+            class: "vchart-axis",
+            child: [
+                '    <path id="oy-arrow" d="m-5 0h10l-5-6.8z" />',
+                '    <path id="ox-arrow" d="m0 -5v10l6.8 -5z"/>',
+                '    <path id="oxy" d="m0 -1v1 h1" style="fill:none" />'
+            ]
+        });
+};
 
 
 Axis.prototype.updateSize = function () {
@@ -48,6 +58,6 @@ Axis.prototype.init = function (props) {
 };
 
 
-Vcore.creator.axis = Axis;
+Vcore.install(Axis);
 
 export default Axis;
