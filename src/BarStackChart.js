@@ -33,7 +33,7 @@ function BarStackChart() {
      */
     this.$stack = $('.vc-bar-stack', this);
     this.domSignal = new DomSignal($('sattachhook.vc-dom-signal', this));
-    this.domSignal.on('_updateContentPosition', this._updateContentPosition.bind(this))
+    this.domSignal.on('_updateContentPosition', this.updateContentPosition.bind(this))
         .on('updateContent', this.updateContent.bind(this));
     this.blocks = [];
     this.$blocks = [];
@@ -69,7 +69,7 @@ BarStackChart.render = function () {
 };
 
 
-BarStackChart.prototype._normalizeData = function () {
+BarStackChart.prototype.normalizeData = function () {
     var blockColor = generateBackgroundColors(this.blocks.length);
     var sum = this.blocks.reduce(function (ac, cr) {
         return ac + cr.value;
@@ -84,7 +84,7 @@ BarStackChart.prototype._normalizeData = function () {
 
 BarStackChart.prototype.updateSize = function () {
     SvgCanvas.prototype.updateSize.call(this);
-    this._updateContentPosition();
+    this.updateContentPosition();
 };
 
 /***
@@ -203,13 +203,13 @@ BarStackChart.prototype._createStack = function () {
     });
 };
 
-BarStackChart.prototype._createContent = function () {
-    this._normalizeData();
+BarStackChart.prototype.createContent = function () {
+    this.normalizeData();
     this._createNote();
     this._createStack();
 };
 
-BarStackChart.prototype._updateContentPosition = function () {
+BarStackChart.prototype.updateContentPosition = function () {
     if (!this.isDescendantOf(document.body)) {
         this.emit('_updateContentPosition');
         return;
@@ -253,8 +253,8 @@ BarStackChart.prototype._updateStackPosition = function () {
 };
 
 BarStackChart.prototype.updateContent = function () {
-    this._createContent();
-    this._updateContentPosition();
+    this.createContent();
+    this.updateContentPosition();
 };
 
 

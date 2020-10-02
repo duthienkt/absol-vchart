@@ -86,8 +86,8 @@ PieChart.prototype.computeNotes = function (){
     });
 };
 
-PieChart.prototype._createContent = function () {
-    BChart.prototype._createContent.call(this);
+PieChart.prototype.createContent = function () {
+    BChart.prototype.createContent.call(this);
     this._createPie();
 };
 
@@ -181,12 +181,12 @@ PieChart.prototype._updatePiePosition = function () {
 
 };
 
-PieChart.prototype._updateBodyPosition = function (){
-    BChart.prototype._updateBodyPosition.call(this);
+PieChart.prototype.updateBodyPosition = function (){
+    BChart.prototype.updateBodyPosition.call(this);
     this._updatePiePosition();
 };
 
-PieChart.prototype._normalizeData = function () {
+PieChart.prototype.normalizeData = function () {
     var blockColors = generateBackgroundColors(this.pieces.length);
     this.pieces.forEach(function (piece, i) {
         piece.fillColor = piece.fillColor || blockColors[i];

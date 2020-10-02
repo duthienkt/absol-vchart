@@ -33,7 +33,7 @@ function BChart() {
     this.$noteCtn = $('.vc-note-ctn', this);
     this.domSignal.emit('updateContent');
     this.$title = $('.vc-title', this);
-    this._computedData = {
+    this.computedData = {
         /***
          * @type {Array<{color: Color, type: ("stroke"|"rect"), text:string}>}
          */
@@ -67,18 +67,17 @@ BChart.render = function () {
     });
 };
 
-BChart.prototype._normalizeData = function () {
+BChart.prototype.normalizeData = function () {
 };
 
-BChart.prototype._computeData = function () {
-    this._computedData = {};
-    this._computedData.notes = this.computeNotes();
+BChart.prototype.computeData = function () {
+    this.computedData.notes = this.computeNotes();
 };
 
 BChart.prototype._createNote = function () {
     var thisC = this;
     this.$noteCtn.clearChild();
-    this.$notes = this._computedData.notes.map(function (note) {
+    this.$notes = this.computedData.notes.map(function (note) {
         var noteElt = _({
             tag: note.type === "rect" ? RectNote : StrokeNote,
             props: {
@@ -95,7 +94,7 @@ BChart.prototype._createTitle = function () {
     this.$title.firstChild.data = this.title || '';
 }
 
-BChart.prototype._createContent = function () {
+BChart.prototype.createContent = function () {
     this._createTitle();
     this._createNote();
 };
@@ -131,7 +130,7 @@ BChart.prototype._updateTitlePosition = function () {
     });
 };
 
-BChart.prototype._updateBodyPosition = function () {
+BChart.prototype.updateBodyPosition = function () {
     var titleHeight = this.$title.getBBox().height;
     var top = this.contentPadding;
     if (titleHeight > 0) top += titleHeight + 10;
@@ -139,10 +138,10 @@ BChart.prototype._updateBodyPosition = function () {
     this.$body.box.setSize(this.box.width - this.contentPadding * 2, this.$noteCtn.box.y - top - 10);
 };
 
-BChart.prototype._updateContentPosition = function () {
+BChart.prototype.updateContentPosition = function () {
     this._updateTitlePosition();
     this._updateNotesPosition();
-    this._updateBodyPosition();
+    this.updateBodyPosition();
 };
 
 /***
@@ -158,17 +157,17 @@ BChart.prototype.updateContent = function () {
         this.domSignal.emit('updateContent');
         return;
     }
-    this._normalizeData();
-    this._computeData();
-    this._createContent();
-    this._updateContentPosition();
+    this.normalizeData();
+    this.computeData();
+    this.createContent();
+    this.updateContentPosition();
 };
 
 
 BChart.prototype.updateSize = function () {
     SvgCanvas.prototype.updateSize.call(this);
     if (!this.$notes) return;
-    this._updateContentPosition();
+    this.updateContentPosition();
 };
 
 
