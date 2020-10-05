@@ -212,7 +212,7 @@ VerticalChart.prototype._updateOYValuePosition = function () {
         y -= this.computedData.oySegmentLength;
     }
     var box = this.$oyValueCtn.getBBox();
-    this.$oyValueCtn.box.x = Math.max(box.width, this.$valueName.getBBox().width) + 10;
+    this.$oyValueCtn.box.x = Math.max(box.width + 10, this.$valueName.getBBox().width - 5) ;
 };
 
 VerticalChart.prototype.updateAxis = function () {
