@@ -22,6 +22,8 @@ function VerticalChart() {
     this.computedData.numberToFixed = 0;
     this.integerOnly = false;
     this.zeroOY = false;
+    this.valueName = '';
+    this.keyName = '';
     /**
      *
      * @type {string[]}
@@ -54,12 +56,27 @@ function VerticalChart() {
      * @type {HSC}
      */
     this.$hscrollbar = _('hscrollbar').on('scroll', this.eventHandler.scrollOxySpace);
+    this.$scrollArrow = _('scrollarrow')
+        .on('pressleft', this.eventHandler.scrollArrowsPressLeft)
+        .on('pressright', this.eventHandler.scrollArrowsPressRight);
+    this.$scrollArrow.box.x = 10;
     this.$hscrollbar.height = 12;
+    this.$valueName = _({
+        tag: 'text',
+        class: 'vc-value-name',
+        attr: {
+            y: 14,
+            x: 5
+        },
+        child: { text: '' }
+    });
     this.$oxySpace.addChild(this.$oxLabelCtn);
     this.$axisCtn.addChild(this.$oxySpace);
     this.$axisCtn.addChild(this.$whiteMask);
     this.$axisCtn.addChild(this.$axis);
     this.$axisCtn.addChild(this.$hscrollbar);
+    this.$axisCtn.addChild(this.$scrollArrow);
+    this.$axisCtn.addChild(this.$valueName);
 
     this.$oxLabels = [];
     this.$oyValues = [];
@@ -101,6 +118,10 @@ VerticalChart.prototype.computeData = function () {
 
 VerticalChart.prototype._computeOYSegment = function () {
     var oyLength = this.$body.box.height - 20 - 10;
+    var valueNameHeight = this.$valueName.getBBox().height;
+    if (valueNameHeight > 0) {
+        oyLength -= valueNameHeight + 5;
+    }
     var segment = calBeautySegment(Math.floor(oyLength / 50), this.computedData.min, this.computedData.max, this.integerOnly);
     if (segment.step !== this.computedData.oy.step || segment.segmentCount !== this.computedData.oy.segmentCount
         || segment.maxValue !== this.computedData.oy.maxValue || segment.minValue !== this.computedData.oy.minValue) {
@@ -137,6 +158,7 @@ VerticalChart.prototype._createOxLabel = function () {
     this.computedData.oxLabelMaxWidth = this.$oxLabels.reduce(function (ac, elt) {
         return Math.max(ac, elt.getBBox().width);
     }, 0);
+    this.$valueName.firstChild.data = this.valueName || '';
 };
 
 VerticalChart.prototype._createOyValue = function () {
@@ -190,19 +212,21 @@ VerticalChart.prototype._updateOYValuePosition = function () {
         y -= this.computedData.oySegmentLength;
     }
     var box = this.$oyValueCtn.getBBox();
-    this.$oyValueCtn.box.x = box.width + 10;
+    this.$oyValueCtn.box.x = Math.max(box.width, this.$valueName.getBBox().width) + 10;
 };
 
 VerticalChart.prototype.updateAxis = function () {
+    var valueNameBox = this.$valueName.getBBox()
+    var valueNameHeight = valueNameBox.height;
     this.$axisCtn.box.setPosition(this.$oyValueCtn.box.x, 0);
     this.$axisCtn.box.setSize(this.$body.box.width - this.$oyValueCtn.box.x, this.$body.box.height - 20);
     this.$whiteMask.attr('d', 'M-300 -300 H' + (this.$axisCtn.box.width + 100) + ' V' + (this.$axisCtn.box.height + 600) + 'H -300z'
         + 'M0 0 H ' + (this.$axisCtn.box.width - 5) + ' V ' + (this.$axisCtn.box.height + 300) + ' H 0z');
     this.$axis.box.setPosition(0, this.$axisCtn.box.height);
-    this.$axis.resize(this.$axisCtn.box.width - 5, this.$axisCtn.box.height - 5);
+    this.$axis.resize(this.$axisCtn.box.width - 5, this.$axisCtn.box.height - 5 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0));
     this.$oxySpace.box.setPosition(0, this.$axisCtn.box.height);
     this.computedData.oxLength = this.$axisCtn.box.width - 15;
-    this.computedData.oyLength = this.$axisCtn.box.height - 15;
+    this.computedData.oyLength = this.$axisCtn.box.height - 15 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0);
     this.$hscrollbar.box.y = this.$axisCtn.box.height - this.$hscrollbar.height;
 };
 
@@ -222,8 +246,32 @@ VerticalChart.prototype._updateOxLabelPosition = function () {
     this.$hscrollbar.width = this.computedData.oxLength;
     this.$hscrollbar.scrollLeft = Math.max(0, Math.min(this.$hscrollbar.scrollLeft, this.computedData.oxScrollWidth - this.computedData.oxLength));
     this.$oxySpace.box.x = -this.$hscrollbar.scrollLeft;
+    if (this.computedData.oxOverFlow) {
+        this.$scrollArrow.removeStyle('display');
+        this.$scrollArrow.box.y = this.computedData.oyLength / 2;
+        this.$scrollArrow.width = this.computedData.oxLength - 20;
+        this._updateScrollArrowBtb();
+    }
+    else {
+        this.$scrollArrow.addStyle('display', 'none');
+    }
 };
 
+VerticalChart.prototype._updateScrollArrowBtb = function () {
+    if (this.$hscrollbar.scrollLeft <= 0) {
+        this.$scrollArrow.$left.addStyle('display', 'none');
+    }
+    else {
+        this.$scrollArrow.$left.removeStyle('display');
+    }
+
+    if (this.$hscrollbar.scrollLeft >= this.$hscrollbar.innerWidth - this.$hscrollbar.outterWidth) {
+        this.$scrollArrow.$right.addStyle('display', 'none');
+    }
+    else {
+        this.$scrollArrow.$right.removeStyle('display');
+    }
+};
 
 VerticalChart.prototype.updateBodyPosition = function () {
     BChart.prototype.updateBodyPosition.call(this);
@@ -233,8 +281,19 @@ VerticalChart.prototype.updateBodyPosition = function () {
 };
 
 
-VerticalChart.eventHandler.scrollOxySpace = function (){
+VerticalChart.eventHandler.scrollOxySpace = function () {
     this.$oxySpace.box.x = -this.$hscrollbar.scrollLeft;
+    this._updateScrollArrowBtb();
+};
+
+VerticalChart.eventHandler.scrollArrowsPressLeft = function () {
+    this.$hscrollbar.scrollLeft -= 10;
+    this.eventHandler.scrollOxySpace();
+};
+
+VerticalChart.eventHandler.scrollArrowsPressRight = function () {
+    this.$hscrollbar.scrollLeft += 10;
+    this.eventHandler.scrollOxySpace();
 };
 
 Vcore.install(VerticalChart);

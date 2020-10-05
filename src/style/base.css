@@ -21,3 +21,7 @@
 .vc-white-mask {
     fill: white;
 }
+
+.vc-value-name {
+    text-anchor: end;
+}

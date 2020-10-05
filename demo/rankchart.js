@@ -3,7 +3,6 @@ var y = vchart._({
     tag: 'rankchart',
     props: {
         title: 'Biểu đồ bậc lương',
-        valueName: 'lương',
         canvasWidth: 'auto',
         canvasHeight: 600,
         zeroOY: true,
