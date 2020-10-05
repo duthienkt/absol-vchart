@@ -173,10 +173,10 @@ HScrollBar.property = {
     },
     scrollLeft: {
         set: function (value) {
-            if (value >= 0) {
+            value = Math.max(0, value);
+            value = Math.min(value,this.innerWidth - this.outterWidth);
                 this._scrollLeft = value;
-                this.updateView();
-            }
+            this.updateView();
         },
         get: function () {
             return this._scrollLeft || 0;
