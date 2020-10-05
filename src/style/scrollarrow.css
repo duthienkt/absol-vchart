@@ -1,0 +1,14 @@
+.vc-scroll-arrow-icon {
+    fill: #00a5d6;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+.vc-scroll-arrow-hit-box {
+    fill: rgba(0, 0, 255, 0.03);
+}
+
+.vc-scroll-arrow:active .vc-scroll-arrow-hit-box {
+    fill: rgba(0, 0, 255, 0.1);
+}

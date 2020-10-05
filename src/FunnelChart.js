@@ -20,7 +20,7 @@ function FunnelChart() {
     this.$attachhook.on('attached', this.eventHandler.attached);
     this.$attachhook.requestUpdateSize = this.updateSize.bind(this);
     this.domSignal = new DomSignal($('sattachhook.av-signal', this))
-        .on('_createContent', this._createContent.bind(this))
+        .on('_createContent', this.createContent.bind(this))
         .on('_alignContent', this._alignContent.bind(this))
         .on('_updateContent', this._updateContent.bind(this));
     this.$content = $('.av-funnel-content', this);
@@ -89,7 +89,7 @@ FunnelChart.prototype.updateSize = function () {
     this._alignContent();
 };
 
-FunnelChart.prototype._normalizeData = function () {
+FunnelChart.prototype.normalizeData = function () {
     var blockColor = generateBackgroundColors(this.blocks.length);
     var sum = this.blocks.reduce(function (ac, cr) {
         return ac + cr.value;
@@ -103,8 +103,8 @@ FunnelChart.prototype._normalizeData = function () {
 };
 
 
-FunnelChart.prototype._createContent = function () {
-    this._normalizeData();
+FunnelChart.prototype.createContent = function () {
+    this.normalizeData();
     this.$title.firstChild.data = this.title + '';
     this.$funnelCtn.clearChild();
     this._createNote();
@@ -263,7 +263,7 @@ FunnelChart.prototype._alignContent = function () {
 
 
 FunnelChart.prototype._updateContent = function () {
-    this._createContent();
+    this.createContent();
     this._alignContent();
 };
 

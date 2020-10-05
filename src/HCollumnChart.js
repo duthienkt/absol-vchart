@@ -58,7 +58,7 @@ HColumnChart.render = function () {
 
 HColumnChart.prototype.updateSize = function () {
     SvgCanvas.prototype.updateSize.call(this);
-    this._updateContentPosition();
+    this.updateContentPosition();
 };
 
 
@@ -67,12 +67,12 @@ HColumnChart.prototype.updateContent = function () {
         this.domSignal.emit('updateContent');
         return;
     }
-    this._normalizeData();
-    this._createContent();
-    this._updateContentPosition();
+    this.normalizeData();
+    this.createContent();
+    this.updateContentPosition();
 };
 
-HColumnChart.prototype._normalizeData = function () {
+HColumnChart.prototype.normalizeData = function () {
 
 };
 
@@ -80,7 +80,7 @@ HColumnChart.prototype._createTitle = function (){
     this.$title.firstChild.data = this.title;
 };
 
-HColumnChart.prototype._createContent = function () {
+HColumnChart.prototype.createContent = function () {
     this._createTitle();
 
 };
@@ -90,7 +90,7 @@ HColumnChart.prototype._alignTitle = function (){
 };
 
 
-HColumnChart.prototype._updateContentPosition = function () {
+HColumnChart.prototype.updateContentPosition = function () {
     this._alignTitle();
 };
 

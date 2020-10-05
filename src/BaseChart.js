@@ -207,10 +207,9 @@ BaseChart.prototype.updateFrontComp = function () { };
 BaseChart.prototype.updateComp = function () { };
 
 BaseChart.prototype.updateScrollArrows = function () {
-    this.$scrollArrows.attr('transform', 'translate(' + (this.oxyLeft + 7) + ', ' + (this.oxyBottom - this.oyLength / 2) + ')');
-    this.$scrollArrows.$rightArrow.attr('transform', 'translate(' + (this.oxLength - 15) + ', 0)');
-    this.scrollLeft = this.scrollLeft;//update
-
+    this.$scrollArrows.box.setPosition(this.oxyLeft + 7,this.oxyBottom - this.oyLength / 2 );
+    this.$scrollArrows.width = this.oxLength - 15;
+    this.scrollLeft = this.scrollLeft + 0;//update
     this.$hscrollbar.resize(this.oxLength, 10);
     this.$hscrollbar.moveTo(this.oxyLeft, this.oxyBottom - 10);
     this.$hscrollbar.outterWidth = this.oxLength;
