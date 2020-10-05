@@ -221,9 +221,9 @@ VerticalChart.prototype.updateAxis = function () {
     this.$axisCtn.box.setPosition(this.$oyValueCtn.box.x, 0);
     this.$axisCtn.box.setSize(this.$body.box.width - this.$oyValueCtn.box.x, this.$body.box.height - 20);
     this.$whiteMask.attr('d', 'M-300 -300 H' + (this.$axisCtn.box.width + 100) + ' V' + (this.$axisCtn.box.height + 600) + 'H -300z'
-        + 'M0 0 H ' + (this.$axisCtn.box.width - 5) + ' V ' + (this.$axisCtn.box.height + 300) + ' H 0z');
+        + 'M0 0 H ' + (this.$axisCtn.box.width - 8) + ' V ' + (this.$axisCtn.box.height + 300) + ' H 0z');
     this.$axis.box.setPosition(0, this.$axisCtn.box.height);
-    this.$axis.resize(this.$axisCtn.box.width - 5, this.$axisCtn.box.height - 5 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0));
+    this.$axis.resize(this.$axisCtn.box.width - 8, this.$axisCtn.box.height - 5 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0));
     this.$oxySpace.box.setPosition(0, this.$axisCtn.box.height);
     this.computedData.oxLength = this.$axisCtn.box.width - 15;
     this.computedData.oyLength = this.$axisCtn.box.height - 15 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0);
