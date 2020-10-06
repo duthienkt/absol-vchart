@@ -15,13 +15,12 @@ var $ = Vcore.$;
 function HLineArrow() {
     this._length = 0;
     this.$line = $('path.vchart-line-arrow-line', this);
-    this.$arrow = $('', this);
+    this.$arrow = $('.vchart-line-arrow-rect', this);
     this.length = 0;
 }
 
 HLineArrow.render = function () {
     return _({
-        tag: 'gcontainer',
         class: 'vchart-line-arrow',
         child: [
             'path.vchart-line-arrow-line',
