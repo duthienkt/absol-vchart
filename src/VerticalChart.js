@@ -201,7 +201,7 @@ VerticalChart.prototype._updateOYValuePosition = function () {
         this._createOyValue();
     }
 
-    var y = this.$body.box.height - 20 + 7;
+    var y = this.$body.box.height - 20 + 6;
     var valueElt;
     for (var i = 0; i < this.$oyValues.length; ++i) {
         valueElt = this.$oyValues[i];
@@ -255,6 +255,9 @@ VerticalChart.prototype._updateOxLabelPosition = function () {
     else {
         this.$scrollArrow.addStyle('display', 'none');
     }
+    this.$axis.oyDivision = this.computedData.oySegmentLength;
+
+    this.$axis.updateOyDivision();
 };
 
 VerticalChart.prototype._updateScrollArrowBtb = function () {
