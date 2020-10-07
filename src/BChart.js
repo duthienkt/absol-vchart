@@ -170,6 +170,27 @@ BChart.prototype.updateSize = function () {
     this.updateContentPosition();
 };
 
+BChart.property = {};
+
+BChart.property.canvasWidth = {
+    get: function () {
+        return this.box.width;
+    },
+    set: function (value) {
+        this.addStyle('width', value + 'px');
+        this.updateSize();
+    }
+};
+
+BChart.property.canvasHeight = {
+    get: function () {
+        return this.box.height;
+    },
+    set: function (value) {
+        this.addStyle('height', value + 'px');
+        this.updateSize();
+    }
+};
 
 Vcore.install(BChart);
 
