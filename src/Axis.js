@@ -35,6 +35,7 @@ Axis.render = function () {
                     }
                 },
                 {
+                    tag:'path',
                     id: "ox-arrow",
                     attr: {
                         d: 'm0 -5v10l6.8 -5z'
