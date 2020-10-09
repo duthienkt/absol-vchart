@@ -2,6 +2,8 @@ import Vcore from "./VCore";
 import {rect, text, isNumber} from "./helper";
 import {translate} from "./template";
 import AElementNS from "absol/src/HTML5/AElementNS";
+import OOP from "absol/src/HTML5/OOP";
+import VerticalChart from "./VerticalChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -9,17 +11,49 @@ var $ = Vcore.$;
 
 /***
  *
- * @returns {AElementNS}
+ * @returns {VerticalChart}
  * @constructor
  */
 function ColumnChart() {
-    return _('basechart.column-chart', true);
+    VerticalChart.call(this);
+    this.values = [];
+    this.$columnCtn = _('gcontainer.vc-column-ctn');
+    this.$oxySpace.addChild(this.$columnCtn);
+}
+
+ColumnChart.property = Object.assign({}, VerticalChart.property);
+ColumnChart.eventHandler = Object.assign({}, VerticalChart.eventHandler);
+OOP.mixClass(ColumnChart, VerticalChart);
+
+ColumnChart.tag = 'ColumnChart'.toLowerCase();
+
+ColumnChart.render = function () {
+    return VerticalChart.render().addClass('vc-column-chart');
+};
+
+ColumnChart.prototype.computeMinMax = function () {
+    this.computedData.min = this.values.filter(isNumber).reduce(function (ac, cr) {
+        return Math.min(ac, cr);
+    }, 1000000000);
+    this.computedData.max = this.values.filter(isNumber).reduce(function (ac, cr) {
+        return Math.max(ac, cr);
+    }, -1000000000);
+    if (this.computedData.min > this.computedData.max) {
+        this.computedData.min = 0;
+        this.computedData.max = 10;
+    }
+};
+
+
+ColumnChart.prototype.createContent = function () {
+    VerticalChart.prototype.createContent.call(this);
+    this._createColumns();
 };
 
 
 ColumnChart.prototype._createColumn = function (value, i, color) {
-    var res = _('g.column-chart-column');
-    res.$rect = rect(-this.columnWidth / 2, 0, this.columnWidth, 10).addTo(res);
+    var res = _('gcontainer.vc-column-chart-column');
+    res.$rect = rect(-this.oxColWidth / 2, 0, this.oxColWidth, 10).addTo(res);
     res.$value = text(this.numberToString(value) + '', 0, 0).attr('text-anchor', 'middle').addTo(res);
     if (color) {
         res.$rect.addStyle('fill', color);
@@ -27,47 +61,20 @@ ColumnChart.prototype._createColumn = function (value, i, color) {
     return res;
 };
 
-ColumnChart.prototype.processMinMax = function () {
-    this.minValue = this.values.filter(isNumber).reduce(function (ac, cr) {
-        return Math.min(ac, cr);
-    }, 1000000000);
-
-    this.maxValue = this.values.filter(isNumber).reduce(function (ac, cr) {
-        return Math.max(ac, cr);
-    }, -1000000000);
-};
-
-ColumnChart.prototype.initBackComp = function () {
-    this.super();
-    this.$keys = this.keys.map(function (key) {
-        return text(key, 0, 20).attr('text-anchor', 'middle').addTo(this.$content);
-    }.bind(this));
-
-};
-
-
-ColumnChart.prototype.updateBackComp = function () {
-    this.oxLength = this.canvasWidth - this.oxyLeft - 50;
-
-    this.oxSegmentLength = Math.max(this.columnWidth + this.columnMarginH * 2, this.oxLength / (this.keys.length));
-
-    this.oxSegmentLength = this.$keys.reduce(function (maxLength, $key) {
-        return Math.max(maxLength, $key.getBBox().width + this.columnMarginH * 2)
-    }.bind(this), this.oxSegmentLength);
-
-    this.oxContentLength = this.oxSegmentLength * this.keys.length - this.columnMarginH;
-    this.$keys.forEach(function ($key, i) {
-        $key.attr('x', (i + 0.5) * this.oxSegmentLength);
-    }.bind(this));
-    this.super();
-};
-
-ColumnChart.prototype.initComp = function () {
+ColumnChart.prototype._createColumns = function (){
     this.$columes = this.values.map(function (value, i) {
-        return this._createColumn(value, i, this.columnColors && this.columnColors[i]).addTo(this.$content);
+        return this._createColumn(value, i, this.columnColors && this.columnColors[i]).addTo(this.$columnCtn);
     }.bind(this));
-
 };
+
+
+
+
+ColumnChart.prototype.updateBodyPosition = function () {
+    VerticalChart.prototype.updateBodyPosition.call(this);
+    this._updateColumnPosition();
+};
+
 
 ColumnChart.prototype.updateComp = function () {
     this.$columes.forEach(function ($colume, i) {
@@ -90,13 +97,13 @@ ColumnChart.prototype.updateComp = function () {
 
     }.bind(this));
 };
-
-
-ColumnChart.prototype.preInit = function () {
-    this.super();
-    this.columnMarginH = 5;
-    this.columnWidth = 25;
-};
+//
+//
+// ColumnChart.prototype.preInit = function () {
+//     this.super();
+//     this.columnMarginH = 5;
+//     this.columnWidth = 25;
+// };
 
 
 Vcore.creator.columnchart = ColumnChart;
