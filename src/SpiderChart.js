@@ -224,14 +224,14 @@ SpiderChart.prototype.recreateAxis = function () {
 
 SpiderChart.prototype._createLineNote = function (obj) {
     var res = _('g.vchart-spinder-chart-note');
-    res.$line = hline(0, 9, 15, 'assessment-chart-area').addStyle('stroke', obj.stroke).addTo(res);
+    res.$line = hline(0, 9, 15, 'vc-assessment-chart-area').addStyle('stroke', obj.stroke).addTo(res);
     res.$name = text(obj.name, 15 + 5, 14).addTo(res);
     return res;
 };
 
 SpiderChart.prototype._createBoxNote = function (obj) {
     var res = _('g.vchart-spinder-chart-note');
-    res.$line = hline(0, 9, 15, 'assessment-chart-area').addStyle('stroke', obj.stroke).addTo(res);
+    res.$line = hline(0, 9, 15, 'vc-assessment-chart-area').addStyle('stroke', obj.stroke).addTo(res);
     res.$name = text(obj.name, 15 + 5, 14).addTo(res);
     return res;
 };
