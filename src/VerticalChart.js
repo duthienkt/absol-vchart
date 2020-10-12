@@ -123,7 +123,7 @@ VerticalChart.prototype.computeData = function () {
 
 
 VerticalChart.prototype.mapOYValue = function (val) {
-    return map(val, this.computedData.min, this.computedData.max, 0, this.computedData.oyLength);
+    return map(val, this.computedData.oy.minValue, this.computedData.oy.maxValue, 0, this.computedData.oyLength);
 };
 
 
