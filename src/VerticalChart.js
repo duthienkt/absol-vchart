@@ -109,6 +109,7 @@ VerticalChart.prototype.numberToText = function (number) {
     return number.toFixed(this.computedData.numberToFixed);
 };
 
+VerticalChart.prototype.numberToString = VerticalChart.prototype.numberToText;
 
 VerticalChart.prototype.computeData = function () {
     BChart.prototype.computeData.call(this);
