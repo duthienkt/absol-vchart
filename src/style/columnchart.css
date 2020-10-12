@@ -1,8 +1,13 @@
 
-.column-chart-column rect {
+.vc-column rect {
     fill: rgb(123, 192, 247);
 }
 
 .column-chart:not(.vchart-show-inline-value) .column-chart-column text {
+    display: none;
+}
+
+.vc-column.vc-value-zero text,
+.vc-chart:not(.vc-show-inline-value) .vc-column text {
     display: none;
 }

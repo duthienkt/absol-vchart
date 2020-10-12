@@ -1,7 +1,7 @@
 import BChart from "./BChart";
 import Vcore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
-import {calBeautySegment} from "./helper";
+import {calBeautySegment, map} from "./helper";
 import Axis from "./Axis";
 
 var _ = Vcore._;
@@ -116,6 +116,12 @@ VerticalChart.prototype.computeData = function () {
     if (this.zeroOY) this.computedData.min = Math.min(this.computedData.min, 0);
 };
 
+
+VerticalChart.prototype.mapOYValue = function (val) {
+    return map(val, this.computedData.min, this.computedData.max, 0, this.computedData.oyLength);
+};
+
+
 VerticalChart.prototype._computeOYSegment = function () {
     var oyLength = this.$body.box.height - 20 - 10;
     var valueNameHeight = this.$valueName.getBBox().height;
@@ -212,7 +218,7 @@ VerticalChart.prototype._updateOYValuePosition = function () {
         y -= this.computedData.oySegmentLength;
     }
     var box = this.$oyValueCtn.getBBox();
-    this.$oyValueCtn.box.x = Math.max(box.width + 10, this.$valueName.getBBox().width - 5) ;
+    this.$oyValueCtn.box.x = Math.max(box.width + 10, this.$valueName.getBBox().width - 5);
 };
 
 VerticalChart.prototype.updateAxis = function () {

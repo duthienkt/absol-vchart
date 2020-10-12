@@ -52,8 +52,12 @@ ColumnChart.prototype.createContent = function () {
 
 
 ColumnChart.prototype._createColumn = function (value, i, color) {
-    var res = _('gcontainer.vc-column-chart-column');
+    var res = _('gcontainer.vc-column');
     res.$rect = rect(-this.oxColWidth / 2, 0, this.oxColWidth, 10).addTo(res);
+    if (value === 0){
+        res.addClass('vc-value-zero');
+    }
+
     res.$value = text(this.numberToString(value) + '', 0, 0).attr('text-anchor', 'middle').addTo(res);
     if (color) {
         res.$rect.addStyle('fill', color);
@@ -62,7 +66,7 @@ ColumnChart.prototype._createColumn = function (value, i, color) {
 };
 
 ColumnChart.prototype._createColumns = function (){
-    this.$columes = this.values.map(function (value, i) {
+    this.$columnes = this.values.map(function (value, i) {
         return this._createColumn(value, i, this.columnColors && this.columnColors[i]).addTo(this.$columnCtn);
     }.bind(this));
 };
@@ -76,34 +80,31 @@ ColumnChart.prototype.updateBodyPosition = function () {
 };
 
 
-ColumnChart.prototype.updateComp = function () {
-    this.$columes.forEach(function ($colume, i) {
+ColumnChart.prototype._updateColumnPosition = function () {
+    this.$columnes.forEach(function ($column, i) {
         if (isNumber(this.values[i])) {
-            $colume.removeStyle('display');
-            var height = -this.mapOYValue(this.values[i]);
+            $column.removeStyle('display');
+            var height = this.mapOYValue(this.values[i]);
             // x: (i + 0.5) * this.oxSegmentLength - this.columnWidth / 2
-            $colume.$rect.attr({
+            $column.$rect.attr({
                 height: height,
                 y: -height
             });
-            $colume.$value.attr('y', -height - 4);
-            $colume.attr({
-                transform: translate((i + 0.5) * this.oxSegmentLength, 0)
+            $column.$value.attr('y', -height - 4);
+            $column.attr({
+                transform: translate((i + 0.5) * this.computedData.oxSegmentLength, 0)
             });
         }
+
         else {
-            $colume.addStyle('display', 'none');
+            $column.addStyle('display', 'none');
         }
 
     }.bind(this));
 };
-//
-//
-// ColumnChart.prototype.preInit = function () {
-//     this.super();
-//     this.columnMarginH = 5;
-//     this.columnWidth = 25;
-// };
+
+
+
 
 
 Vcore.creator.columnchart = ColumnChart;

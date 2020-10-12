@@ -7,6 +7,8 @@ import Color from "absol/src/Color/Color";
 import {randomWord} from "absol/src/String/stringGenerate";
 import RectNote from "./RectNote";
 import StrokeNote from "./StrokeNote";
+import {map} from "./helper";
+import BaseChart from "./BaseChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -144,6 +146,8 @@ BChart.prototype.updateContentPosition = function () {
     this.updateBodyPosition();
 };
 
+
+
 /***
  *
  * @returns {{color: Color, text: string, type: ("stroke"|"rect")}[]}
@@ -189,6 +193,21 @@ BChart.property.canvasHeight = {
     set: function (value) {
         this.addStyle('height', value + 'px');
         this.updateSize();
+    }
+};
+
+
+BChart.property.showInlineValue = {
+    set: function (value) {
+        if (value) {
+            this.addClass('vc-show-inline-value');
+        }
+        else {
+            this.removeClass('vc-show-inline-value');
+        }
+    },
+    get: function () {
+        return this.containsClass('vc-show-inline-value');
     }
 };
 
