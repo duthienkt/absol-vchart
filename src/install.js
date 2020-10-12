@@ -3,13 +3,17 @@ import BChart from "./BChart";
 import VerticalChart from "./VerticalChart";
 import PieChart from "./PieChart";
 import AssessmentChart from "./AssessmentChart";
+import ColumnChart from "./ColumnChart";
+import ColumnAreaChart from "./ColumnAreaChart";
 
 
 export var VChartCreators = [
     BChart,
     VerticalChart,
     PieChart,
-    AssessmentChart
+    AssessmentChart,
+    ColumnChart,
+    ColumnAreaChart
 ];
 
 /***

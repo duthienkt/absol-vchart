@@ -32,7 +32,8 @@ import  './HCollumnChart';
 
 import { isNumber, toLocalString, text, circle, rect, vline, hline, moveVLine, moveHLine, autoCurve } from "./helper";
 import { showTooltip, closeTooltip } from "./ToolTip";
-
+import install from "./install";
+install(Vcore);
 var vchart = {
     core: Vcore,
     creator: Vcore.creator,
