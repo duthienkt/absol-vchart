@@ -1,97 +1,137 @@
 import Vcore from "./VCore";
-import { isNumber } from "./helper";
+import {getSubNumberArray, isNumber} from "./helper";
 import DualChart from "./DualChart";
-import { translate } from "./template";
+import {translate} from "./template";
+import OOP from "absol/src/HTML5/OOP";
+import ColumnChart from "./ColumnChart";
+import Core from "absol-svg/js/svg/Core";
+import VerticalChart from "./VerticalChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
-function ColumnAreaChart() {
-    var res = _('columnchart.colunm-area-chart', true);
 
-    return res;
+/***
+ * @extends  ColumnChart
+ * @constructor
+ */
+function ColumnAreaChart() {
+    ColumnChart.call(this);
+    this.$areaCtn = _('gcontainer.vc-area-ctn');
+    this.$oxySpace.addChildBefore(this.$areaCtn, this.$columnCtn)
+    this.areas = [];
+}
+
+OOP.mixClass(ColumnAreaChart, ColumnChart);
+ColumnAreaChart.property = Object.assign({}, ColumnChart.property);
+ColumnAreaChart.eventHandler = Object.assign({}, ColumnChart.eventHandler);
+
+ColumnAreaChart.tag = 'ColumnAreaChart'.toLowerCase();
+ColumnAreaChart.render = function () {
+    return ColumnChart.render().addClass('vc-column-area-chart');
 };
 
 
-ColumnAreaChart.prototype.processMinMax = function () {
-    this.super();
-    this.minValue = this.areas.reduce(function (minValue, area) {
+ColumnAreaChart.prototype.computeMinMax = function () {
+  ColumnChart.prototype.computeMinMax.call(this);
+    this.computedData.min = this.areas.reduce(function (minValue, area) {
         return area.values.filter(isNumber).reduce(function (minValue, value) {
             if (!isNumber(value)) return minValue;
             return Math.min(minValue, value);
         }, minValue);
-    }, this.minValue);
-
-    this.maxValue = this.areas.reduce(function (maxValue, area) {
+    }, this.computedData.min);
+    this.computedData.max = this.areas.reduce(function (maxValue, area) {
         return area.values.filter(isNumber).reduce(function (maxValue, value) {
             if (!isNumber(value)) return maxValue;
             return Math.max(maxValue, value);
         }, maxValue);
-    }, this.maxValue);
-
+    }, this.computedData.max);
 };
+
+
+ColumnAreaChart.prototype.computeNotes = function () {
+    return this.areas.map(function (area) {
+        return {
+            text: area.name,
+            type: 'rect',
+            color: area.color
+        }
+    });
+};
+
+
 
 ColumnAreaChart.prototype._createArea = DualChart.prototype._createArea;
 ColumnAreaChart.prototype._createAreaNote = DualChart.prototype._createAreaNote;
 
-ColumnAreaChart.prototype.initBackComp = function () {
-    this.super();
-    this.colors = this.areas.map(function (items, i, arr) {
-        if (items.color) return items.color;
-        return i < this.lines.length ? this.colorTable[Math.floor(this.colorTable.length * i / arr.length)] :
-            this.colorTable[Math.floor(this.colorTable.length * i / arr.length)].replace(/#/, '#80');
+ColumnAreaChart.prototype._createAreas = function (){
+    this.$areas = this.areas.map(function (area, i) {
+        return this._createArea(area, area.color).addTo(this.$areaCtn);
     }.bind(this));
-
-    this.$arealNotes = this.areas.map(function (area, i) {
-        return this._createAreaNote(area, this.colors[i]).addTo(this);
-    }.bind(this));
-    //todo: user color
-    this.$columnNote = this._createAreaNote({ name: this.colName }, 'rgb(123, 192, 247)').addTo(this).addTo(this);
 };
 
 
-ColumnAreaChart.prototype.updateBackComp = function () {
-    this.oxyBottom = this.canvasHeight - 3;
-    var noteWidth = [this.$columnNote].concat(this.$arealNotes).reduce(function (width, cr) {
-        return 40 + width + cr.getBBox().width;
-    }.bind(this), -40);
-
-    [this.$columnNote].concat(this.$arealNotes).reduce(function (pos, cr, arr) {
-        cr.attr('transform', translate(pos.x, pos.y));
-        pos.x += cr.getBBox().width + 16;
-        return pos;
-    }.bind(this), { x: this.canvasWidth / 2 - noteWidth / 2, y: this.oxyBottom });
-
-    this.oxyBottom -= 50;
-    //todo:    
-    this.super();
+ColumnAreaChart.prototype.createContent = function (){
+    ColumnChart.prototype.createContent.call(this);
+    this._createAreas();
 }
 
-ColumnAreaChart.prototype.initComp = function () {
-    this.$areas = this.areas.map(function (line, i) {
-        return this._createArea(line, this.colors[i]).addTo(this.$content);
+
+ColumnAreaChart.prototype._updateAreaPosition = function (){
+
+};
+
+ColumnAreaChart.prototype.updateBodyPosition = function () {
+    ColumnChart.prototype.updateBodyPosition.call(this);
+    this._updateAreaPosition();
+    this._updateAreaPosition();
+};
+
+//
+// ColumnAreaChart.prototype.initComp = function () {
+//
+//     this.super();
+// };
+// ColumnAreaChart.prototype.updateComp = function () {
+//     this.super();
+//     this.updateArea();
+// };
+//
+ColumnAreaChart.prototype._updateAreaPosition  = function () {
+    var oxSegmentLength = this.computedData.oxSegmentLength;
+    this.$areas.map(function ($area, i) {
+        var values = this.areas[i].values;
+        var subAreas = getSubNumberArray(values);
+
+        $area.begin();
+        subAreas.forEach(function (subArea) {
+            var start = subArea.start;
+            var values = subArea.values;
+
+            if (values.length > 1) {
+                $area.moveTo(oxSegmentLength * (start + 0.5), -1);
+                for (var xi = 0; xi < values.length; ++xi) {
+                    $area.lineTo(oxSegmentLength * (start + xi + 0.5), -this.mapOYValue(values[xi]));
+                }
+
+                $area.lineTo(oxSegmentLength * (start + values.length - 1 + 0.5), -1);
+                $area.closePath();
+            }
+            else {
+                $area.moveTo(oxSegmentLength * (start + 0.25), -1);
+
+                $area.lineTo(oxSegmentLength * (start + 0.25), -this.mapOYValue(values[0]));
+                $area.lineTo(oxSegmentLength * (start + 0.75), -this.mapOYValue(values[0]));
+
+                $area.lineTo(oxSegmentLength * (start + 0.75), -1);
+                $area.closePath();
+            }
+
+        }.bind(this));
+        $area.end();
     }.bind(this));
-    this.super();
-};
-ColumnAreaChart.prototype.updateComp = function () {
-    this.super();
-    this.updateArea();
 };
 
-ColumnAreaChart.prototype.updateArea  = DualChart.prototype.updateArea;
-
-
-
-ColumnAreaChart.prototype.preInit = function () {
-    this.super();
-    this.areas = [];
-};
-
-
-
-
-ColumnAreaChart.eventHandler = {};
-
-Vcore.creator.columnareachart = ColumnAreaChart;
+Core.install(ColumnAreaChart);
 
 export default ColumnAreaChart;

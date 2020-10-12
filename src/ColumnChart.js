@@ -38,10 +38,6 @@ ColumnChart.prototype.computeMinMax = function () {
     this.computedData.max = this.values.filter(isNumber).reduce(function (ac, cr) {
         return Math.max(ac, cr);
     }, -1000000000);
-    if (this.computedData.min > this.computedData.max) {
-        this.computedData.min = 0;
-        this.computedData.max = 10;
-    }
 };
 
 
@@ -70,8 +66,6 @@ ColumnChart.prototype._createColumns = function (){
         return this._createColumn(value, i, this.columnColors && this.columnColors[i]).addTo(this.$columnCtn);
     }.bind(this));
 };
-
-
 
 
 ColumnChart.prototype.updateBodyPosition = function () {

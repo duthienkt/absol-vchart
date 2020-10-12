@@ -113,6 +113,10 @@ VerticalChart.prototype.numberToText = function (number) {
 VerticalChart.prototype.computeData = function () {
     BChart.prototype.computeData.call(this);
     this.computeMinMax();
+    if (this.computedData.min > this.computedData.max) {
+        this.computedData.min = 0;
+        this.computedData.max = 10;
+    }
     if (this.zeroOY) this.computedData.min = Math.min(this.computedData.min, 0);
 };
 
