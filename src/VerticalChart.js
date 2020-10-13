@@ -70,6 +70,16 @@ function VerticalChart() {
         },
         child: { text: '' }
     });
+    this.$keyName = _({
+        tag: 'text',
+        class: 'vc-key-name',
+        attr: {
+            y: 14,
+            x: 5
+        },
+        child: { text: '' }
+    });
+
     this.$oxySpace.addChild(this.$oxLabelCtn);
     this.$axisCtn.addChild(this.$oxySpace);
     this.$axisCtn.addChild(this.$whiteMask);
@@ -77,6 +87,7 @@ function VerticalChart() {
     this.$axisCtn.addChild(this.$hscrollbar);
     this.$axisCtn.addChild(this.$scrollArrow);
     this.$axisCtn.addChild(this.$valueName);
+    this.$axisCtn.addChild(this.$keyName);
 
     this.$oxLabels = [];
     this.$oyValues = [];
@@ -170,6 +181,7 @@ VerticalChart.prototype._createOxLabel = function () {
         return Math.max(ac, elt.getBBox().width);
     }, 0);
     this.$valueName.firstChild.data = this.valueName || '';
+    this.$keyName.firstChild.data = this.keyName || '';
 };
 
 VerticalChart.prototype._createOyValue = function () {
@@ -229,14 +241,19 @@ VerticalChart.prototype._updateOYValuePosition = function () {
 VerticalChart.prototype.updateAxis = function () {
     var valueNameBox = this.$valueName.getBBox()
     var valueNameHeight = valueNameBox.height;
+    var keyNameWidth = this.$keyName.getBBox().width;
     this.$axisCtn.box.setPosition(this.$oyValueCtn.box.x, 0);
     this.$axisCtn.box.setSize(this.$body.box.width - this.$oyValueCtn.box.x, this.$body.box.height - 20);
+    this.$keyName.attr({
+        y: this.$axisCtn.box.height - 10,
+        x: this.$axisCtn.box.width
+    })
     this.$whiteMask.attr('d', 'M-300 -300 H' + (this.$axisCtn.box.width + 100) + ' V' + (this.$axisCtn.box.height + 600) + 'H -300z'
-        + 'M0 0 H ' + (this.$axisCtn.box.width - 8) + ' V ' + (this.$axisCtn.box.height + 300) + ' H 0z');
+        + 'M0 0 H ' + (this.$axisCtn.box.width - keyNameWidth) + ' V ' + (this.$axisCtn.box.height + 300) + ' H 0z');
     this.$axis.box.setPosition(0, this.$axisCtn.box.height);
     this.$axis.resize(this.$axisCtn.box.width - 8, this.$axisCtn.box.height - 5 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0));
     this.$oxySpace.box.setPosition(0, this.$axisCtn.box.height);
-    this.computedData.oxLength = this.$axisCtn.box.width - 15;
+    this.computedData.oxLength = this.$axisCtn.box.width - 1 - keyNameWidth;
     this.computedData.oyLength = this.$axisCtn.box.height - 15 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0);
     this.$hscrollbar.box.y = this.$axisCtn.box.height - this.$hscrollbar.height;
 };
