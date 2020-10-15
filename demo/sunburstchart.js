@@ -1,9 +1,12 @@
 var x = vchart._({
     tag: 'sunburstchart',
+    style: {
+      width: '80vw',
+      height: '80vh'
+    },
     props: {
         title: 'Đánh giá năng lực',
-        canvasWidth: 900,
-        canvasHeight: 600,
+
         zeroOY: true,
         numberToString: vchart.lambda.toLocalString(3),
         root: {

@@ -1,43 +1,71 @@
 import Vcore from "./VCore";
 import BaseChart from "./BaseChart";
-import { circle, text, generateBackgroundColors, map } from "./helper";
+import {circle, text, generateBackgroundColors, map} from "./helper";
 import Color from "absol/src/Color/Color";
-import { translate, rotate } from "./template";
+import {translate, rotate} from "./template";
+import BChart from "./BChart";
+import OOP from "absol/src/HTML5/OOP";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
+/***
+ * @extends BChart
+ * @constructor
+ */
 function SunburstChart() {
-    this.$title = $('.base-chart-title', this);
-    this.$content = $('.sunburst-chart-content', this);
-    this.$attachhook = _('attachhook').addTo(this);
-    var thisChart = this;
-    this.sync = new Promise(function (rs) {
-        thisChart.$attachhook.on('error', rs);
-    });
-};
+    BChart.call(this);
+    this.$sunbirstCtn = _('gcontainer.vc-sunburst-ctn');
+    this.$body.addChild(this.$sunbirstCtn);
+    this.root = {};
+}
 
+SunburstChart.property = Object.assign({}, BChart.property);
+SunburstChart.eventHandler = Object.assign({}, BChart.eventHandler);
+
+OOP.mixClass(SunburstChart, BChart)
+
+
+SunburstChart.tag = 'SunburstChart'.toLowerCase();
 
 SunburstChart.render = function () {
-    return _({
-        tag: 'svg',
-        class: ['sunburst-chart', 'base-chart'],
-        child: [{
-            tag: 'text',
-            class: 'base-chart-title',
-            attr:{
-                'text-anchor':'middle',
-                y: 20
-            }
-        },
-        {
-            class: 'sunburst-chart-content'
-        }]
+    return BChart.render().addClass('vc-sunburst-chart');
+};
+
+SunburstChart.prototype._normalizeColorData = function () {
+    var needAutoColor = [];
+    this.acceptNode(this.root, function (node) {
+        try {
+            if (node.fillColor.rgba) return ;
+           var c = Color.parse(node.fillColor+'');
+           if (!node.fillColor.rgba) node.fillColor = c;
+        } catch (error) {
+            needAutoColor.push(node);
+        }
+    });
+    var aColors = generateBackgroundColors(needAutoColor.length);
+    needAutoColor.forEach(function (node, i){
+        node.fillColor = aColors[i];
+    });
+
+    this.acceptNode(this.root, function (node) {
+        try {
+            if (node.textColor.rgba) return ;
+            var c = Color.parse(node.textColor+'');
+            if (!node.textColor.rgba) node.textColor = c;
+        } catch (error) {
+            node.textColor = node.fillColor.getContrastYIQ();
+        }
     });
 };
 
 
-SunburstChart.prototype.updateSize = BaseChart.prototype.updateSize;
+SunburstChart.prototype.normalizeData = function () {
+    BChart.prototype.normalizeData.call(this);
+    this._normalizeColorData();
+};
+
+// SunburstChart.prototype.updateSize = BaseChart.prototype.updateSize;
 
 SunburstChart.prototype.acceptNode = function (node, visitFunction, content) {
     visitFunction(node, content);
@@ -49,14 +77,31 @@ SunburstChart.prototype.acceptNode = function (node, visitFunction, content) {
 };
 
 
+SunburstChart.prototype._updateSunburstPosition = function () {
 
-SunburstChart.prototype.update = function () {
-    this.updateSize();
-    this.updateBackComp();
-    this.updateComp();
+}
+
+SunburstChart.prototype.updateBodyPosition = function () {
+    BChart.prototype.updateBodyPosition.call(this);
+    this._updateSunburstPosition();
+
+};
+//
+// SunburstChart.prototype.update = function () {
+//     this.updateSize();
+//     this.updateBackComp();
+//     this.updateComp();
+// };
+
+
+SunburstChart.prototype._createSunburst = function () {
+
 };
 
+SunburstChart.prototype.createContent = function () {
+    BChart.prototype.createContent.call(this);
 
+};
 
 SunburstChart.prototype.initRoot = function () {
     var rootWords = this.root.name.trim().split(/\s+/);
@@ -111,16 +156,6 @@ SunburstChart.prototype.initBackComp = function () {
     this.initRoot();
 };
 
-
-
-
-
-SunburstChart.prototype.updateBackComp = function () {
-    this.$title.attr({
-        x: this.canvasWidth/2
-    })
-    this.$content.attr('transform', translate(0, 0));
-};
 
 
 SunburstChart.prototype.initChartNode = function ($node) {
@@ -183,7 +218,6 @@ SunburstChart.prototype.initComp = function () {
     this.$title.clearChild().addChild(_({ text: this.title || '' }))
     this.initChartNode(this.$root);
 };
-
 
 
 SunburstChart.prototype.updateNode = function ($node) {
@@ -315,14 +349,14 @@ SunburstChart.prototype.preInit = function (props) {
     this.segmentLength = 100;
 };
 
-
-SunburstChart.prototype.init = function (props) {
-    this.preInit();
-    this.super(props);
-    this.initBackComp();
-    this.initComp();
-    this.sync = this.sync.then(this.update.bind(this));
-};
+//
+// SunburstChart.prototype.init = function (props) {
+//     // this.preInit();
+//     // this.super(props);
+//     // this.initBackComp();
+//     // this.initComp();
+//     // this.sync = this.sync.then(this.update.bind(this));
+// };
 
 Vcore.creator.sunburstchart = SunburstChart;
 
