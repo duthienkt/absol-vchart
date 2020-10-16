@@ -125,7 +125,7 @@ VerticalChart.prototype.numberToString = VerticalChart.prototype.numberToText;
 VerticalChart.prototype.computeData = function () {
     BChart.prototype.computeData.call(this);
     this.computeMinMax();
-    if (this.computedData.min > this.computedData.max) {
+    if (this.computedData.min >= this.computedData.max) {
         this.computedData.min = 0;
         this.computedData.max = 10;
     }
