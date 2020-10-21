@@ -129,6 +129,9 @@ VerticalChart.prototype.computeData = function () {
         this.computedData.min = 0;
         this.computedData.max = 10;
     }
+    if (this.computedData.min === this.computedData.max) {
+        this.computedData.max += 1;
+    }
     if (this.zeroOY) this.computedData.min = Math.min(this.computedData.min, 0);
 };
 
