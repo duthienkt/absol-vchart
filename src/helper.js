@@ -42,7 +42,7 @@ export function circle(x, y, r, eClss) {
  * @param {String} text
  * @param {Number} x
  * @param {Number} y
- * @param {String} eClss - can be undefine
+ * @param {String=} eClss
  * @returns {SVGTextElement}
  */
 export function text(text, x, y, eClss) {

@@ -10,10 +10,6 @@
     stroke: rgb(247, 205, 155);
 }
 
-.sunburst-chart-node-name {
-    font-size: 14;
-}
-
-table .sunburst-chart-node-name {
+.vc-sunburst-node-name {
     font-size: 14px;
 }
