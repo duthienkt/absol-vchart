@@ -1,55 +1,32 @@
-
-
 var x = vchart.wrapChartInWHResizer(vchart._({
     tag: 'assessmentchart',
     extendEvent: 'contextmenu',
     props: {
         simpleMode: true,
-        title: 'Programming skill',
+        title: 'Đồ thị năng lực cá nhân',
         canvasWidth: 700,
         canvasHeight: 600,
-        levels: ['', '1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0', '8.0', '9.0', '10.0'],
-        keys: ['C/C++', 'Javascript', 'Matlab', 'CSS', 'C#', 'R', 'Python', 'ASM', 'Pascal - basic programming language'],
-        axisWeight: [1, 2, 3, 4, 1, 2, 7, 3, 4, 2, 5],
-        ranges: [
-            [4, 7],
-            [5, 7],
-            [6, 8],
-            [4, 5],
-            [6, 9],
-            [3, 5],
-            [1, 4],
-            [4, 7],
-            [7, 9]
-        ],
+        levels: [0,20,40,60,80,100,120],
+        keys: ["Kỹ năng sử dụng vi tính văn phòng", "Kỹ năng sử dụng ngoại ngữ", "Kỹ năng giao tiếp",
+            "Kỹ năng đàm phán, thương lượng", "Phân tích, tổng hợp, báo cáo", "Năng lực bán hàng",
+            "Kỹ năng nhân sự chung", "Kỹ năng hoạch định", "Kỹ năng tổ chức công việc", "Kỹ năng giải quyết vấn đề",
+            "Kỹ năng kiểm tra, giám sát"],
+        ranges: [[100, 100], [75, 100], [100, 100], [100, 100], [91, 100], [73, 100], [78, 100], [100, 100], [100, 100], [100, 100], [100, 100]],
         rangeFillColor: 'orange',
         rangeMaxStrokeColor: 'lightgreen',
         rangeMinStrokeColor: 'ligthred',
-        
-        areas: [
-            {
-                name: 'FirstYear',
-                values: [5, 0, 3, 2, 2, 3, 0, 0],
-                color:'red'
-            },
-            {
-                name: 'ThirdYear',
-                values: [6, 2, 4, 3, 6, 1, 3, 3],
-                color:'green'
-
-            },
-            {
-                name: 'FifthtYear',
-                values: [8, 5, 5, 6, 5, 1, 4, 2],
-                color:'blue',
-
-            },
-            {
-                name: 'FinalYear',
-                values: [7, 9, 3, 8, 5, 0, 3, 0],
-                color:'violet'
-            }
-        ]
+        areas: [{
+            "name": "Yêu cầu tối thiểu",
+            "values": [100, 75, 100, 100, 91, 73, 78, 100, 100, 100, 100],
+            "strokeWidth": 1,
+        }, {
+            "name": "Yêu cầu tối đa",
+            "values": [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+            "strokeWidth": 1,
+        }, {
+            "name": "Trần Thị Tú Nga",
+            "values": [100, 100, 102, 103, 100, 105, 100, 100, 100, 100, 100],
+        }]
     }
 
 })).addTo(document.body);
@@ -271,7 +248,6 @@ var m = vchart._({
     }
 
 
-
 }).addTo(document.body);
 
 function div2(x) {
@@ -292,24 +268,24 @@ var m = vchart._({
             {
                 name: 'FirstYear',
                 values: [5, 0, 3, 2, 2, 3, 0, 0, 7].map(div2),
-                color:'red'
+                color: 'red'
             },
             {
                 name: 'ThirdYear',
                 values: [6, 2, 4, 3, 6, 1, 3, 3, 3].map(div2),
-                color:'green'
+                color: 'green'
             },
             {
                 name: 'FifthtYear',
                 values: [8, 5, 5, 6, 5, 1, 4, 2, 2].map(div2),
 
-                color:'blue'
+                color: 'blue'
 
             },
             {
                 name: 'FinalYear',
                 values: [7, 9, 3, 8, 5, 0, 3, 0, 2].map(div2),
-                color:'yellow'
+                color: 'yellow'
 
             }
         ]//,
