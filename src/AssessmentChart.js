@@ -1,5 +1,5 @@
 import './style/assessmentchart.css';
-import {text, rect, hline, circle, map} from "./helper";
+import {text, rect, hline, circle, map, lighterColor} from "./helper";
 import Vcore from "./VCore";
 import Color from "absol/src/Color/Color";
 import {rotate, translate} from "./template";
@@ -511,8 +511,9 @@ AssessmentChart.prototype.updateBodyPosition = function () {
 };
 
 
-AssessmentChart.prototype.update = function () {
-    this.updateContentPosition();
+AssessmentChart.prototype.updateContent = function () {
+    this.prepareData();
+    BChart.prototype.updateContent.call(this);
 };
 
 
