@@ -148,8 +148,6 @@ SunburstChart.prototype._findBestFanRadius = function () {
         mid = (l + h) / 2;
     }
 
-    console.log(aWidth, aHeight, bound, this)
-
     this.computedData.fanR = mid;
 };
 
