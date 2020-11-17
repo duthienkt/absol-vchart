@@ -285,7 +285,7 @@ SunburstChart.prototype._createRoot = function () {
     this.$root.data = this.root;
     this.$root.level = 0;
     this.$root.span = 1;
-    this.$root.chartAngle = [0, Math.PI * 2];
+    this.$root.chartAngle = [-Math.PI/2,-Math.PI/2 + Math.PI * 2];
 };
 
 SunburstChart.prototype._createChild = function (fromElt) {
