@@ -19,6 +19,7 @@ function SunburstChart() {
     this.$sunbirstCtn = _('gcontainer.vc-sunburst-ctn');
     this.$body.addChild(this.$sunbirstCtn);
     this.root = {};
+
 }
 
 SunburstChart.property = Object.assign({}, BChart.property);
@@ -108,10 +109,11 @@ SunburstChart.prototype._measureSunburst = function (rFan) {
 
     function visit($node) {
         var level = $node.level
-        var r = r0 - rFan * (level - 1);
+        var r = r0 + rFan * (level - 1);
         var R = r + rFan * $node.span;
         var fanRect = this._measureFan(r, R, $node.chartAngle[0], $node.chartAngle[1]);
         rects.push(fanRect);
+
         if ($node.$child)
             $node.$child.forEach(visit.bind(this));
     }
@@ -128,7 +130,7 @@ SunburstChart.prototype._measureSunburst = function (rFan) {
 
 SunburstChart.prototype._findBestFanRadius = function () {
     var mid;
-    var bound = this._measureSunburst(mid);
+    var bound;
     var exi = 1;
     var aWidth = this.$body.box.width - 4;
     var aHeight = this.$body.box.height - 4;
@@ -145,6 +147,9 @@ SunburstChart.prototype._findBestFanRadius = function () {
         }
         mid = (l + h) / 2;
     }
+
+    console.log(aWidth, aHeight, bound, this)
+
     this.computedData.fanR = mid;
 };
 
@@ -228,6 +233,9 @@ SunburstChart.prototype._updateNodePosition = function () {
                 $node.chartAngle[1] - $node.chartAngle[0] > Math.PI ? 1 : 0, 0)
             .closePath()
             .end();
+        if ($node.$child && $node.$child.length > 0) {
+            $node.$child.forEach(visit.bind(this));
+        }
     }
 
     if (this.$root.$child && this.$root.$child.length > 0) {
