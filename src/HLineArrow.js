@@ -19,6 +19,8 @@ function HLineArrow() {
     this.length = 0;
 }
 
+HLineArrow.tag = 'HLineArrow'.toLowerCase();
+
 HLineArrow.render = function () {
     return _({
         class: 'vchart-line-arrow',

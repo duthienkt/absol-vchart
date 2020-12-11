@@ -28,6 +28,7 @@ function HScrollBar() {
     this.$button = $('.vchart-vscrollbar-button', this);
 }
 
+HScrollBar.tag = 'HScrollBar'.toLowerCase();
 
 HScrollBar.render = function () {
     return _({

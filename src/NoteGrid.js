@@ -16,6 +16,7 @@ function NoteGrid() {
     this.boxHeight = 0;
 }
 
+NoteGrid.tag = 'NoteGrid'.toLowerCase();
 
 NoteGrid.prototype.updateSize = function () {
     // this.

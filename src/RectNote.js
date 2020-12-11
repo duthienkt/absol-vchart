@@ -11,6 +11,8 @@ function RectNote() {
     this.$text = $('.vc-note-text', this);
 }
 
+RectNote.tag = 'RectNote'.toLowerCase();
+
 RectNote.render = function () {
     return _({
         tag: 'gcontainer',
