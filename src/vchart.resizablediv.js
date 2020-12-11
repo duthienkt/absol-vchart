@@ -8,7 +8,9 @@ var $ = Acore.$;
 function ResizeableDiv() {
     this.$resizebox = $('resizebox', this).on('beginmove', this.eventHandler.beginMove);
     this.on('click', this.eventHandler.click);
-};
+}
+
+ResizeableDiv.tag = 'ResizeableDiv'.toLowerCase();
 
 
 ResizeableDiv.render = function () {
