@@ -39,7 +39,7 @@ function SpiderChart() {
 }
 
 
-
+SpiderChart.tag = 'SpiderChart'.toLowerCase();
 
 SpiderChart.render = function () {
     return _({

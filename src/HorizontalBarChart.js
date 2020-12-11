@@ -70,6 +70,8 @@ function HorizontalBarChart() {
     this.sync.then(this.notifyDataChange.bind(this));
 }
 
+HorizontalBarChart.tag = 'HorizontalBarChart'.toLowerCase();
+
 
 HorizontalBarChart.prototype._createKeyNote = function (color, keyName) {
     return _({
