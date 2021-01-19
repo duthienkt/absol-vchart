@@ -1,54 +1,229 @@
+import './style/rangechart.css';
 import Vcore from "./VCore";
-import { hline, vline, circle, text, isNumber, moveHLine, moveVLine, calBeautySegment, map } from "./helper";
+import {hline, vline, circle, text, isNumber, moveHLine, moveVLine, calBeautySegment, map} from "./helper";
+import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
+import GContainer from "absol-svg/js/svg/GContainer";
+import BChart from "./BChart";
+import BScroller from "absol-acomp/js/BScroller";
 import OOP from "absol/src/HTML5/OOP";
+import RectNote from "./RectNote";
 
 var _ = Vcore._;
 var $ = Vcore.$;
+
+/***
+ * @extends BChart
+ * @constructor
+ */
 function RangeChart() {
-    var res = _({
-        tag: 'svg',
-        class: 'range-chart',
-        child: [
-            {
-                tag: 'g',
-                attr: {
-                    id: 'contentBox'
-                },
-                child: 'g#content'
-            },
-            {
-                tag: 'path',
-                class: 'base-chart-white-mask',
-                attr: {
-                    fill: 'white',
-                    stroke: 'white',
-                    'fill-rule': 'evenodd',
-                    d: 'M0,0  0,2000 2000,2000 2000,0zM100,0  0,200 200,200 200,0z'
-                }
-            },
-            'axis',
-            'hscrollbar'
-        ]
+    /** default config**/
+    this.valuePlotRadius = 5;
+    this.minKeyWidth = 50;
+    this.maxKeyWidthRatio = 1.5;
+    this.limitLineLength = 30;
+    this.lineHeight = 22;
+    BChart.call(this);
+    /** data **/
+    this.ranges = [];
+    this.maxText = 'Maximum';
+    this.minText = 'Minimum';
+    this.midText = 'Median';
+    this.normalText = 'Normal';
+    this.$debugRect = this.$debugRect || _({
+        tag: 'rect',
+        style: {
+            fill: 'rgba(255, 0, 0,0.5)'
+        },
+        attr: { x: 0, y: 0 }
     });
 
-    res.sync = res.afterAttached(500);
-    res.$axis = $('axis', res);
-    res.$whiteBoxMask = $('.base-chart-white-mask', res);
-    res.$content = $('g#content', res);
-    res.eventHandler = OOP.bindFunctions(res, RangeChart.eventHandler);
-    // res.on('wheel', res.eventHandler.wheel);
-    res.$hscrollbar = $('hscrollbar', res).on('scroll', res.eventHandler.scrollbarscroll);
+    this.$axisCtn = _('gcontainer.vc-axis-ctn');
+    this.$body.addChild(this.$axisCtn);
 
-    return res;
+    this.$oxLabelCtn = _('gcontainer.vc-ox-label-ctn');
+    this.$axisCtn.addChild(this.$oxLabelCtn);
+    this.$oxValueCtn = _('gcontainer.vc-ox-value-ctn');
+    this.$axisCtn.addChild(this.$oxValueCtn);
+
+
+    this.sync = new Promise(function (resolve) {
+        this.$attachhook.once('attached', resolve);
+    }.bind(this));
+}
+
+OOP.mixClass(RangeChart, BChart);
+RangeChart.property = Object.assign({}, BChart.property);
+RangeChart.eventHandler = Object.assign({}, BChart.prototype);
+
+
+RangeChart.tag = 'RangeChart'.toLowerCase();
+
+RangeChart.render = function () {
+    return BChart.render()
+        .addClass('range-chart')
+        .addClass('vc-range-chart');
+};
+
+RangeChart.prototype.normalizeData = function () {
+
+};
+
+RangeChart.prototype.computeData = function () {
+    // this.computedData
+    this.computedData.hasMidValue = this.ranges.some(function (range) {
+        return isNumber(range.mid);
+    });
+    this.computedData.hasNormalValue = this.ranges.some(function (range) {
+        return isNumber(range.normal);
+    });
 };
 
 
+RangeChart.prototype._createNote = function () {
+    var ctn = this.$noteCtn.clearChild();
+    var y0 = this.lineHeight / 2 + 1;
+    var labelX = this.limitLineLength + 10;
+    ctn.$maxLine = this._createLimitLine(0, y0, this.limitLineLength, 'max').addTo(ctn);
+    ctn.$maxText = text(this.maxText, labelX, y0 + 5).addTo(ctn);
+    y0 += this.lineHeight;
+    if (this.computedData.hasMidValue) {
+        this._createLimitLine(0, y0, this.limitLineLength, 'mid').addTo(ctn);
+        text(this.midText, labelX, y0 + 5).addTo(ctn);
+        y0 += this.lineHeight;
+    }
+    ctn.$minLine = this._createLimitLine(0, y0, this.limitLineLength, 'min').addTo(ctn);
+    ctn.$minText = text(this.minText, labelX, y0 + 5).addTo(ctn);
+    y0 += this.lineHeight;
+    if (this.ranges[0].normal !== undefined) {
+        circle(this.limitLineLength / 2, y0, this.valuePlotRadius, 'range-chart-value-plot').addTo(ctn);
+        text(this.normalText, labelX, y0 + 5).addTo(ctn);
+    }
+    y0 += this.lineHeight / 2;
+    ctn.box.setSize(ctn.getBBox().width, y0)
+};
+
+RangeChart.prototype._updateNotesPosition = function () {
+    var box = this.$noteCtn.box;
+    this.$debugRect.attr({
+        width: box.width,
+        height: box.height
+    });
+    this.$noteCtn.box.setPosition(this.contentPadding, this.box.height - box.height - this.contentPadding)
+};
+
+RangeChart.prototype.createOxTable = function () {
+    var thisC = this;
+    this.$oxValueCtn.clearChild();
+    var hasMidValue = this.computedData.hasMidValue;
+    this.$oxRangeCols = this.ranges.map(function (range, i, arr) {
+        var ctn = _({
+            tag: GContainer.tag,
+        });
+        thisC.$oxValueCtn.addChild(ctn);
+        var maxText = '"';
+        var midText = '"';
+        var minText = '"';
+        var normalText = '"';
+        var y0 = 17;
+        if (isNumber(range.max))
+            maxText = thisC.numberToString(range.max);
+        ctn.$maxText = _({
+            tag: 'text',
+            attr: {
+                x: 0,
+                y: y0
+            },
+            child: { text: maxText }
+        });
+        ctn.addChild(ctn.$maxText);
+        y0 += thisC.lineHeight;
+        if (hasMidValue) {
+            if (isNumber(range.mid))
+                midText = thisC.numberToString(range.mid);
+            ctn.$midText = _({
+                tag: 'text',
+                attr: {
+                    x: 0,
+                    y: y0
+                },
+                child: { text: midText }
+            });
+            ctn.addChild(ctn.$midText);
+            y0 += thisC.lineHeight;
+        }
+        if (isNumber(range.min))
+            minText = thisC.numberToString(range.min);
+
+        ctn.$minText = _({
+            tag: 'text',
+            attr: {
+                x: 0,
+                y: y0
+            },
+            child: { text: minText }
+        });
+        ctn.addChild(ctn.$minText);
+        y0 += thisC.lineHeight;
+
+        if (isNumber(range.normal))
+            normalText = thisC.numberToString(range.normal);
+        ctn.$normalText = _({
+            tag: 'text',
+            attr: {
+                x: 0,
+                y: y0
+            },
+            child: { text: normalText }
+        });
+        ctn.addChild(ctn.$normalText);
+        y0 += thisC.lineHeight / 2 - 5;
+        var textWidth = ctn.getBBox().width;
+        ctn.box.setSize(textWidth, y0);
+        return ctn;
+    });
+    if (this.$oxRangeCols.length > 0)
+        this.$oxValueCtn.box.height = this.$oxRangeCols[0].box.height;
+};
+
+RangeChart.prototype.createOXLabel = function () {
+    var ctn = this.$oxLabelCtn;
+    ctn.clearChild();
+    this.$debugRect.addTo(ctn);
+    this.$oxLabels = this.ranges.map(function (range) {
+        return _({
+            tag: GContainer.tag,
+            child: [
+                {
+                    tag: 'text',
+                    class:'vc-range-chart-label-full',
+                    child: { text: range.name }
+                }
+            ]
+        }).addTo(ctn);
+    });
+};
 
 
-RangeChart.eventHandler = {};
+RangeChart.prototype.updateBodyPosition = function () {
+    BChart.prototype.updateBodyPosition.call(this);
+    // this.$debugRect.addStyle({
+    //     x: this.$body.box.x,
+    //     y: this.$body.box.y,
+    //     width: this.$body.box.width,
+    //     height: this.$body.box.height,
+    // })
+};
+
+
+RangeChart.prototype.createContent = function () {
+    BChart.prototype.createContent.call(this);
+    this.createOxTable();
+    this.createOXLabel();
+}
+
 RangeChart.eventHandler.wheel = function (event) {
     var d = this.scrollBy(event.deltaY);
-    if (d != 0) {
+    if (d !== 0) {
         event.preventDefault();
     }
 };
@@ -78,8 +253,6 @@ RangeChart.prototype.scrollBy = function (dX) {
 };
 
 
-
-
 RangeChart.prototype._createLimitLine = function (x, y, length, eClss) {
     return hline(x, y, length, ['range-chart-limit-line'].concat(eClss ? [eClss] : []))
 };
@@ -88,14 +261,14 @@ RangeChart.prototype.numberToString = function (value) {
     return value.toString();
 };
 
-RangeChart.prototype._relocalVLine = function (e, x, y, length) {
-    e.attr('d', 'm' + x + ' ' + y + 'h' + length);
-};
-
-
-
+/***
+ *
+ * @param range
+ * @return {GContainer}
+ * @private
+ */
 RangeChart.prototype._createRange = function (range) {
-    var res = _('g');
+    var res = _({ tag: GContainer.tag });
     res.$rangeLine = vline(0, 0, -1, 'range-chart-range-line').addTo(res);
     res.$dashLine = vline(0, 0, 0, 'range-chart-range-line').attr('stroke-dasharray', '2').addTo(res);
     res.$maxLine = this._createLimitLine(-this.limitLineLength / 2, 0, this.limitLineLength, 'max').addTo(res);
@@ -128,6 +301,7 @@ RangeChart.prototype._createScrollArrow = function () {
             var iv = setInterval(function () {
                 res.emit('pressleft', event, res);
             }, 30);
+
             function finish(event) {
                 clearInterval(iv);
                 this.off('pointerleave', finish);
@@ -153,7 +327,6 @@ RangeChart.prototype._createScrollArrow = function () {
     }).addTo(res.$leftArrow);
 
 
-
     res.$rightArrow = _(
         [
             '<g>',
@@ -171,6 +344,7 @@ RangeChart.prototype._createScrollArrow = function () {
             var iv = setInterval(function () {
                 res.emit('pressright', event, res);
             }, 30);
+
             function finish(event) {
                 clearInterval(iv);
                 this.off('pointerleave', finish);
@@ -197,7 +371,6 @@ RangeChart.prototype._createScrollArrow = function () {
 
     return res;
 };
-
 
 
 RangeChart.prototype._createRangeNote = function (range) {
@@ -230,29 +403,29 @@ RangeChart.prototype._createOYSegmentLines = function (n) {
     return res;
 }
 
-
-RangeChart.prototype._createNote = function () {
-    var res = _('g.range-chart-note');
-
-    var y0 = 12;
-    res.$maxLine = this._createLimitLine(10, y0, this.limitLineLength, 'max').addTo(res);
-    res.$maxText = text(this.maxText, 50, y0 + 5).addTo(res);
-    y0 += 22;
-    if (this.ranges[0].mid != undefined) {
-        this._createLimitLine(10, y0, this.limitLineLength, 'mid').addTo(res);
-        text(this.midText, 50, y0 + 5).addTo(res);
-        y0 += 22;
-    }
-    res.$minLine = this._createLimitLine(10, y0, this.limitLineLength, 'min').addTo(res);
-    res.$minText = text(this.minText, 50, y0 + 5).addTo(res);
-    y0 += 22;
-    if (this.ranges[0].normal !== undefined) {
-        circle(this.limitLineLength / 2 + 10, y0, this.valuePlotRadius, 'range-chart-value-plot').addTo(res);
-        text(this.normalText, 50, y0 + 5).addTo(res);
-    }
-
-    return res;
-};
+//
+// RangeChart.prototype._createNote = function () {
+//     var res = _('g.range-chart-note');
+//
+//     var y0 = 12;
+//     res.$maxLine = this._createLimitLine(10, y0, this.limitLineLength, 'max').addTo(res);
+//     res.$maxText = text(this.maxText, 50, y0 + 5).addTo(res);
+//     y0 += 22;
+//     if (this.ranges[0].mid != undefined) {
+//         this._createLimitLine(10, y0, this.limitLineLength, 'mid').addTo(res);
+//         text(this.midText, 50, y0 + 5).addTo(res);
+//         y0 += 22;
+//     }
+//     res.$minLine = this._createLimitLine(10, y0, this.limitLineLength, 'min').addTo(res);
+//     res.$minText = text(this.minText, 50, y0 + 5).addTo(res);
+//     y0 += 22;
+//     if (this.ranges[0].normal !== undefined) {
+//         circle(this.limitLineLength / 2 + 10, y0, this.valuePlotRadius, 'range-chart-value-plot').addTo(res);
+//         text(this.normalText, 50, y0 + 5).addTo(res);
+//     }
+//
+//     return res;
+// };
 
 RangeChart.prototype._createOyValues = function (minValue, step, segmentCount, extendOY) {
     var child = Array(segmentCount + 1 + (extendOY ? 1 : 0)).fill(0).map(function (u, i) {
@@ -290,12 +463,6 @@ RangeChart.prototype._createOyValues = function (minValue, step, segmentCount, e
 };
 
 
-
-RangeChart.prototype.updateSize = function () {
-    this.attr({ width: this.canvasWidth + '', height: this.canvasHeight + '', viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ') });
-    this.$title.attr('x', this.canvasWidth / 2);
-};
-
 RangeChart.prototype.updateNote = function () {
     var noteBox = this.$note.getBBox();
     if (this.containsClass('show-inline-value')) {
@@ -329,7 +496,7 @@ RangeChart.prototype.updateOyValues = function () {
         var eBBox = e.getBBox();
         e.attr({
             y: -i * this.oySegmentLength + 5,
-            x: - eBBox.width - 10
+            x: -eBBox.width - 10
         });
     }.bind(this));
 
@@ -457,14 +624,16 @@ RangeChart.prototype.updateRanges = function () {
                 0, this._calYOfValue((range.mid)),
                 -map(range.max - range.mid, 0, this.oyMaxValue - this.oyMinValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0))
             );
-        } else if (range.mid < range.min) {
+        }
+        else if (range.mid < range.min) {
             e.$rangeLine.removeStyle('display');
             moveVLine(e.$dashLine,
                 0, this._calYOfValue((range.mid)),
                 -map(range.min - range.mid, 0, this.oyMaxValue - this.oyMinValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0))
             );
 
-        } else {
+        }
+        else {
             e.$rangeLine.removeStyle('display', 'none');
         }
 
@@ -568,7 +737,7 @@ RangeChart.prototype.initComp = function () {
     }.bind(this));
 
 
-    this.$title = text(this.title||'', 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
+    this.$title = text(this.title || '', 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
 
     this.$scrollArrows = this._createScrollArrow()
         .addTo(this)
@@ -579,27 +748,23 @@ RangeChart.prototype.initComp = function () {
 };
 
 
+// RangeChart.prototype.init = function (props) {
+//     // this.valuePlotRadius = 6;
+//     // this.maxText = 'Maximum';
+//     // this.minText = 'Minimum';
+//     // this.midText = 'Median';
+//     // this.normalText = 'Normal';
+//     // this.maxSegment = 12;
+//     // props = props || {};
+//     // this.super(props);
+//     // if (!this.ranges || this.ranges.length <= 0) {
+//     //     console.warn("Empty data!");
+//     //     return;
+//     // }
+//     // this.initComp();
+//     // this.sync = this.sync.then(this.update.bind(this));
+// }
 
-RangeChart.prototype.init = function (props) {
-    this.valuePlotRadius = 6;
-    this.limitLineLength = 20;
-    this.maxText = 'Maximum';
-    this.minText = 'Minimum';
-    this.midText = 'Median';
-    this.normalText = 'Normal';
-    this.maxSegment = 12;
-    props = props || {};
-    this.super(props);
-    if (!this.ranges || this.ranges.length <= 0) {
-        console.warn("Empty data!");
-        return;
-    }
-    this.initComp();
-    this.sync = this.sync.then(this.update.bind(this));
-}
-
-
-RangeChart.property = {};
 
 RangeChart.property.scrollLeft = {
     set: function (value) {
@@ -630,8 +795,7 @@ RangeChart.property.overflowOX = {
     }
 };
 
-Vcore.creator.rangechart = RangeChart;
-
-Vcore.creator.ostickchart = function () {
+Vcore.install(RangeChart);
+Vcore.install('ostickchart', function () {
     return _('rangechart.base-chart.o-stick-chart', true);
-};
+});

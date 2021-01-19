@@ -1,7 +1,10 @@
+.vc-range-chart {
+    background-color: rgb(200, 200, 200);
+}
 
 .base-chart,
 .range-chart {
-    font-size: 12;
+    font-size: 12px;
     font-family: Arial;
 }
 
@@ -17,7 +20,7 @@ table .base-chart-title {
 }
 
 .base-chart-title {
-    font-size: 15;
+    font-size: 15px;
     font-weight: bold;
 }
 
@@ -44,7 +47,7 @@ table .base-chart-title {
 }
 
 .range-chart-limit-line.max {
-    stroke: #ED1C24;
+    stroke: #2C82FF;
 }
 
 .range-chart-limit-line.mid {
@@ -52,7 +55,7 @@ table .base-chart-title {
 }
 
 .range-chart-limit-line.min {
-    stroke: #2C82FF;
+    stroke: #ED1C24;
 }
 
 .range-chart:not(.show-inline-value) .range-chart-inline-value {

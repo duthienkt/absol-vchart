@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --config webpack.config.js",
+    "dev": "webpack-dev-server --config webpack.config.js --public https://frame.absol.cf",
     "dist": "webpack --config webpack.config.js --progress --profile --colors --mode production"
   },
   "repository": {
@@ -27,8 +27,8 @@
   },
   "homepage": "https://github.com/duthienkt/absol-vchart#readme",
   "dependencies": {
-    "absol": "^1.15.20",
-    "absol-acomp": "^0.9.55",
+    "absol": "^1.16.3",
+    "absol-acomp": "^0.9.57",
     "absol-svg": "0.0.3"
   },
   "devDependencies": {

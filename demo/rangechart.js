@@ -9,7 +9,7 @@
             canvasHeight: 600,
             zeroOY: true,
             numberToString: vchart.lambda.toLocalString(0),
-            maxText: 'Lương tối thiểu',
+            maxText: 'Lương tối đa',
             minText: 'Lương tối thiểu',
             midText: 'Lương ở giữa',
             normalText: 'Lương thị trường',
