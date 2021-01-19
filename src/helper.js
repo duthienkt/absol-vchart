@@ -282,7 +282,16 @@ export function getSubNumberArray(arr) {
 
 export function wrapChartInWHResizer(chartElt, outerParam) {
     outerParam = outerParam || {};
-
+    var newVersion = chartElt.containsClass('ag-canvas');
+    if (newVersion) {
+        outerParam.style = outerParam.style || {};
+        outerParam.style.width = outerParam.width || chartElt.style.width;
+        outerParam.style.height = outerParam.width || chartElt.style.height;
+        chartElt.addStyle({
+            width: '100%',
+            height: '100%'
+        })
+    }
     var res = AComp._({
         tag: 'resizablediv',
         style: {
@@ -292,7 +301,7 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
         child: chartElt,
         on: {
             sizechange: function (event) {
-                if (chartElt.update){
+                if (chartElt.update) {
                     if (event.width) {
                         chartElt.canvasWidth = event.width;
                     }
@@ -300,6 +309,9 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
                         chartElt.canvasHeight = event.height;
                     }
                     chartElt.update();
+                }
+                else if (newVersion) {
+                    chartElt.updateSize();
                 }
             }
         }
