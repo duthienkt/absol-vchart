@@ -292,13 +292,15 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
         child: chartElt,
         on: {
             sizechange: function (event) {
-                if (event.width) {
-                    chartElt.canvasWidth = event.width;
+                if (chartElt.update){
+                    if (event.width) {
+                        chartElt.canvasWidth = event.width;
+                    }
+                    if (event.height) {
+                        chartElt.canvasHeight = event.height;
+                    }
+                    chartElt.update();
                 }
-                if (event.height) {
-                    chartElt.canvasHeight = event.height;
-                }
-                chartElt.update();
             }
         }
     }, false, true).addStyle(outerParam.style || {});
