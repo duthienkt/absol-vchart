@@ -4,6 +4,7 @@ import Vec2 from 'absol/src/Math/Vec2';
 
 import AComp from 'absol-acomp/AComp';
 import './vchart.resizablediv';
+import TextMeasure from "absol-acomp/js/TextMeasure";
 
 var _ = Vcore._;
 
@@ -390,4 +391,35 @@ export function fresherColor(color, delta) {
     var hsla = color.toHSLA();
     hsla[1] = Math.max(0, Math.min(1, hsla[1] + delta));
     return Color.fromHSLA.apply(Color, hsla);
+}
+
+console.log(TextMeasure.measureWidth("Trưởng phòng", 'Arial', 14),
+    TextMeasure.measureWidth("1000000", 'Arial', 14)
+    )
+
+/***
+ * Default font size: Arial
+ * @param {string} text
+ * @param {number} fontSize
+ * @param {number} width
+ */
+export function wrapToLines(text, fontSize, width) {
+    var words = text.split(' ');
+    var line = [words.shift()];
+    var lines = [line];
+    var newText;
+    for (var i = 0; i < words.length; ++i) {
+        newText = line.concat([words[i]]).join(' ');
+        if (TextMeasure.measureWidth(newText, 'Arial', 14) <= width) {
+            line.push(words[i]);
+        }
+        else {
+            line =[ words[i]];
+            lines.push(line);
+        }
+    }
+    for (var i =0; i < lines.length; ++i ){
+        lines[i] = lines[i].join(' ');
+    }
+    return lines;
 }

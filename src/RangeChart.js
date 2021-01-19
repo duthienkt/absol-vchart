@@ -1,6 +1,6 @@
 import './style/rangechart.css';
 import Vcore from "./VCore";
-import {hline, vline, circle, text, isNumber, moveHLine, moveVLine, calBeautySegment, map} from "./helper";
+import {hline, vline, circle, text, isNumber, moveHLine, moveVLine, calBeautySegment, map, wrapToLines} from "./helper";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import GContainer from "absol-svg/js/svg/GContainer";
 import BChart from "./BChart";
@@ -18,7 +18,7 @@ var $ = Vcore.$;
 function RangeChart() {
     /** default config**/
     this.valuePlotRadius = 5;
-    this.minKeyWidth = 50;
+    this.minKeyWidth = 90;
     this.maxKeyWidthRatio = 1.5;
     this.limitLineLength = 30;
     this.lineHeight = 22;
@@ -115,6 +115,7 @@ RangeChart.prototype.createOxTable = function () {
     var thisC = this;
     this.$oxValueCtn.clearChild();
     var hasMidValue = this.computedData.hasMidValue;
+    this.computedData.maxValueWidth = 0;
     this.$oxRangeCols = this.ranges.map(function (range, i, arr) {
         var ctn = _({
             tag: GContainer.tag,
@@ -179,6 +180,7 @@ RangeChart.prototype.createOxTable = function () {
         y0 += thisC.lineHeight / 2 - 5;
         var textWidth = ctn.getBBox().width;
         ctn.box.setSize(textWidth, y0);
+        thisC.computedData.maxValueWidth = Math.max(thisC.computedData.maxValueWidth, textWidth);
         return ctn;
     });
     if (this.$oxRangeCols.length > 0)
@@ -186,19 +188,34 @@ RangeChart.prototype.createOxTable = function () {
 };
 
 RangeChart.prototype.createOXLabel = function () {
+    var lineHeight = this.lineHeight;
     var ctn = this.$oxLabelCtn;
+    var keyLimitWidth = Math.max(this.minKeyWidth, this.computedData.maxValueWidth * this.maxKeyWidthRatio);
     ctn.clearChild();
     this.$debugRect.addTo(ctn);
     this.$oxLabels = this.ranges.map(function (range) {
+        var lines = wrapToLines(range.name, 14, keyLimitWidth);
+        if (lines.length < 2) lines = [];
+        else lines = lines.map(function (line, i) {
+            return {
+                tag: 'text',
+                class: 'vc-range-chart-label-line',
+                attr: {
+                    x: '0',
+                    y: 17 + i * lineHeight + ''
+                },
+                child: { text: line }
+            }
+        });
         return _({
             tag: GContainer.tag,
             child: [
                 {
                     tag: 'text',
-                    class:'vc-range-chart-label-full',
+                    class: 'vc-range-chart-label-full',
                     child: { text: range.name }
                 }
-            ]
+            ].concat(lines)
         }).addTo(ctn);
     });
 };
