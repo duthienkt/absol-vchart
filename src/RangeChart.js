@@ -45,13 +45,6 @@ function RangeChart() {
     this.midText = 'Median';
     this.normalText = 'Normal';
     this.numberToString = null;
-    this.$debugRect = this.$debugRect || _({
-        tag: 'rect',
-        style: {
-            fill: 'rgba(255, 0, 0,0.5)'
-        },
-        attr: { x: 0, y: 0 }
-    });
     this.createStatic();
     this.$oyValueCtn = $('gcontainer.vc-oy-value-ctn', this);
     this.$rangeCtn = $('.vc-range-ctn', this);
@@ -104,7 +97,6 @@ RangeChart.prototype.createStatic = function () {
                 tag: 'gcontainer',
                 class: 'vc-axis-ctn',
                 child: [
-                    this.$debugRect,
                     {
                         tag: 'gcontainer',
                         class: 'vc-oxy-space',
@@ -445,13 +437,6 @@ RangeChart.prototype.updateOxTablePosition = function () {
 };
 
 RangeChart.prototype.updateAxisY = function () {
-    this.$debugRect.addTo(this.$axisCtn);
-    this.$debugRect.attr({
-        x: 0,
-        y: 0,
-        width: 10,
-        height: 10
-    });
     this.$axis.resize(this.$axisCtn.box.width + this.computedData.keyNameWidth, this.$axisCtn.box.height + 10);
     this.$valueName.attr('y', -this.$axisCtn.box.height - 22);
 
