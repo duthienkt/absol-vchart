@@ -49,7 +49,7 @@ export function circle(x, y, r, eClss) {
 export function text(text, x, y, eClss) {
     if (eClss instanceof Array) eClss = eClss.join(' ');
     return _('<text x="' + x + '" y="' + y + '" ' + (eClss ? 'class="' + eClss + '"' : '') + '>' + text + '</text>')
-};
+}
 
 export function vline(x, y, length, eClss) {
     return _({
@@ -59,11 +59,11 @@ export function vline(x, y, length, eClss) {
             d: 'm' + x + ' ' + y + 'v' + length
         }
     });
-};
+}
 
 export function moveVLine(e, x, y, length) {
     return e.attr('d', 'm' + x + ' ' + y + 'v' + length);
-};
+}
 
 export function hline(x, y, length, eClss) {
     return _({
@@ -73,11 +73,11 @@ export function hline(x, y, length, eClss) {
             d: 'm' + x + ' ' + y + 'h' + length
         }
     });
-};
+}
 
 export function moveHLine(e, x, y, length) {
     return e.attr('d', 'm' + x + ' ' + y + 'h' + length);
-};
+}
 
 
 /**
@@ -101,7 +101,7 @@ export function rect(x, y, width, height, eClss) {
         class: eClss
     };
     return _(option);
-};
+}
 
 
 export function line(x0, y0, x1, y1) {
@@ -134,7 +134,7 @@ export function calBeautySegment(maxSegment, minValue, maxValue, integerOnly) {
         ++i;
     }
     return res;
-};
+}
 
 
 //x[i] < x[i+1]
@@ -143,7 +143,6 @@ export function autoCurve(points, strong, free) {
     if (points.length == 0) {
         return '';
     }
-    ;
     var paddingLeft = points[0].slice();
     var paddingRight = points[points.length - 1].slice();
     if (typeof free == "number") {
@@ -208,7 +207,7 @@ export function generateBackgroundColors(n) {
     var arrs = Array(n).fill(null).reduce(function (ac, cr, i) {
         var tail = ac[ac.length - 1];
         if (tail.length >= l) {
-            var tail = [];
+            tail = [];
             ac.push(tail);
         }
 
@@ -226,11 +225,11 @@ export function generateBackgroundColors(n) {
         i = (i + 1) % arrs.length;
     }
     return res;
-};
+}
 
 export function isNumber(x) {
     return -Infinity < x && x < Infinity && typeof (x) == 'number';
-};
+}
 
 
 export function toLocalString(fixedRight) {
@@ -393,9 +392,7 @@ export function fresherColor(color, delta) {
     return Color.fromHSLA.apply(Color, hsla);
 }
 
-console.log(TextMeasure.measureWidth("Trưởng phòng", 'Arial', 14),
-    TextMeasure.measureWidth("1000000", 'Arial', 14)
-    )
+
 
 /***
  * Default font size: Arial
@@ -414,11 +411,11 @@ export function wrapToLines(text, fontSize, width) {
             line.push(words[i]);
         }
         else {
-            line =[ words[i]];
+            line = [words[i]];
             lines.push(line);
         }
     }
-    for (var i =0; i < lines.length; ++i ){
+    for (var i = 0; i < lines.length; ++i) {
         lines[i] = lines[i].join(' ');
     }
     return lines;
