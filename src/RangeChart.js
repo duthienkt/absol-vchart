@@ -1,12 +1,10 @@
 import './style/rangechart.css';
 import Vcore from "./VCore";
 import {hline, vline, circle, text, isNumber, moveHLine, moveVLine, calBeautySegment, map, wrapToLines} from "./helper";
-import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import GContainer from "absol-svg/js/svg/GContainer";
 import BChart from "./BChart";
-import BScroller from "absol-acomp/js/BScroller";
 import OOP from "absol/src/HTML5/OOP";
-import RectNote from "./RectNote";
+import VerticalChart from "./VerticalChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -23,12 +21,18 @@ function RangeChart() {
     this.limitLineLength = 30;
     this.lineHeight = 22;
     BChart.call(this);
+    this.contentPadding = 0;
     /** data **/
+    this.integerOnly = false;
+    this.zeroOY = false;
     this.ranges = [];
+    this.valueName = '';
+    this.keyName = '';
     this.maxText = 'Maximum';
     this.minText = 'Minimum';
     this.midText = 'Median';
     this.normalText = 'Normal';
+    this.numberToString = null;
     this.$debugRect = this.$debugRect || _({
         tag: 'rect',
         style: {
@@ -36,24 +40,39 @@ function RangeChart() {
         },
         attr: { x: 0, y: 0 }
     });
+    this.createStatic();
+    this.$oyValueCtn = $('gcontainer.vc-oy-value-ctn', this);
+    this.$rangeCtn = $('.vc-range-ctn', this);
+    this.$whiteMask = $('.vc-white-mask', this);
+    this.$axisCtn = $('gcontainer.vc-axis-ctn', this);
+    this.$axis = $('axis', this);
+    this.$oxTable = $('gcontainer.vc-ox-table', this);
+    this.$oxLabelCtn = $('gcontainer.vc-ox-label-ctn', this);
+    this.$oxValueCtn = $('gcontainer.vc-ox-value-ctn', this);
 
-    this.$axisCtn = _('gcontainer.vc-axis-ctn');
-    this.$body.addChild(this.$axisCtn);
-
-    this.$oxLabelCtn = _('gcontainer.vc-ox-label-ctn');
-    this.$axisCtn.addChild(this.$oxLabelCtn);
-    this.$oxValueCtn = _('gcontainer.vc-ox-value-ctn');
-    this.$axisCtn.addChild(this.$oxValueCtn);
-
-
+    this.$valueName = $('text.vc-value-name', this);
+    this.$keyName = $('text.vc-key-name', this);
+    this.$oxySpace = $('.vc-oxy-space', this);
+    this.$oyValues = [];
+    /***
+     *
+     * @type {ScrollArrow}
+     */
+    this.$scrollArrow = $('scrollarrow', this)
+        .on('pressleft', this.eventHandler.scrollArrowsPressLeft)
+        .on('pressright', this.eventHandler.scrollArrowsPressRight);
+    this.$hscrollbar = $('hscrollbar', this)
+        .on('scroll', this.eventHandler.scrollOxySpace);
+    this.$hscrollbar.height = 12;
+    this.$hscrollbar.box.y = -11;
     this.sync = new Promise(function (resolve) {
         this.$attachhook.once('attached', resolve);
     }.bind(this));
 }
 
 OOP.mixClass(RangeChart, BChart);
-RangeChart.property = Object.assign({}, BChart.property);
-RangeChart.eventHandler = Object.assign({}, BChart.prototype);
+RangeChart.property = Object.assign({}, VerticalChart.property);
+RangeChart.eventHandler = Object.assign({}, VerticalChart.eventHandler);
 
 
 RangeChart.tag = 'RangeChart'.toLowerCase();
@@ -62,6 +81,72 @@ RangeChart.render = function () {
     return BChart.render()
         .addClass('range-chart')
         .addClass('vc-range-chart');
+};
+
+RangeChart.prototype.createStatic = function () {
+    _({
+        elt: this.$body,
+        child: [
+
+            {
+                tag: 'gcontainer',
+                class: 'vc-axis-ctn',
+                child: [
+                    this.$debugRect,
+                    {
+                        tag: 'gcontainer',
+                        class: 'vc-oxy-space',
+                        child: [
+                            {
+                                tag: 'gcontainer',
+                                class: 'vc-ox-table',
+                                child: [
+                                    'gcontainer.vc-ox-label-ctn',
+                                    'gcontainer.vc-ox-value-ctn'
+                                ]
+                            },
+                            {
+                                tag: 'gcontainer',
+                                class: 'vc-range-ctn',
+                            }
+                        ]
+                    },
+                    {
+                        tag: 'path',
+                        class: 'vc-white-mask',
+                        attr: {
+                            fill: 'white',
+                            stroke: 'white',
+                            'fill-rule': 'evenodd',
+                            d: 'M0,0  0,2000 2000,2000 2000,0zM100,0  0,200 200,200 200,0z'
+                        }
+                    },
+                    'gcontainer.vc-oy-value-ctn',
+                    'axis',
+                    {
+                        tag: 'text',
+                        class: 'vc-value-name',
+                        attr: {
+                            y: 14,
+                            x: 5
+                        },
+                        child: { text: '' }
+                    },
+                    {
+                        tag: 'text',
+                        class: 'vc-key-name',
+                        attr: {
+                            y: 14,
+                            x: 5
+                        },
+                        child: { text: '' }
+                    },
+                    'scrollarrow',
+                    'hscrollbar'
+                ]
+            }
+        ]
+    })
 };
 
 RangeChart.prototype.normalizeData = function () {
@@ -76,8 +161,55 @@ RangeChart.prototype.computeData = function () {
     this.computedData.hasNormalValue = this.ranges.some(function (range) {
         return isNumber(range.normal);
     });
+
+    this.computedData.max = this.ranges.reduce(function (ac, range) {
+        if (isNumber(range.max)) ac = Math.max(ac, range.max);
+        if (isNumber(range.mid)) ac = Math.max(ac, range.mid);
+        if (isNumber(range.min)) ac = Math.max(ac, range.min);
+        if (isNumber(range.normal)) ac = Math.max(ac, range.normal);
+        return ac;
+    }, -Infinity);
+
+    this.computedData.min = this.ranges.reduce(function (ac, range) {
+        if (isNumber(range.max)) ac = Math.min(ac, range.max);
+        if (isNumber(range.mid)) ac = Math.min(ac, range.mid);
+        if (isNumber(range.min)) ac = Math.min(ac, range.min);
+        if (isNumber(range.normal)) ac = Math.min(ac, range.normal);
+        return ac;
+    }, Infinity);
+    if (this.computedData.min > this.computedData.max) {
+        this.computedData.min = 0;
+        this.computedData.max = 10;
+    }
+
+    if (this.zeroOY) {
+        this.computedData.min = 0;
+    }
+
+    if (this.computedData.min === this.computedData.max) {
+        this.computedData.max += 1;
+    }
 };
 
+RangeChart.prototype.mapOYValue = VerticalChart.prototype.mapOYValue;
+
+RangeChart.prototype._computeOYSegment = function () {
+    var segment = calBeautySegment(Math.floor(this.$axisCtn.box.height / 50), this.computedData.min, this.computedData.max, this.integerOnly);
+    if (!this.computedData.oy || segment.step !== this.computedData.oy.step || segment.segmentCount !== this.computedData.oy.segmentCount
+        || segment.maxValue !== this.computedData.oy.maxValue || segment.minValue !== this.computedData.oy.minValue) {
+        this.computedData.oy = segment;
+        this.computedData.oyUpdated = false;
+        this.computedData.numberToFixed = 0;
+        if (segment.step < 1) this.computedData.numberToFixed++;
+        if (segment.step < 0.1) this.computedData.numberToFixed++;
+        if (segment.step < 0.01) this.computedData.numberToFixed++;
+        if (segment.step < 0.001) this.computedData.numberToFixed++;
+        if (segment.step < 0.0001) this.computedData.numberToFixed++;
+        this.computedData.oySegmentLength = this.$axisCtn.box.height / segment.segmentCount;
+        return true;
+    }
+    return false;
+};
 
 RangeChart.prototype._createNote = function () {
     var ctn = this.$noteCtn.clearChild();
@@ -93,21 +225,19 @@ RangeChart.prototype._createNote = function () {
     }
     ctn.$minLine = this._createLimitLine(0, y0, this.limitLineLength, 'min').addTo(ctn);
     ctn.$minText = text(this.minText, labelX, y0 + 5).addTo(ctn);
-    y0 += this.lineHeight;
-    if (this.ranges[0].normal !== undefined) {
-        circle(this.limitLineLength / 2, y0, this.valuePlotRadius, 'range-chart-value-plot').addTo(ctn);
-        text(this.normalText, labelX, y0 + 5).addTo(ctn);
+    if (this.computedData.hasNormalValue) {
+        y0 += this.lineHeight;
+        if (this.ranges[0].normal !== undefined) {
+            circle(this.limitLineLength / 2, y0, this.valuePlotRadius, 'range-chart-value-plot').addTo(ctn);
+            text(this.normalText, labelX, y0 + 5).addTo(ctn);
+        }
     }
     y0 += this.lineHeight / 2;
-    ctn.box.setSize(ctn.getBBox().width, y0)
+    ctn.box.setSize(ctn.getBBox().width + 7, y0)
 };
 
 RangeChart.prototype._updateNotesPosition = function () {
     var box = this.$noteCtn.box;
-    this.$debugRect.attr({
-        width: box.width,
-        height: box.height
-    });
     this.$noteCtn.box.setPosition(this.contentPadding, this.box.height - box.height - this.contentPadding)
 };
 
@@ -115,7 +245,8 @@ RangeChart.prototype.createOxTable = function () {
     var thisC = this;
     this.$oxValueCtn.clearChild();
     var hasMidValue = this.computedData.hasMidValue;
-    this.computedData.maxValueWidth = 0;
+    var hasNormalValue = this.computedData.hasNormalValue;
+    var maxValueWidth = 0;
     this.$oxRangeCols = this.ranges.map(function (range, i, arr) {
         var ctn = _({
             tag: GContainer.tag,
@@ -127,7 +258,7 @@ RangeChart.prototype.createOxTable = function () {
         var normalText = '"';
         var y0 = 17;
         if (isNumber(range.max))
-            maxText = thisC.numberToString(range.max);
+            maxText = thisC.numberToText(range.max);
         ctn.$maxText = _({
             tag: 'text',
             attr: {
@@ -140,7 +271,7 @@ RangeChart.prototype.createOxTable = function () {
         y0 += thisC.lineHeight;
         if (hasMidValue) {
             if (isNumber(range.mid))
-                midText = thisC.numberToString(range.mid);
+                midText = thisC.numberToText(range.mid);
             ctn.$midText = _({
                 tag: 'text',
                 attr: {
@@ -153,7 +284,7 @@ RangeChart.prototype.createOxTable = function () {
             y0 += thisC.lineHeight;
         }
         if (isNumber(range.min))
-            minText = thisC.numberToString(range.min);
+            minText = thisC.numberToText(range.min);
 
         ctn.$minText = _({
             tag: 'text',
@@ -164,35 +295,37 @@ RangeChart.prototype.createOxTable = function () {
             child: { text: minText }
         });
         ctn.addChild(ctn.$minText);
-        y0 += thisC.lineHeight;
-
-        if (isNumber(range.normal))
-            normalText = thisC.numberToString(range.normal);
-        ctn.$normalText = _({
-            tag: 'text',
-            attr: {
-                x: 0,
-                y: y0
-            },
-            child: { text: normalText }
-        });
-        ctn.addChild(ctn.$normalText);
+        if (hasNormalValue) {
+            y0 += thisC.lineHeight;
+            if (isNumber(range.normal))
+                normalText = thisC.numberToText(range.normal);
+            ctn.$normalText = _({
+                tag: 'text',
+                attr: {
+                    x: 0,
+                    y: y0
+                },
+                child: { text: normalText }
+            });
+            ctn.addChild(ctn.$normalText);
+        }
         y0 += thisC.lineHeight / 2 - 5;
         var textWidth = ctn.getBBox().width;
         ctn.box.setSize(textWidth, y0);
-        thisC.computedData.maxValueWidth = Math.max(thisC.computedData.maxValueWidth, textWidth);
+        maxValueWidth = Math.max(maxValueWidth, textWidth);
         return ctn;
     });
+    this.computedData.maxValueWidth = maxValueWidth;
     if (this.$oxRangeCols.length > 0)
         this.$oxValueCtn.box.height = this.$oxRangeCols[0].box.height;
 };
 
-RangeChart.prototype.createOXLabel = function () {
+RangeChart.prototype.createOxLabel = function () {
     var lineHeight = this.lineHeight;
     var ctn = this.$oxLabelCtn;
     var keyLimitWidth = Math.max(this.minKeyWidth, this.computedData.maxValueWidth * this.maxKeyWidthRatio);
+    var keyMaxWidth = 0;
     ctn.clearChild();
-    this.$debugRect.addTo(ctn);
     this.$oxLabels = this.ranges.map(function (range) {
         var lines = wrapToLines(range.name, 14, keyLimitWidth);
         if (lines.length < 2) lines = [];
@@ -207,66 +340,160 @@ RangeChart.prototype.createOXLabel = function () {
                 child: { text: line }
             }
         });
-        return _({
+        var labelBlock = _({
             tag: GContainer.tag,
             child: [
                 {
                     tag: 'text',
-                    class: 'vc-range-chart-label-full',
+                    attr: {
+                        x: '0',
+                        y: 17
+                    },
+                    class: lines.length >= 2 ? 'vc-range-chart-label-full' : 'vc-range-chart-label',
                     child: { text: range.name }
                 }
             ].concat(lines)
         }).addTo(ctn);
+        keyMaxWidth = Math.max(keyMaxWidth, labelBlock.getBBox().width);
+        return labelBlock;
     });
+    this.computedData.keyMaxWidth = keyMaxWidth;
+};
+
+RangeChart.prototype.createAxisName = function () {
+    this.$valueName.firstChild.data = this.valueName;
+    this.computedData.valueNameWidth = this.$valueName.getBBox().width;
+    this.$keyName.firstChild.data = this.keyName;
+    this.computedData.keyNameWidth = this.$keyName.getBBox().width;
+
+};
+
+RangeChart.prototype.updateAxisX = function () {
+    this.$axisCtn.box.x = Math.max(this.computedData.valueNameWidth, this.computedData.maxValueWidth + 5, this.$noteCtn.box.width);
+    this.$axisCtn.box.width = this.$body.box.width - this.$axisCtn.box.x - 7 - this.computedData.keyNameWidth;
+    this.$axis.resize(this.$axisCtn.box.width + this.computedData.keyNameWidth, 10);
+    this.$keyName.attr('x', this.$axisCtn.box.width + 7 + this.computedData.keyNameWidth);
+    this.$hscrollbar.width = this.$axisCtn.box.width;
+    this.$hscrollbar.outterWidth = this.$axisCtn.box.width;
+};
+
+RangeChart.prototype.updateOxTablePosition = function () {
+    var requireMinWidth = (Math.max(this.computedData.keyMaxWidth, this.computedData.maxValueWidth) + 10) * this.ranges.length;
+    var colWidth = Math.max(this.computedData.maxValueWidth + 10, this.$axisCtn.box.width / this.ranges.length);
+    console.log("init ", this.computedData.maxValueWidth + 10, this.$axisCtn.box.width / this.ranges.length)
+    this.computedData.oxLabelWrap = requireMinWidth > this.$axisCtn.box.width;
+    if (this.computedData.oxLabelWrap) {
+        this.addClass('vc-ox-label-wrap');
+    }
+    else {
+        this.removeClass('vc-ox-label-wrap');
+    }
+    colWidth = this.$oxLabels.reduce(function (ac, labelBlock) {
+        return Math.max(ac, labelBlock.getBBox().width + 10);
+    }, colWidth);
+    console.log(colWidth)
+    this.$oxLabelCtn.box.height = this.$oxLabelCtn.getBBox().height + 5;
+    this.$oxValueCtn.box.y = this.$oxLabelCtn.box.height;
+    this.$oxValueCtn.box.height = this.$noteCtn.box.height;
+
+
+    this.$oxLabels.forEach(function (labelBlock, i) {
+        labelBlock.box.x = colWidth * (i + 0.5);
+    }, 0);
+
+    this.$oxRangeCols.forEach(function (colElt, i) {
+        colElt.box.x = colWidth * (i + 0.5) + colElt.box.width / 2;
+    }, 0);
+    this.$oxTable.box.width = colWidth * this.ranges.length;
+    this.$oxTable.box.height = this.$oxLabelCtn.box.height + this.$oxValueCtn.box.height;
+
+    this.$axisCtn.box.y = this.$noteCtn.box.y - this.$body.box.y - this.$oxLabelCtn.box.height;
+    this.$axisCtn.box.height = this.$axisCtn.box.y - 20;
+    this.$scrollArrow.width = this.$axisCtn.box.width - 10;
+    this.$scrollArrow.box.setPosition(5, -this.$axisCtn.box.height / 2);
+    this.computedData.collWidth = colWidth;
+    this.computedData.oyLength = this.$axisCtn.box.height;
+
+    this.$hscrollbar.innerWidth = this.$oxTable.box.width;
+    this._updateScrollArrowBtb();
+};
+
+RangeChart.prototype.updateAxisY = function () {
+    this.$debugRect.addTo(this.$axisCtn);
+    this.$debugRect.attr({
+        x: 0,
+        y: 0,
+        width: 10,
+        height: 10
+    });
+    this.$axis.resize(this.$axisCtn.box.width + this.computedData.keyNameWidth, this.$axisCtn.box.height + 10);
+    this.$valueName.attr('y', -this.$axisCtn.box.height - 22);
+
+    this.$whiteMask.attr('d',
+        'M' + (-this.$axisCtn.box.x - this.$body.box.x - 1) + ' ' + (-this.$axisCtn.box.y - this.$body.box.y)
+        + ' h' + (this.box.width + 2)
+        + 'v' + (this.box.height)
+        + 'h' + (-this.box.width - 2)
+        + 'z'
+        + 'M0 ' + (-this.$axisCtn.box.height)
+        + 'h ' + (this.$axisCtn.box.width) +
+        'v' + (this.$axisCtn.box.height + this.$oxTable.box.height) + ' H 0z'
+    );
+};
+
+
+RangeChart.prototype._updateScrollArrowBtb = VerticalChart.prototype._updateScrollArrowBtb;
+RangeChart.prototype._createOyValue = VerticalChart.prototype._createOyValue;
+
+RangeChart.prototype._updateOYValuePosition = function () {
+    this._computeOYSegment();
+    if (!this.computedData.oyUpdated) {
+        this._createOyValue();
+    }
+    var y = 0;
+    var valueElt;
+    for (var i = 0; i < this.$oyValues.length; ++i) {
+        valueElt = this.$oyValues[i];
+        valueElt.attr({
+            y: y + 5,
+            x: -10
+        });
+        y -= this.computedData.oySegmentLength;
+    }
+
+    this.$axis.oyDivision = this.computedData.oySegmentLength;
+    this.$axis.updateOyDivision();
+};
+
+RangeChart.prototype.createRanges = function () {
+    this.$ranges = this.ranges.map(function (range) {
+        return this._createRange(range).addTo(this.$rangeCtn);
+    }.bind(this));
+};
+
+RangeChart.prototype.updateRangesPosition = function () {
+    var colWidth = this.computedData.collWidth;
+    this.$ranges.forEach(function (range, i) {
+        range.box.x = colWidth * (i + 0.5);
+    });
+};
+
+RangeChart.prototype.createContent = function () {
+    BChart.prototype.createContent.call(this);
+    this.createOxTable();
+    this.createOxLabel();
+    this.createAxisName();
+    this.createRanges();
 };
 
 
 RangeChart.prototype.updateBodyPosition = function () {
     BChart.prototype.updateBodyPosition.call(this);
-    // this.$debugRect.addStyle({
-    //     x: this.$body.box.x,
-    //     y: this.$body.box.y,
-    //     width: this.$body.box.width,
-    //     height: this.$body.box.height,
-    // })
-};
-
-
-RangeChart.prototype.createContent = function () {
-    BChart.prototype.createContent.call(this);
-    this.createOxTable();
-    this.createOXLabel();
-}
-
-RangeChart.eventHandler.wheel = function (event) {
-    var d = this.scrollBy(event.deltaY);
-    if (d !== 0) {
-        event.preventDefault();
-    }
-};
-
-RangeChart.eventHandler.scrollArrowsPressLeft = function (event) {
-    this.scrollBy(-60);
-};
-
-RangeChart.eventHandler.scrollArrowsPressRight = function (event) {
-    this.scrollBy(60);
-};
-
-RangeChart.eventHandler.scrollbarscroll = function (event) {
-    this.scrollLeft = this.$hscrollbar.scrollLeft;
-    event.preventDefault();
-};
-
-RangeChart.prototype.scrollBy = function (dX) {
-    var scrollLeft = this.scrollLeft + dX / 5;
-    var scrollLeft = Math.max(0, Math.min(this.oxSegmentLength * this.ranges.length - this.oxLength, scrollLeft));
-    var deltaX = scrollLeft - this.scrollLeft;
-    if (deltaX != 0) {
-        this.scrollLeft = scrollLeft;
-        this.$hscrollbar.scrollLeft = scrollLeft;
-    }
-    return deltaX;
+    this.updateAxisX();
+    this.updateOxTablePosition();
+    this.updateAxisY();
+    this._updateOYValuePosition();
+    this.updateRangesPosition();
 };
 
 
@@ -274,9 +501,7 @@ RangeChart.prototype._createLimitLine = function (x, y, length, eClss) {
     return hline(x, y, length, ['range-chart-limit-line'].concat(eClss ? [eClss] : []))
 };
 
-RangeChart.prototype.numberToString = function (value) {
-    return value.toString();
-};
+RangeChart.prototype.numberToText = VerticalChart.prototype.numberToText;
 
 /***
  *
@@ -292,8 +517,8 @@ RangeChart.prototype._createRange = function (range) {
     res.$midLine = this._createLimitLine(-this.limitLineLength / 2, 0, this.limitLineLength, 'mid').addTo(res);
     res.$minLine = this._createLimitLine(-this.limitLineLength / 2, 0, this.limitLineLength, 'min').addTo(res);
     res.$plot = circle(0, 0, this.valuePlotRadius, 'range-chart-value-plot').addTo(res);
-    res.$maxText = text(this.numberToString(range.max), 0, 0, 'range-chart-inline-value').attr('text-anchor', 'middle').addTo(res);
-    res.$minText = text(this.numberToString(range.min), 0, 0, 'range-chart-inline-value').attr('text-anchor', 'middle').addTo(res);
+    res.$maxText = text(this.numberToText(range.max), 0, 0, 'range-chart-inline-value').attr('text-anchor', 'middle').addTo(res);
+    res.$minText = text(this.numberToText(range.min), 0, 0, 'range-chart-inline-value').attr('text-anchor', 'middle').addTo(res);
     return res;
 };
 
@@ -396,18 +621,18 @@ RangeChart.prototype._createRangeNote = function (range) {
     var y0 = 0;
     text(range.name, 0, y0).addStyle('text-anchor', 'middle').addTo(res);
     y0 += 22;
-    text(this.numberToString(range.max), 0, y0, 'range-char-note-value').addTo(res);
+    text(this.numberToText(range.max), 0, y0, 'range-char-note-value').addTo(res);
     y0 += 22;
     if (this.ranges[0].mid !== undefined) {
-        text(this.numberToString(range.mid), 0, y0, 'range-char-note-value').addTo(res);
+        text(this.numberToText(range.mid), 0, y0, 'range-char-note-value').addTo(res);
         y0 += 22;
     }
 
-    text(this.numberToString(range.min), 0, y0, 'range-char-note-value').addTo(res);
+    text(this.numberToText(range.min), 0, y0, 'range-char-note-value').addTo(res);
     y0 += 22;
 
     if (this.ranges[0].normal !== undefined)
-        text(this.numberToString(range.normal), 0, y0, 'range-char-note-value').addTo(res);
+        text(this.numberToText(range.normal), 0, y0, 'range-char-note-value').addTo(res);
 
     return res;
 };
@@ -466,7 +691,7 @@ RangeChart.prototype._createOyValues = function (minValue, step, segmentCount, e
                 y: '0'
             },
             props: {
-                innerHTML: this.numberToString(value)
+                innerHTML: this.numberToText(value)
             }
         }
     }.bind(this));
@@ -749,10 +974,6 @@ RangeChart.prototype.initComp = function () {
         return this._createRangeNote(range).addTo(this.$content);
     }.bind(this));
 
-    this.$ranges = this.ranges.map(function (range) {
-        return this._createRange(range).addTo(this.$content);
-    }.bind(this));
-
 
     this.$title = text(this.title || '', 0, 19, 'base-chart-title').attr('text-anchor', 'middle').addTo(this);
 
@@ -783,34 +1004,34 @@ RangeChart.prototype.initComp = function () {
 // }
 
 
-RangeChart.property.scrollLeft = {
-    set: function (value) {
-        this._scrollLeft = value || 0;
-        this.$content.attr('transform', 'translate(' + (this.oxyLeft - this.scrollLeft) + ',' + this.oxyBottom + ')');
-        if (this.scrollLeft > 0.001) {
-            this.$scrollArrows.$leftArrow.removeStyle('display');
-        }
-        else {
-            this.$scrollArrows.$leftArrow.addStyle('display', 'none');
-        }
-
-        if (this.oxSegmentLength * this.ranges.length - this.oxLength > this.scrollLeft + 0.001) {
-            this.$scrollArrows.$rightArrow.removeStyle('display');
-        }
-        else {
-            this.$scrollArrows.$rightArrow.addStyle('display', 'none');
-        }
-    },
-    get: function () {
-        return this._scrollLeft || 0;
-    }
-};
-
-RangeChart.property.overflowOX = {
-    get: function () {
-        return Math.max(0, this.oxSegmentLength * this.ranges.length - this.oxLength);
-    }
-};
+// RangeChart.property.scrollLeft = {
+//     set: function (value) {
+//         this._scrollLeft = value || 0;
+//         this.$content.attr('transform', 'translate(' + (this.oxyLeft - this.scrollLeft) + ',' + this.oxyBottom + ')');
+//         if (this.scrollLeft > 0.001) {
+//             this.$scrollArrows.$leftArrow.removeStyle('display');
+//         }
+//         else {
+//             this.$scrollArrows.$leftArrow.addStyle('display', 'none');
+//         }
+//
+//         if (this.oxSegmentLength * this.ranges.length - this.oxLength > this.scrollLeft + 0.001) {
+//             this.$scrollArrows.$rightArrow.removeStyle('display');
+//         }
+//         else {
+//             this.$scrollArrows.$rightArrow.addStyle('display', 'none');
+//         }
+//     },
+//     get: function () {
+//         return this._scrollLeft || 0;
+//     }
+// };
+//
+// RangeChart.property.overflowOX = {
+//     get: function () {
+//         return Math.max(0, this.oxSegmentLength * this.ranges.length - this.oxLength);
+//     }
+// };
 
 Vcore.install(RangeChart);
 Vcore.install('ostickchart', function () {

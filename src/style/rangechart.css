@@ -1,11 +1,13 @@
 .vc-range-chart {
-    background-color: rgb(200, 200, 200);
+    /*background-color: rgb(200, 200, 200)!important;*/
+    border: 1px solid black;
+    box-sizing: border-box;
 }
 
 .base-chart,
 .range-chart {
     font-size: 12px;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 /*Cheat if in bsc*/
@@ -66,4 +68,19 @@ table .base-chart-title {
 
 .show-inline-value .range-char-note-value {
     display: none;
+}
+
+.vc-range-chart-label-full,
+.vc-range-chart-label-line,
+.vc-range-chart-label {
+    text-anchor: middle;
+}
+
+.vc-range-chart.vc-ox-label-wrap .vc-range-chart-label-full,
+.vc-range-chart:not(.vc-ox-label-wrap) .vc-range-chart-label-line {
+    display: none;
+}
+
+.vc-ox-value-ctn {
+    text-anchor: end;
 }

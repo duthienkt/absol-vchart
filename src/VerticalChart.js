@@ -24,6 +24,7 @@ function VerticalChart() {
     this.zeroOY = false;
     this.valueName = '';
     this.keyName = '';
+    this.numberToString = null;
     /**
      *
      * @type {string[]}
@@ -117,10 +118,8 @@ VerticalChart.prototype.computeMinMax = function () {
  * @returns {string}
  */
 VerticalChart.prototype.numberToText = function (number) {
-    return number.toFixed(this.computedData.numberToFixed);
+    return this.numberToString ? this.numberToString(number) : number.toFixed(this.computedData.numberToFixed);
 };
-
-VerticalChart.prototype.numberToString = VerticalChart.prototype.numberToText;
 
 VerticalChart.prototype.computeData = function () {
     BChart.prototype.computeData.call(this);
