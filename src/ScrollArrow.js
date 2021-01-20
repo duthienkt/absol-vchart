@@ -228,4 +228,6 @@ ScrollArrow.eventHandler.pointerUp = function () {
 };
 
 
-Vcore.install(ScrollArrow)
+Vcore.install(ScrollArrow);
+
+export default ScrollArrow;
