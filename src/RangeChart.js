@@ -749,53 +749,6 @@ RangeChart.prototype.updateOyValues = function () {
     this.$oyValues.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
 };
 
-RangeChart.prototype.updateAxis = function () {
-    this.$axis.moveTo(this.oxyLeft, this.oxyBottom);
-    this.$axis.resize(this.oxLength + 14, this.oyLength + 14);
-    this.$whiteBoxMask.attr('d', 'M0,0  0,cvh cvw,cvh cvw,0zMleft,top  left,bottom right,bottom right,topz'
-        .replace(/cvh/g, this.canvasHeight)
-        .replace(/cvw/g, this.canvasWidth)
-        .replace(/left/g, this.oxyLeft)
-        .replace(/top/g, 1)
-        .replace(/bottom/g, this.canvasHeight)
-        .replace(/right/g, this.canvasWidth - 10)
-    )
-
-    this.$content.attr('transform', 'translate(' + this.oxyLeft + ',' + this.oxyBottom + ')');
-    this.$oyName.attr({ x: this.oxyLeft - this.$oyName.getBBox().width / 2, y: 40 });
-    this.$oxName.attr({ x: this.canvasWidth - this.$oxName.getBBox().width - 3, y: this.oxyBottom - 9 });
-
-    this.$hscrollbar.resize(this.oxLength, 10);
-    this.$hscrollbar.moveTo(this.oxyLeft, this.oxyBottom - 10);
-    this.$hscrollbar.outterWidth = this.oxLength;
-
-};
-
-RangeChart.prototype.updateRangeNotes = function () {
-
-    var requireOxSegmentLenth = this.$rangeNotes.reduce(function (ac, cr) {
-        return Math.max(ac, cr.getBBox().width);
-    }, 0) + 20;
-
-    this.oxSegmentLength = Math.max(this.oxSegmentLength, requireOxSegmentLenth);
-
-
-    this.$rangeNotes.forEach(function (e, i) {
-        e.attr('transform',
-            'translate(' + (i * this.oxSegmentLength + this.oxSegmentLength / 2) + ', ' + (this.notePositionTop - 5 - this.oxyBottom) + ')');
-
-
-        var numWidth = Array.prototype.reduce.call(e.childNodes, function (ac, e1, i) {
-            if (i == 0) return ac;
-            return Math.max(e1.getBBox().width, ac);
-        }, 0);
-
-        Array.prototype.forEach.call(e.childNodes, function (e1, i) {
-            if (i == 0) return;
-            e1.attr('x', numWidth / 2 - e1.getBBox().width);
-        });
-    }.bind(this));
-};
 
 RangeChart.prototype._calYOfValue = function (val) {
     return (this.extendOY ? -this.oySegmentLength : 0) - map(val, this.oyMinValue, this.oyMaxValue, 0, this.oyLength - (this.extendOY ? this.oySegmentLength : 0));
@@ -901,32 +854,32 @@ RangeChart.prototype.updateOYSegmentLines = function () {
     }.bind(this));
 };
 
-
-RangeChart.prototype.update = function () {
-    if (!this.ranges || this.ranges.length <= 0) return;
-    if (typeof this.canvasWidth != 'number') {
-        this.canvasWidth = 300;
-        this.autoWidth = true;
-    }
-    this.updateSize();
-    this.updateNote();
-    this.updateOyValues();
-    this.updateAxis();
-    this.updateRangeNotes();
-    this.updateRanges();
-    this.updateScrollArrows();
-    this.updateOYSegmentLines();
-
-    requestAnimationFrame(function () {
-        if (this.autoWidth) {
-            var requireWidth = this.canvasWidth + this.overflowOX;
-            var proviceWidth = this.parentElement.getBoundingClientRect().width;
-            this.canvasWidth = Math.max(Math.min(requireWidth, proviceWidth), 300);
-            this.update();
-            this.autoWidth = false;
-        }
-    }.bind(this));
-};
+//
+// RangeChart.prototype.update = function () {
+//     if (!this.ranges || this.ranges.length <= 0) return;
+//     if (typeof this.canvasWidth != 'number') {
+//         this.canvasWidth = 300;
+//         this.autoWidth = true;
+//     }
+//     this.updateSize();
+//     this.updateNote();
+//     this.updateOyValues();
+//     this.updateAxis();
+//     this.updateRangeNotes();
+//     this.updateRanges();
+//     this.updateScrollArrows();
+//     this.updateOYSegmentLines();
+//
+//     requestAnimationFrame(function () {
+//         if (this.autoWidth) {
+//             var requireWidth = this.canvasWidth + this.overflowOX;
+//             var proviceWidth = this.parentElement.getBoundingClientRect().width;
+//             this.canvasWidth = Math.max(Math.min(requireWidth, proviceWidth), 300);
+//             this.update();
+//             this.autoWidth = false;
+//         }
+//     }.bind(this));
+// };
 
 
 RangeChart.prototype.initComp = function () {
