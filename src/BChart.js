@@ -19,6 +19,7 @@ var $ = Vcore.$;
  * @constructor
  */
 function BChart() {
+    this.ready = false;
     this.contentPadding = 5;
     this.title = '';
     this.domSignal = new DomSignal($('attachhook.vc-dom-signal', this));
@@ -97,6 +98,7 @@ BChart.prototype._createTitle = function () {
 }
 
 BChart.prototype.createContent = function () {
+    this.ready = true;
     this._createTitle();
     this._createNote();
 };
@@ -170,7 +172,7 @@ BChart.prototype.updateContent = function () {
 
 BChart.prototype.updateSize = function () {
     SvgCanvas.prototype.updateSize.call(this);
-    if (!this.$notes) return;
+    if (!this.ready) return;
     this.updateContentPosition();
 };
 
