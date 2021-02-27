@@ -420,3 +420,33 @@ export function wrapToLines(text, fontSize, width) {
     }
     return lines;
 }
+
+export function addDevContextMenu(svg) {
+    svg.defineEvent('contextmenu');
+    svg.on({
+        contextmenu: function (event) {
+            var img = this;
+            event.showContextMenu({
+                items: [
+                    { icon: 'span.mdi.mdi-download-outline', text: 'Download as SVG', cmd: 'download' }
+                ]
+            }, function (ev) {
+                var menuItem = ev.menuItem;
+                if (menuItem.cmd === 'download') {
+                    var url = absol.Svg.svgToSvgUrl(img);
+                    var a = absol._({
+                        tag: 'a',
+                        style: { display: 'none' },
+                        attr: {
+                            href: url,
+                            download: 'export.svg'
+                        }
+                    }).addTo(document.body);
+                    a.click();
+                    a.remove();
+                }
+
+            })
+        }
+    });
+}
