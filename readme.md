@@ -39,6 +39,7 @@ vchart._({
                 plotColors: ['cyan']
             }
         ]
+    }
 }).addTo(document.body)
 ```
 
@@ -77,6 +78,7 @@ vchart._({
                 plotColors: ['cyan']
             }
         ]
+    }
 }).addTo(document.body)
 ```
 
@@ -514,7 +516,7 @@ var x = vchart._({
 
 ## RankChart
 
-[![Live-Demo](./doc/assets/rankchart.PNG)](https://volcanion.cf/vchart/demo/rankchart.html)
+[![Live-Demo](./doc/assets/rankchart_01.svg)](https://absol.cf/absol-vchart/demo/rankchart.html)
 
 ```js
 var x = vchart._({
