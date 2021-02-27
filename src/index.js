@@ -30,7 +30,19 @@ import './BarStackChart';
 import './PieChart';
 import  './HCollumnChart';
 
-import { isNumber, toLocalString, text, circle, rect, vline, hline, moveVLine, moveHLine, autoCurve } from "./helper";
+import {
+    isNumber,
+    toLocalString,
+    text,
+    circle,
+    rect,
+    vline,
+    hline,
+    moveVLine,
+    moveHLine,
+    autoCurve,
+    addDevContextMenu
+} from "./helper";
 import { showTooltip, closeTooltip } from "./ToolTip";
 import install from "./install";
 install(Vcore);
@@ -53,7 +65,8 @@ var vchart = {
     moveHLine: moveHLine,
     autoCurve: autoCurve,
     showTooltip: showTooltip,
-    closeTooltip: closeTooltip
+    closeTooltip: closeTooltip,
+    addDevContextMenu: addDevContextMenu
 }
 
 export default vchart;
