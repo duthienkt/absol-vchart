@@ -1,4 +1,3 @@
-
 var y = vchart._({
     tag: 'rankchart',
     props: {
@@ -29,6 +28,7 @@ var y = vchart._({
         ]
     }
 }).addTo(document.body);
+vchart.addDevContextMenu(y);
 var x = vchart._({
     tag: 'rankchart',
     props: {
@@ -61,5 +61,5 @@ var x = vchart._({
         ]
     }
 
-
 }).addTo(document.body);
+vchart.addDevContextMenu(x);
