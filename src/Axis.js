@@ -16,6 +16,7 @@ function Axis() {
     this.$oyDivision = $('.cv-oy-division', this);
     this.oxLength = 1;
     this.oyLength = 1;
+    this.oyPadding = 0;
     this.oyDivision = NaN;
 }
 
@@ -35,7 +36,7 @@ Axis.render = function () {
                     }
                 },
                 {
-                    tag:'path',
+                    tag: 'path',
                     id: "ox-arrow",
                     attr: {
                         d: 'm0 -5v10l6.8 -5z'
@@ -64,7 +65,8 @@ Axis.render = function () {
 Axis.prototype.updateOyDivision = function () {
     if (this.oyDivision) {
         this.$oyDivision.removeStyle('display');
-        var y = this.oyDivision;
+        var y = this.oyDivision + this.oyPadding;
+        if (this.oyPadding) y -= this.oyDivision;
         var d = '';
         while (y <= this.oyLength) {
             d += 'M-2 ' + (-y) + 'H 2 '

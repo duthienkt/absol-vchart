@@ -17,6 +17,7 @@ function VerticalChart() {
     this.oxColWidth = 17;
     this.computedData.min = 0;
     this.computedData.max = 10;
+    this.computedData.paddingAxisBottom = 0;
     this.computedData.oyUpdated = false;
     this.computedData.oy = {};
     this.computedData.numberToFixed = 0;
@@ -141,7 +142,7 @@ VerticalChart.prototype.mapOYValue = function (val) {
 
 
 VerticalChart.prototype._computeOYSegment = function () {
-    var oyLength = this.$body.box.height - 20 - 10;
+    var oyLength = this.$body.box.height - 20 - 10 - this.computedData.paddingAxisBottom;
     var valueNameHeight = this.$valueName.getBBox().height;
     if (valueNameHeight > 0) {
         oyLength -= valueNameHeight + 5;
@@ -226,7 +227,7 @@ VerticalChart.prototype._updateOYValuePosition = function () {
         this._createOyValue();
     }
 
-    var y = this.$body.box.height - 20 + 6;
+    var y = this.$body.box.height - 20 + 6 - this.computedData.paddingAxisBottom;
     var valueElt;
     for (var i = 0; i < this.$oyValues.length; ++i) {
         valueElt = this.$oyValues[i];
