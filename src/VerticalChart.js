@@ -257,7 +257,7 @@ VerticalChart.prototype.updateAxis = function () {
     this.$axis.resize(this.$axisCtn.box.width - 8, this.$axisCtn.box.height - 5 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0));
     this.$oxySpace.box.setPosition(0, this.$axisCtn.box.height);
     this.computedData.oxLength = this.$axisCtn.box.width - 1 - keyNameWidth;
-    this.computedData.oyLength = this.$axisCtn.box.height - 15 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0);
+    this.computedData.oyLength = this.$axisCtn.box.height - 15 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0) - this.computedData.paddingAxisBottom;
     this.$hscrollbar.box.y = this.$axisCtn.box.height - this.$hscrollbar.height;
 };
 
