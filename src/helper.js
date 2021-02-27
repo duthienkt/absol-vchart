@@ -5,6 +5,7 @@ import Vec2 from 'absol/src/Math/Vec2';
 import AComp from 'absol-acomp/AComp';
 import './vchart.resizablediv';
 import TextMeasure from "absol-acomp/js/TextMeasure";
+import BContextCapture from "absol-acomp/js/BContextCapture";
 
 var _ = Vcore._;
 
@@ -422,6 +423,7 @@ export function wrapToLines(text, fontSize, width) {
 }
 
 export function addDevContextMenu(svg) {
+    BContextCapture.auto();
     svg.defineEvent('contextmenu');
     svg.on({
         contextmenu: function (event) {
