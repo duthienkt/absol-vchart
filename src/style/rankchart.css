@@ -4,7 +4,12 @@
     stroke-width: 1;
 }
 
-.rank-chart-position-rect {
+.rank-chart-plot-text{
+    cursor: default;
+}
+
+.rank-chart-position-rect,
+.vc-rank-position-list-rect {
     stroke: none;
     fill: rgba(0, 247, 255, 0.139);
 }
