@@ -259,6 +259,7 @@ VerticalChart.prototype.updateAxis = function () {
     this.computedData.oxLength = this.$axisCtn.box.width - 1 - keyNameWidth;
     this.computedData.oyLength = this.$axisCtn.box.height - 15 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0) - this.computedData.paddingAxisBottom;
     this.$hscrollbar.box.y = this.$axisCtn.box.height - this.$hscrollbar.height;
+    this.addStyle('--vc-require-width', this.$axisCtn.box.x + this.contentPadding+ this.$keyName.getBBox().width +'px');
 };
 
 VerticalChart.prototype._updateOxLabelPosition = function () {
