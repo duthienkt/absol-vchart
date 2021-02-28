@@ -7,6 +7,7 @@ import DomSignal from "absol/src/HTML5/DomSignal";
 import {translate} from "./template";
 import {generateBackgroundColors, map, rect} from "./helper";
 import Color from "absol/src/Color/Color";
+import BChart from "./BChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -36,6 +37,8 @@ function FunnelChart() {
     this._cavasWidth = 0;
     this._canvasHeight = 0;
     this.domSignal.emit('_updateContent');
+
+    this.on('click', this.eventHandler.click2Resize.bind(this));
 }
 
 FunnelChart.tag = 'FunnelChart'.toLowerCase();
@@ -280,6 +283,9 @@ FunnelChart.eventHandler.attached = function () {
     this.updateSize();
 };
 
+
+FunnelChart.eventHandler.click2Resize = BChart.eventHandler.click2Resize;
+FunnelChart.eventHandler.click2CancelResize = BChart.eventHandler.click2CancelResize;
 
 Vcore.install(FunnelChart);
 
