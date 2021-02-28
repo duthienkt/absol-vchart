@@ -1,9 +1,12 @@
 var y = vchart._({
     tag: 'rankchart',
+    style:{
+      width:'auto',
+      height: '500px'
+    },
     props: {
+        resizable: true,
         title: 'Biểu đồ bậc lương',
-        canvasWidth: 'auto',
-        canvasHeight: 600,
         zeroOY: true,
         valueName: 'lương(VND)',
         numberToString: vchart.lambda.toLocalString(0),
@@ -31,11 +34,13 @@ var y = vchart._({
 vchart.addDevContextMenu(y);
 var x = vchart._({
     tag: 'rankchart',
+    style:{
+        width: '100%',
+        height: '400px'
+    },
     props: {
+        resizable: true,
         title: 'Biểu đồ  bậc lương',
-        valueName: 'lương',
-        canvasWidth: 1200,
-        canvasHeight: 600,
         zeroOY: true,
         valueName: 'lương(VND)',
         keyName: 'chức danh',

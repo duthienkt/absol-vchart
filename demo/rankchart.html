@@ -10,10 +10,16 @@
 </head>
 
 <body>
-    <script>
-        document.write('<scr'+'ipt src="./rankchart.js?time='+(Math.random())+'"></scr'+'ipt>')
-    </script>
-
+<script>
+    document.write('<scr' + 'ipt src="./rankchart.js?time=' + (Math.random()) + '"></scr' + 'ipt>')
+</script>
+<style>
+    body::after {
+        content: "";
+        display: block;
+        height: 50px;
+    }
+</style>
 </body>
 
 </html>
