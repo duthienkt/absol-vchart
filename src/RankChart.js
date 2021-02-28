@@ -19,8 +19,6 @@ var $ = Vcore.$;
 function RankChart() {
     BChart.call(this);
     OOP.drillProperty(this, this, 'numberToString', 'numberToText');
-    this._isAutoWidth = !this.canvasWidth || !(this.canvasWidth > 0);
-    if (this._isAutoWidth) this.addStyle('width', '300px');
 
     this.colors = [
         'transparent', 'rgb(201, 241, 253)', 'rgb(212, 227, 252)', 'rgb(218, 202, 251)',
@@ -120,6 +118,8 @@ RankChart.render = function () {
 };
 
 RankChart.prototype.updateBodyPosition = function () {
+    this._isAutoWidth = this.style.width === 'auto';
+    if (this._isAutoWidth) this.addStyle('width', '450px');
     VerticalChart.prototype.updateBodyPosition.call(this);
     this._updateOyDivision();
     this._updatePosListPosition();
@@ -127,7 +127,7 @@ RankChart.prototype.updateBodyPosition = function () {
     if (this._isAutoWidth) {
         this._isAutoWidth = false;
         this.addStyle('width', this.contentPadding * 2
-            + this.$oyValueCtn.box.x + this.$hscrollbar.innerWidth+ this.$keyName.getBBox().width + 10 + 'px')
+            + this.$oyValueCtn.box.x + this.$hscrollbar.innerWidth + this.$keyName.getBBox().width + 10 + 'px')
         this.updateBodyPosition();
     }
 };
@@ -175,7 +175,7 @@ RankChart.prototype._updateScrollerPosition = function () {
     this.computedData.oxOverFlow = this.computedData.oxScrollWidth > this.computedData.oxLength;
     this.$hscrollbar.outterWidth = this.computedData.oxLength;
     this.$hscrollbar.innerWidth = this.computedData.oxScrollWidth;
-    this.$hscrollbar.width = this.computedData.oxLength;
+    this.$hscrollbar.width = Math.max(0, this.computedData.oxLength);
     // this.$hscrollbar.scrollLeft = Math.max(0, Math.min(this.$hscrollbar.scrollLeft, this.computedData.oxScrollWidth - this.computedData.oxLength));
     this.$hscrollbar.scrollLeft = 0;
     if (this.computedData.oxOverFlow) {
@@ -340,6 +340,8 @@ RankChart.prototype._updatePosListPosition = function () {
 
 
 };
+
+
 
 Vcore.install(RankChart);
 
