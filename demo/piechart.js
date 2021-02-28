@@ -7,6 +7,7 @@ absol._({
         backgroundColor:'gray'
     },
     props: {
+        resizable: true,
         contentPadding:0,
         pieces: [
             {
