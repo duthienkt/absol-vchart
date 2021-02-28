@@ -20,7 +20,7 @@ function RankChart() {
     BChart.call(this);
     OOP.drillProperty(this, this, 'numberToString', 'numberToText');
     this._isAutoWidth = !this.canvasWidth || !(this.canvasWidth > 0);
-    if (this._isAutoWidth) this.addStyle('width', '100%');
+    if (this._isAutoWidth) this.addStyle('width', '300px');
 
     this.colors = [
         'transparent', 'rgb(201, 241, 253)', 'rgb(212, 227, 252)', 'rgb(218, 202, 251)',
@@ -124,7 +124,12 @@ RankChart.prototype.updateBodyPosition = function () {
     this._updateOyDivision();
     this._updatePosListPosition();
     this._updateScrollerPosition();
-
+    if (this._isAutoWidth) {
+        this._isAutoWidth = false;
+        this.addStyle('width', this.contentPadding * 2
+            + this.$oyValueCtn.box.x + this.$hscrollbar.innerWidth+ this.$keyName.getBBox().width + 10 + 'px')
+        this.updateBodyPosition();
+    }
 };
 
 RankChart.prototype.createContent = function () {
@@ -158,6 +163,7 @@ RankChart.prototype._createOxLabel = function () {
         })
     });
     this.$oxLabelCtn.addChild(this.$oxLabels);
+    this.$valueName.firstChild.data = this.valueName || '';
 };
 
 
@@ -165,7 +171,7 @@ RankChart.prototype._updateOxLabelPosition = function () {
     this.$oxLabelCtn.box.y = 20;
 };
 
-RankChart.prototype._updateScrollerPosition = function (){
+RankChart.prototype._updateScrollerPosition = function () {
     this.computedData.oxOverFlow = this.computedData.oxScrollWidth > this.computedData.oxLength;
     this.$hscrollbar.outterWidth = this.computedData.oxLength;
     this.$hscrollbar.innerWidth = this.computedData.oxScrollWidth;
@@ -311,7 +317,7 @@ RankChart.prototype._updatePosListPosition = function () {
 
             return left + col.maxWidth + 9;
         }, 10);
-        pe.$rect.addStyle('display','none');
+        pe.$rect.addStyle('display', 'none');
         var innerWidth = pe.getBBox().width;
         pe.$rect.removeStyle('display');
 
@@ -323,7 +329,7 @@ RankChart.prototype._updatePosListPosition = function () {
 
         var columeWidth = Math.max(pe.getBBox().width + 20, this.$oxLabels[positionIndex].getBBox().width + 10);
         this.$oxLabels[positionIndex].attr('x', contentLength + columeWidth / 2);
-        pe.box.x = contentLength  + columeWidth / 2 - (innerWidth + 20)/2;
+        pe.box.x = contentLength + columeWidth / 2 - (innerWidth + 20) / 2;
         contentLength += columeWidth;
 
         return contentLength;
@@ -331,7 +337,6 @@ RankChart.prototype._updatePosListPosition = function () {
     }.bind(this), 9);
 
     this.computedData.oxScrollWidth = contentLength;
-
 
 
 };
