@@ -3,6 +3,28 @@
 SVG chart, base on absol.js
 -----------------------
 
+## Summary
+
+| Class    | SupperClass | tag       | Resizable          | AutoWidth          |
+|----------|-------------|-----------|--------------------|--------------------|
+|RankChart | BChart      | rankchart | :heavy_check_mark: | :heavy_check_mark: |
+
+
+## Bchart(supper-class)
+```js
+var mChart = vchart._({
+   tag: '[BChart tag]',
+   style:{
+       width:'800px', // or "auto", "...vw", "...%"
+       height: '450px'// or "...vw", "...%"
+   },
+   props:{
+       resizable: true//enable resize-box
+       /*......*/
+   }
+});
+
+```
 
 ## Linechart
 
