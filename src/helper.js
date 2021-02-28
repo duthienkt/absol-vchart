@@ -294,7 +294,8 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
                 height: '100%'
             });
 
-            setTimeout(function (){
+            setTimeout(function () {
+                res.addStyle('width', chartElt.getBoundingClientRect().width + 'px');
                 chartElt.addStyle({
                     width: '100%',
                     height: '100%'
