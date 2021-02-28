@@ -14,6 +14,7 @@ var c = vchart._({
     tag: 'columnareachart',
     style: { border: 'solid 1px black', width: '50vw', height: '500px' },
     props: {
+        resizable: true,
         title: 'Biểu đồ độ ẩm',
         valueName: '%',
         keyName: 'tháng',
@@ -123,6 +124,7 @@ var a = absol._({
         height: '600px'
     },
     props: {
+        resizable: true,
         title: 'Biểu đồ độ ẩm',
         valueName: '%',
         keyName: 'tháng',

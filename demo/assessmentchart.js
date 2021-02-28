@@ -1,4 +1,4 @@
-var x = vchart.wrapChartInWHResizer(vchart._({
+var x = vchart._({
     tag: 'assessmentchart',
     extendEvent: 'contextmenu',
     props: {
@@ -6,7 +6,9 @@ var x = vchart.wrapChartInWHResizer(vchart._({
         title: 'Đồ thị năng lực cá nhân',
         canvasWidth: 700,
         canvasHeight: 600,
-        levels: [0,20,40,60,80,100,120],
+        resizable: true,
+        levels: [0, 20, 40, 60, 80, 100, 120],
+        axisWeight: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2],
         keys: ["Kỹ năng sử dụng vi tính văn phòng", "Kỹ năng sử dụng ngoại ngữ", "Kỹ năng giao tiếp",
             "Kỹ năng đàm phán, thương lượng", "Phân tích, tổng hợp, báo cáo", "Năng lực bán hàng",
             "Kỹ năng nhân sự chung", "Kỹ năng hoạch định", "Kỹ năng tổ chức công việc", "Kỹ năng giải quyết vấn đề",
@@ -29,16 +31,20 @@ var x = vchart.wrapChartInWHResizer(vchart._({
         }]
     }
 
-})).addTo(document.body);
+}).addTo(document.body);
 
 var a = vchart._({
     extendEvent: 'contextmenu',
     tag: 'assessmentchart',
-
+    style: {
+        width: 'calc(100vw - 100px)',
+        height: '80vh',
+        minWidth: '500px',
+        minHeight: '500px'
+    },
     props: {
         title: 'Programming skill',
-        canvasWidth: 900,
-        canvasHeight: 900,
+        resizable: true,
         levels: ['0.0', '1.0', '2.0', '3.0', '4.0', '5.0', '6.0', '7.0', '8.0', '9.0', '10.0'],
         keys: ['C/C++', 'Javascript', 'Matlab', 'CSS', 'C#', 'R', 'Python', 'ASM'],
         areas: [
