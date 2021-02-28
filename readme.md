@@ -15,7 +15,7 @@ SVG chart, base on absol.js
 var mChart = vchart._({
    tag: '[BChart tag]',
    style:{
-       width:'800px', // or "auto", "...vw", "...%"
+       width:'800px', // or "...vw", "...%" or "auto" if supported
        height: '450px'// or "...vw", "...%"
    },
    props:{
