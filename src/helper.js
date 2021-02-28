@@ -288,10 +288,19 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
         outerParam.style = outerParam.style || {};
         outerParam.style.width = outerParam.width || chartElt.style.width;
         outerParam.style.height = outerParam.width || chartElt.style.height;
-        chartElt.addStyle({
-            width: '100%',
-            height: '100%'
-        })
+        if (chartElt.this._isAutoWidth) {
+            outerParam.style.width = 'auto';
+            chartElt.addStyle({
+                height: '100%'
+            });
+        }
+        else {
+            chartElt.addStyle({
+                width: '100%',
+                height: '100%'
+            });
+        }
+
     }
     var res = AComp._({
         tag: 'resizablediv',
@@ -392,7 +401,6 @@ export function fresherColor(color, delta) {
     hsla[1] = Math.max(0, Math.min(1, hsla[1] + delta));
     return Color.fromHSLA.apply(Color, hsla);
 }
-
 
 
 /***
