@@ -38,11 +38,13 @@ function PieChart() {
 }
 
 OOP.mixClass(PieChart, BChart);
+PieChart.property =  Object.assign({}, BChart.property);
+PieChart.eventHandler =  Object.assign({}, BChart.eventHandler);
 
 PieChart.tag = 'PieChart'.toLowerCase();
 
 PieChart.render = function () {
-    return BChart.render();
+    return BChart.render().addClass('vc-piece-chart');
 };
 
 
@@ -193,7 +195,6 @@ PieChart.prototype.normalizeData = function () {
     });
 };
 
-PieChart.property = Object.assign({}, BChart.property);
 
 Vcore.install(PieChart);
 
