@@ -24,9 +24,13 @@ function ChartResizeBox() {
     this.$attachhook.requestUpdateSize = this.updateSize;
     this.$trackedScrollers = [];
     this.canResize = true;
+    this._endMoveTime = 0;
     this.on({
         beginmove: this.eventHandler.crbBeginMove,
-        moving: this.eventHandler.crbMove
+        moving: this.eventHandler.crbMove,
+        endmove: function () {
+            this._endMoveTime = new Date().getTime();
+        }
     })
 }
 
@@ -42,6 +46,10 @@ ChartResizeBox.render = function () {
 
 ChartResizeBox.prototype.isAttached = function (target) {
     return this.$target === target;
+};
+
+ChartResizeBox.prototype.isAfterMoving = function () {
+    return new Date().getTime() - this._endMoveTime < 5;
 };
 
 ChartResizeBox.prototype.attachTo = function (target) {

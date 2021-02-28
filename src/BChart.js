@@ -240,6 +240,7 @@ BChart.eventHandler.click2Resize = function () {
 BChart.eventHandler.click2CancelResize = function (event) {
     if (hitElement(this, event)) return;
     if (hitElement(BChart.$resizebox, event)) return;
+    if (BChart.$resizebox.isAfterMoving()) return;
     if (BChart.$resizebox.isAttached(this)) BChart.$resizebox.detach();
     document.removeEventListener('click', this.eventHandler.click2CancelResize);
 };
