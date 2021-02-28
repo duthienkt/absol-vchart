@@ -14,6 +14,7 @@ SVG chart, base on absol.js
 | ColumnAreaChart | ColumnChart | columnareachart | :heavy_check_mark: |                    |
 | FunnelChart     | SvgCanvas   | funnelchart     | :heavy_check_mark: |                    |
 | PieChart        | BChart      | piechart        | :heavy_check_mark: |                    |
+| SunburstChart   | BChart      | sunburstchart   | :heavy_check_mark: |                    |
 
 
 ## Bchart(supper-class)
