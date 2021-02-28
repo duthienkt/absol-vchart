@@ -293,6 +293,13 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
             chartElt.addStyle({
                 height: '100%'
             });
+
+            setTimeout(function (){
+                chartElt.addStyle({
+                    width: '100%',
+                    height: '100%'
+                });
+            }, 1000);
         }
         else {
             chartElt.addStyle({
