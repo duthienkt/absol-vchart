@@ -481,7 +481,6 @@ RangeChart.prototype._updateOYValuePosition = function () {
     }
 
     this.$axis.oyDivision = this.computedData.oySegmentLength;
-    console.log(this.computedData.oySegmentLength);
     this.$axis.updateOyDivision();
 };
 

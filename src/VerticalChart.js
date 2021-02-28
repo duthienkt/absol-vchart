@@ -154,7 +154,6 @@ VerticalChart.prototype._computeOYSegment = function () {
             this.computedData.oy = segment;
             this.computedData.oyUpdated = false;
             this.computedData.numberToFixed = 0;
-            console.log(segment.segmentCount)
             if (segment.step < 1) this.computedData.numberToFixed++;
             if (segment.step < 0.1) this.computedData.numberToFixed++;
             if (segment.step < 0.01) this.computedData.numberToFixed++;
@@ -262,7 +261,6 @@ VerticalChart.prototype.updateAxis = function () {
     this.computedData.oyLength = this.$axisCtn.box.height - 15 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0) - this.computedData.paddingAxisBottom;
     this.$hscrollbar.box.y = this.$axisCtn.box.height - this.$hscrollbar.height;
     if (!this.style.getPropertyValue('--vc-require-width')) {
-        console.log(this.$axisCtn.box.height, this.box.height)
         this.addStyle('--vc-require-width', this.$axisCtn.box.x + this.contentPadding + this.$keyName.getBBox().width + 50 + 'px');
         this.addStyle('--vc-require-height', this.box.height - this.$axisCtn.box.height + this.contentPadding * 2 +
             +this.computedData.paddingAxisBottom + this.$title.getBBox().height + 60 + 'px');
