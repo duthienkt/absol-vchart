@@ -13,6 +13,7 @@ SVG chart, base on absol.js
 | ColumnChart     | BChart      | columnchart     | :heavy_check_mark: |                    |
 | ColumnAreaChart | ColumnChart | columnareachart | :heavy_check_mark: |                    |
 | FunnelChart     | SvgCanvas   | funnelchart     | :heavy_check_mark: |                    |
+| PieChart        | BChart      | piechart        | :heavy_check_mark: |                    |
 
 
 ## Bchart(supper-class)
