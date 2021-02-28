@@ -6,7 +6,7 @@ var x = vchart._({
     },
     props: {
         title: 'Đánh giá năng lực',
-
+        resizable: true,
         zeroOY: true,
         numberToString: vchart.lambda.toLocalString(3),
         root: {
