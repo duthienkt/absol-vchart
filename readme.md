@@ -5,10 +5,13 @@ SVG chart, base on absol.js
 
 ## Summary
 
-| Class      | SupperClass | tag        | Resizable          | AutoWidth          |
-|------------|-------------|------------|--------------------|--------------------|
-| RankChart  |  BChart     | rankchart  | :heavy_check_mark: | :heavy_check_mark: |
-| RangeChart | BChart      | rangechart | :heavy_check_mark: |                    |
+| Class           | SupperClass | tag             | Resizable          | AutoWidth          |
+|-----------------|-------------|-----------------|--------------------|--------------------|
+| RankChart       | BChart      | rankchart       | :heavy_check_mark: | :heavy_check_mark: |
+| RangeChart      | BChart      | rangechart      | :heavy_check_mark: |                    |
+| AssessmentChart | BChart      | assessmentchart | :heavy_check_mark: |                    |
+| ColumnChart     | BChart      | columnchart     | :heavy_check_mark: |                    |
+| ColumnAreaChart | ColumnChart | columnareachart | :heavy_check_mark: |                    |
 
 
 ## Bchart(supper-class)
