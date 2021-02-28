@@ -288,7 +288,7 @@ export function wrapChartInWHResizer(chartElt, outerParam) {
         outerParam.style = outerParam.style || {};
         outerParam.style.width = outerParam.width || chartElt.style.width;
         outerParam.style.height = outerParam.width || chartElt.style.height;
-        if (chartElt.this._isAutoWidth) {
+        if (chartElt._isAutoWidth) {
             outerParam.style.width = 'auto';
             chartElt.addStyle({
                 height: '100%'
