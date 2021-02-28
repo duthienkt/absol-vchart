@@ -147,17 +147,20 @@ VerticalChart.prototype._computeOYSegment = function () {
     if (valueNameHeight > 0) {
         oyLength -= valueNameHeight + 5;
     }
-    var segment = calBeautySegment(Math.floor(oyLength / 50), this.computedData.min, this.computedData.max, this.integerOnly);
-    if (segment.step !== this.computedData.oy.step || segment.segmentCount !== this.computedData.oy.segmentCount
-        || segment.maxValue !== this.computedData.oy.maxValue || segment.minValue !== this.computedData.oy.minValue) {
-        this.computedData.oy = segment;
-        this.computedData.oyUpdated = false;
-        this.computedData.numberToFixed = 0;
-        if (segment.step < 1) this.computedData.numberToFixed++;
-        if (segment.step < 0.1) this.computedData.numberToFixed++;
-        if (segment.step < 0.01) this.computedData.numberToFixed++;
-        if (segment.step < 0.001) this.computedData.numberToFixed++;
-        if (segment.step < 0.0001) this.computedData.numberToFixed++;
+    var segment = calBeautySegment(Math.floor(oyLength / 30), this.computedData.min, this.computedData.max, this.integerOnly);
+    if (segment && segment.segmentCount < 30 && segment.segmentCount >= 1) {
+        if (segment.step !== this.computedData.oy.step || segment.segmentCount !== this.computedData.oy.segmentCount
+            || segment.maxValue !== this.computedData.oy.maxValue || segment.minValue !== this.computedData.oy.minValue) {
+            this.computedData.oy = segment;
+            this.computedData.oyUpdated = false;
+            this.computedData.numberToFixed = 0;
+            console.log(segment.segmentCount)
+            if (segment.step < 1) this.computedData.numberToFixed++;
+            if (segment.step < 0.1) this.computedData.numberToFixed++;
+            if (segment.step < 0.01) this.computedData.numberToFixed++;
+            if (segment.step < 0.001) this.computedData.numberToFixed++;
+            if (segment.step < 0.0001) this.computedData.numberToFixed++;
+        }
     }
     this.computedData.oyLength = oyLength;
     this.computedData.oySegmentLength = oyLength / segment.segmentCount;
@@ -200,15 +203,14 @@ VerticalChart.prototype._createOyValue = function () {
         this.$oyValues.push(textElt);
         this.$oyValueCtn.addChild(textElt);
     }
-
     while (this.$oyValues.length > segment.segmentCount + 1) {
         textElt = this.$oyValues.pop();
         textElt.remove();
     }
-
     for (var i = 0; i < this.$oyValues.length; ++i) {
         this.$oyValues[i].firstChild.data = this.numberToText(segment.minValue + i * segment.step);
     }
+
 };
 
 VerticalChart.prototype.createContent = function () {
@@ -259,7 +261,12 @@ VerticalChart.prototype.updateAxis = function () {
     this.computedData.oxLength = this.$axisCtn.box.width - 1 - keyNameWidth;
     this.computedData.oyLength = this.$axisCtn.box.height - 15 - (valueNameHeight > 0 ? valueNameHeight + 5 : 0) - this.computedData.paddingAxisBottom;
     this.$hscrollbar.box.y = this.$axisCtn.box.height - this.$hscrollbar.height;
-    this.addStyle('--vc-require-width', this.$axisCtn.box.x + this.contentPadding+ this.$keyName.getBBox().width +'px');
+    if (!this.style.getPropertyValue('--vc-require-width')) {
+        console.log(this.$axisCtn.box.height, this.box.height)
+        this.addStyle('--vc-require-width', this.$axisCtn.box.x + this.contentPadding + this.$keyName.getBBox().width + 50 + 'px');
+        this.addStyle('--vc-require-height', this.box.height - this.$axisCtn.box.height + this.contentPadding * 2 +
+            +this.computedData.paddingAxisBottom + this.$title.getBBox().height + 60 + 'px');
+    }
 };
 
 VerticalChart.prototype._updateOxLabelPosition = function () {

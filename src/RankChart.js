@@ -188,7 +188,6 @@ RankChart.prototype._updateScrollerPosition = function () {
         this.$scrollArrow.addStyle('display', 'none');
     }
     this.$axis.oyDivision = this.computedData.oySegmentLength;
-
     this.$axis.updateOyDivision();
 };
 
@@ -337,8 +336,6 @@ RankChart.prototype._updatePosListPosition = function () {
     }.bind(this), 9);
 
     this.computedData.oxScrollWidth = contentLength;
-
-
 };
 
 

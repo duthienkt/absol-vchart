@@ -214,21 +214,24 @@ RangeChart.prototype.computeData = function () {
 RangeChart.prototype.mapOYValue = VerticalChart.prototype.mapOYValue;
 
 RangeChart.prototype._computeOYSegment = function () {
+    var res = false;
     var segment = calBeautySegment(Math.floor(this.$axisCtn.box.height / 50), this.computedData.min, this.computedData.max, this.integerOnly);
-    if (!this.computedData.oy || segment.step !== this.computedData.oy.step || segment.segmentCount !== this.computedData.oy.segmentCount
-        || segment.maxValue !== this.computedData.oy.maxValue || segment.minValue !== this.computedData.oy.minValue) {
-        this.computedData.oy = segment;
-        this.computedData.oyUpdated = false;
-        this.computedData.numberToFixed = 0;
-        if (segment.step < 1) this.computedData.numberToFixed++;
-        if (segment.step < 0.1) this.computedData.numberToFixed++;
-        if (segment.step < 0.01) this.computedData.numberToFixed++;
-        if (segment.step < 0.001) this.computedData.numberToFixed++;
-        if (segment.step < 0.0001) this.computedData.numberToFixed++;
-        this.computedData.oySegmentLength = this.$axisCtn.box.height / segment.segmentCount;
-        return true;
+    if (segment && segment.segmentCount < 30) {//error
+        if (!this.computedData.oy || segment.step !== this.computedData.oy.step || segment.segmentCount !== this.computedData.oy.segmentCount
+            || segment.maxValue !== this.computedData.oy.maxValue || segment.minValue !== this.computedData.oy.minValue) {
+            this.computedData.oy = segment;
+            this.computedData.oyUpdated = false;
+            this.computedData.numberToFixed = 0;
+            if (segment.step < 1) this.computedData.numberToFixed++;
+            if (segment.step < 0.1) this.computedData.numberToFixed++;
+            if (segment.step < 0.01) this.computedData.numberToFixed++;
+            if (segment.step < 0.001) this.computedData.numberToFixed++;
+            if (segment.step < 0.0001) this.computedData.numberToFixed++;
+            res = true;
+        }
     }
-    return false;
+    this.computedData.oySegmentLength = this.$axisCtn.box.height / segment.segmentCount;
+    return res;
 };
 
 RangeChart.prototype._createNote = function () {
@@ -434,6 +437,11 @@ RangeChart.prototype.updateOxTablePosition = function () {
 
     this.$hscrollbar.innerWidth = this.$oxTable.box.width;
     this._updateScrollArrowBtb();
+    if (!this.style.getPropertyValue('--vc-require-width')) {
+        this.addStyle('--vc-require-width', this.$axisCtn.box.x + this.contentPadding + this.$keyName.getBBox().width + 50 + 'px');
+        this.addStyle('--vc-require-height', this.box.height - this.$axisCtn.box.height + this.contentPadding * 2 +
+              this.$title.getBBox().height + 60 + 'px');
+    };
 };
 
 RangeChart.prototype.updateAxisY = function () {
@@ -473,6 +481,7 @@ RangeChart.prototype._updateOYValuePosition = function () {
     }
 
     this.$axis.oyDivision = this.computedData.oySegmentLength;
+    console.log(this.computedData.oySegmentLength);
     this.$axis.updateOyDivision();
 };
 
