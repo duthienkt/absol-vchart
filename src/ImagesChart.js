@@ -2,20 +2,23 @@ import Vcore from "./VCore";
 
 import salaryimgchart_svg from '../template/salaryimgchart.svg';
 
-import { map, text } from './helper';
+import {map, text} from './helper';
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
 export function SalaryImgChart() {
-    var res = _(salaryimgchart_svg.replace(/(.|[\r\n])+\<svg/, '<svg')).addClass('image-chart').addClass('base-chart');
-    return res;
+
 }
 
+SalaryImgChart.tag = 'SalaryImgChart'.toLowerCase();
+
+SalaryImgChart.render = function () {
+    return _(salaryimgchart_svg.replace(/(.|[\r\n])+\<svg/, '<svg')).addClass('image-chart').addClass('base-chart');
+};
+
+
 SalaryImgChart.property = {};
-
-
-
 
 SalaryImgChart.prototype.preInit = function () {
     //this is defaul and can not be change
@@ -27,7 +30,6 @@ SalaryImgChart.prototype.preInit = function () {
     this.minDistText = 'Khoảng cách tối thiểu';
     this.bonusText = 'Hệ số ưu đãi (20%)';
 };
-
 
 
 SalaryImgChart.prototype.initComp = function () {
@@ -71,7 +73,7 @@ SalaryImgChart.prototype.updateComp = function () {
     this.oxSeg = [10, 100, 260, 500];
     this.xCols = [37, 272, 373];
 
-    this.heightCols = [maxColHeight / (1 + this.distance/100), maxColHeight / (1 + this.minDistance/100), maxColHeight];
+    this.heightCols = [maxColHeight / (1 + this.distance / 100), maxColHeight / (1 + this.minDistance / 100), maxColHeight];
 
 
     //<path d="m2.9298 290.03h21.626m43.891 0h51.013" fill="none" stroke="#4472c4" stroke-width=".26458px"/>
@@ -196,7 +198,6 @@ SalaryImgChart.prototype.init = function (props) {
 };
 
 
+Vcore.install(SalaryImgChart);
 
-Vcore.install('SalaryImgChart'.toLowerCase(), SalaryImgChart);
-
-// cons
+export default SalaryImgChart;
