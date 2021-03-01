@@ -1,15 +1,28 @@
 import Vcore from "./VCore";
 
 import salaryimgchart_svg from '../template/salaryimgchart.svg';
-import { text, getMaxHeightBox, getMaxWidthBox, rect } from "./helper";
+import {text, getMaxHeightBox, getMaxWidthBox, rect} from "./helper";
+import GContainer from "absol-svg/js/svg/GContainer";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
 function SalaryScaleChart() {
-    var res = _(salaryimgchart_svg.replace(/(.|[\r\n])+\<svg/, '<svg')).addClass('image-chart').addClass('base-chart');
-    return res;
+    //this chart is not used
 }
+
+
+SalaryScaleChart.tag = 'SalaryScaleChart'.toLowerCase();
+
+SalaryScaleChart.render = function () {
+    return _(
+        {
+            tag: GContainer.tag,
+            elt: _(salaryimgchart_svg.replace(/(.|[\r\n])+<svg/, '<svg')).addClass('image-chart').addClass('vc-image-chart')
+                .addClass('vc-chart')
+        }
+    );
+};
 
 SalaryScaleChart.prototype.updateSize = function () {
     this.attr({
@@ -18,7 +31,6 @@ SalaryScaleChart.prototype.updateSize = function () {
         viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ')
     })
 };
-
 
 
 SalaryScaleChart.prototype.initComp = function () {
@@ -136,7 +148,7 @@ SalaryScaleChart.prototype.updateCols = function () {
                 x: self.colXs[i],
                 y: self.oy - self.heightCols[i] + height,
                 width: self.colWidth,
-                height: - height
+                height: -height
             });
         });
     }
@@ -229,8 +241,6 @@ SalaryScaleChart.prototype.updateRange = function () {
 };
 
 
-
-
 SalaryScaleChart.prototype.update = function () {
     this.updateSize();
     this.oy = this.canvasHeight - this.paddingContent;
@@ -241,7 +251,6 @@ SalaryScaleChart.prototype.update = function () {
     this.updateCols();
     this.updateRange();
 };
-
 
 
 SalaryScaleChart.prototype.preInit = function () {
