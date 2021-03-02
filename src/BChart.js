@@ -26,7 +26,7 @@ function BChart() {
     this.ready = false;
     this.contentPadding = 5;
     this.title = '';
-    this.domSignal = new DomSignal($('attachhook.vc-dom-signal', this));
+    this.domSignal = new DomSignal($('sattachhook.vc-dom-signal', this));
     this.domSignal.on({
         updateContent: this.updateContent.bind(this)
     });
@@ -71,7 +71,7 @@ BChart.render = function () {
                 tag: 'gcontainer',
                 class: 'vc-note-ctn'
             },
-            'attachhook.vc-dom-signal'
+            'sattachhook.vc-dom-signal'
         ]
     });
 };
