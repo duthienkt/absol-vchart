@@ -44,7 +44,7 @@ function RangeChart() {
     this.minText = 'Minimum';
     this.midText = 'Median';
     this.normalText = 'Normal';
-    this.numberToString = null;
+    this.numberToString = this.numberToString || null;
     this.createStatic();
     this.$oyValueCtn = $('gcontainer.vc-oy-value-ctn', this);
     this.$rangeCtn = $('.vc-range-ctn', this);

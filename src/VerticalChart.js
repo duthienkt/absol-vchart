@@ -25,7 +25,7 @@ function VerticalChart() {
     this.zeroOY = false;
     this.valueName = '';
     this.keyName = '';
-    this.numberToString = null;
+    this.numberToString = this.numberToString || null;
     /**
      *
      * @type {string[]}

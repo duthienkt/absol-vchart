@@ -12,6 +12,8 @@ import BaseChart from "./BaseChart";
 import ACore from "absol-acomp/ACore";
 import ChartResizeBox from "./ChartResizeBox";
 import {hitElement} from "absol/src/HTML5/EventEmitter";
+import OOP from "absol/src/HTML5/OOP";
+import {numberToString} from "absol/src/Math/int";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -48,6 +50,9 @@ function BChart() {
     };
 
     this.on('click', this.eventHandler.click2Resize.bind(this));
+    if (!this.numberToText){
+        OOP.drillProperty(this, this, 'numberToText', 'numberToString');
+    }
 }
 
 
