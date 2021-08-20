@@ -19,6 +19,10 @@ function ColumnChart() {
     this.values = [];
     this.$columnCtn = _('gcontainer.vc-column-ctn');
     this.$oxySpace.addChild(this.$columnCtn);
+    if (!this.numberToString)
+        this.numberToString = function (value) {
+            return numberToString.apply(this, arguments);
+        }
 }
 
 ColumnChart.property = Object.assign({}, VerticalChart.property);
@@ -50,7 +54,7 @@ ColumnChart.prototype.createContent = function () {
 ColumnChart.prototype._createColumn = function (value, i, color) {
     var res = _('gcontainer.vc-column');
     res.$rect = rect(-this.oxColWidth / 2, 0, this.oxColWidth, 10).addTo(res);
-    if (value === 0){
+    if (value === 0) {
         res.addClass('vc-value-zero');
     }
 
@@ -61,7 +65,7 @@ ColumnChart.prototype._createColumn = function (value, i, color) {
     return res;
 };
 
-ColumnChart.prototype._createColumns = function (){
+ColumnChart.prototype._createColumns = function () {
     this.$columnes = this.values.map(function (value, i) {
         return this._createColumn(value, i, this.columnColors && this.columnColors[i]).addTo(this.$columnCtn);
     }.bind(this));
@@ -88,17 +92,12 @@ ColumnChart.prototype._updateColumnPosition = function () {
             $column.attr({
                 transform: translate((i + 0.5) * this.computedData.oxSegmentLength, 0)
             });
-        }
-
-        else {
+        } else {
             $column.addStyle('display', 'none');
         }
 
     }.bind(this));
 };
-
-
-
 
 
 Vcore.creator.columnchart = ColumnChart;
