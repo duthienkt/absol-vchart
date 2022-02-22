@@ -41,9 +41,12 @@ module.exports = {
         ]
     },
     devServer: {
-        compress: true,
+        compress: false,
         host: '0.0.0.0',
-        disableHostCheck: true
+        // https: https
+        static: {
+            directory: __dirname,
+        }
     },
     performance: {
         hints: false
