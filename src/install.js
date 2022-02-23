@@ -5,6 +5,7 @@ import PieChart from "./PieChart";
 import AssessmentChart from "./AssessmentChart";
 import ColumnChart from "./ColumnChart";
 import ColumnAreaChart from "./ColumnAreaChart";
+import TinyCircleChart from "./TinyCircleChart";
 
 
 export var VChartCreators = [
@@ -13,7 +14,8 @@ export var VChartCreators = [
     PieChart,
     AssessmentChart,
     ColumnChart,
-    ColumnAreaChart
+    ColumnAreaChart,
+    TinyCircleChart
 ];
 
 /***
