@@ -138,14 +138,19 @@ TinyCircleChart.prototype._updateArcsPosition = function () {
         }, 0);
     }
     var angle0, angle1 = -Math.PI / 2;
+    var total2 = Math.max(total, 1);
+    var angleCenter;
     for (var i = 0; i < this.$arcs.length; ++i) {
         angle0 = angle1;
-        angle1 = angle1 + Math.PI * 2 * this._arcs[i].value / total;
+        angle1 = angle1 + Math.PI * 2 * this._arcs[i].value / total2;
+        angleCenter = (angle0+ angle1)/2;
         this.$arcs[i].attr('d', new Turtle()
             .moveTo(R * Math.cos(angle0), R * Math.sin(angle0))
-            .arcTo(R, R, 0, this._arcs[i].value > total / 2 ? 1 : 0, 1, R * Math.cos(angle1), R * Math.sin(angle1))
+            .arcTo(R, R, 0, this._arcs[i].value > total2  ? 1 : 0, 1, R * Math.cos(angleCenter), R * Math.sin(angleCenter))
+            .arcTo(R, R, 0, this._arcs[i].value > total2  ? 1 : 0, 1, R * Math.cos(angle1), R * Math.sin(angle1))
             .lineTo(r * Math.cos(angle1), r * Math.sin(angle1))
-            .arcTo(r, r, 0, this._arcs[i].value > total / 2 ? 1 : 0, 0, r * Math.cos(angle0), r * Math.sin(angle0))
+            .arcTo(r, r, 0, this._arcs[i].value > total2  ? 1 : 0, 0, r * Math.cos(angleCenter), r * Math.sin(angleCenter))
+            .arcTo(r, r, 0, this._arcs[i].value > total2 ? 1 : 0, 0, r * Math.cos(angle0), r * Math.sin(angle0))
             .closePath().getPath());
     }
     this.$title.firstChild.data = total + '';
