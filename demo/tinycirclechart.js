@@ -33,6 +33,23 @@ absol._({
     }
 }).addTo(document.body);
 
+absol._({
+    tag: 'tinycirclechart',
+    style: {
+        width: '250px',
+        height: '100px',
+        border: '1px solid black'
+    },
+    props: {
+        //total will be calculated automatically
+        arcs: [
+            { name: '$value hoàn thành', value: 8 },
+            { name: '$value quá hạn', value: 0 },
+            { name: '$value đang thực hiện', value: 0 }
+        ]
+    }
+}).addTo(document.body);
+
 
 absol._({
     tag: 'tinycirclechart',
