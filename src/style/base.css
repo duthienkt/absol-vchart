@@ -1,6 +1,6 @@
 .vc-title {
     font-weight: bold;
-    font-size: 15px;
+    font-size: 1.125em;
     text-anchor: middle;
 }
 
@@ -8,8 +8,8 @@
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
     font-size: 14px;
     background-color: white;
-    --vc-require-width:100px;
-    --vc-require-height:200px;
+    --vc-require-width: 100px;
+    --vc-require-height: 200px;
     min-width: var(--vc-require-width);
     min-height: var(--vc-require-height);
 }
@@ -28,7 +28,7 @@
 }
 
 .vc-value-name,
-.vc-key-name{
+.vc-key-name {
     text-anchor: end;
     font-style: italic;
 }

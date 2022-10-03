@@ -8,6 +8,7 @@
 .vc-chart.vc-tiny-circle-chart {
     min-width: 250px;
     min-height: 100px;
+    font-size: 1rem;
 }
 
 .vc-arc {

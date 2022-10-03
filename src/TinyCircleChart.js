@@ -1,9 +1,11 @@
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
-import VCore, { _, $ } from "./VCore";
+import VCore, {_, $} from "./VCore";
 import BChart from "./BChart";
 import Color from "absol/src/Color/Color";
 import Turtle from "absol-svg/js/controller/Turtle";
 import './style/tinycirclechart.css';
+import {measureText} from "absol-acomp/js/utils";
+import {getScreenSize} from "absol/src/HTML5/Dom";
 
 /***
  * @extends SvgCanvas
@@ -43,8 +45,8 @@ TinyCircleChart.render = function () {
                     {
                         tag: 'text',
                         class: 'vc-title',
-                        attr: { y: '7' },
-                        child: { text: '' }
+                        attr: {y: '7'},
+                        child: {text: ''}
                     }
                 ]
             },
@@ -69,13 +71,35 @@ TinyCircleChart.prototype._computeNote = function () {
         note.type = 'rect';
         return note;
     });
+    this.computedData.estimateNoteWidth = this.computedData.notes.reduce((ac, node) => {
+        return Math.max(measureText(node.text, '14px arial').width, ac);
+    }, 0) + 28;
+    this.computedData.estimateNoteHeight = this.computedData.notes.length * 20;
+    var screenSize = getScreenSize();
+    var fontSize = $(document.body).getFontSize();
+    this.computedData.estimateWidth = Math.max(this.computedData.estimateNoteWidth + this.computedData.estimateNoteHeight, 250);
+
+    if (this.computedData.estimateWidth * fontSize / 14 > screenSize.width - 20) {
+        this.computedData.estimateWidth = this.computedData.estimateNoteWidth;
+        this.computedData.estimateHeight = Math.max(this.computedData.estimateNoteHeight + this.computedData.estimateNoteWidth, 100);
+
+    } else {
+        this.computedData.estimateHeight = Math.max(this.computedData.estimateNoteHeight + 10, 100);
+    }
+
+
+    this.addStyle({
+        'min-width': this.computedData.estimateWidth / 14 + 'rem',
+        'min-height': this.computedData.estimateHeight / 14 + 'rem'
+    });
 };
 
 TinyCircleChart.prototype._createNote = BChart.prototype._createNote;
 
 TinyCircleChart.prototype._updateNotesPosition = function () {
+    var t = $(document.body).getFontSize();
     this.$notes.forEach(function (noteElt, i) {
-        noteElt.box.y = 20 * i;
+        noteElt.box.y = Math.ceil(t * 1.428) * i;
     });
 };
 
@@ -105,8 +129,7 @@ TinyCircleChart.prototype._updateArcsPosition = function () {
             x: R + this.contentPadding,
             y: this.box.height / 2
         }
-    }
-    else {
+    } else {
         R = Math.min(this.box.height - noteBBox.height - 2 * this.contentPadding - 10, this.box.width - this.contentPadding) / 2;
         this.$noteCtn.box.position = {
             y: 2 * R + 10 + this.contentPadding,
@@ -143,13 +166,13 @@ TinyCircleChart.prototype._updateArcsPosition = function () {
     for (var i = 0; i < this.$arcs.length; ++i) {
         angle0 = angle1;
         angle1 = angle1 + Math.PI * 2 * this._arcs[i].value / total2;
-        angleCenter = (angle0+ angle1)/2;
+        angleCenter = (angle0 + angle1) / 2;
         this.$arcs[i].attr('d', new Turtle()
             .moveTo(R * Math.cos(angle0), R * Math.sin(angle0))
-            .arcTo(R, R, 0, this._arcs[i].value > total2  ? 1 : 0, 1, R * Math.cos(angleCenter), R * Math.sin(angleCenter))
-            .arcTo(R, R, 0, this._arcs[i].value > total2  ? 1 : 0, 1, R * Math.cos(angle1), R * Math.sin(angle1))
+            .arcTo(R, R, 0, this._arcs[i].value > total2 ? 1 : 0, 1, R * Math.cos(angleCenter), R * Math.sin(angleCenter))
+            .arcTo(R, R, 0, this._arcs[i].value > total2 ? 1 : 0, 1, R * Math.cos(angle1), R * Math.sin(angle1))
             .lineTo(r * Math.cos(angle1), r * Math.sin(angle1))
-            .arcTo(r, r, 0, this._arcs[i].value > total2  ? 1 : 0, 0, r * Math.cos(angleCenter), r * Math.sin(angleCenter))
+            .arcTo(r, r, 0, this._arcs[i].value > total2 ? 1 : 0, 0, r * Math.cos(angleCenter), r * Math.sin(angleCenter))
             .arcTo(r, r, 0, this._arcs[i].value > total2 ? 1 : 0, 0, r * Math.cos(angle0), r * Math.sin(angle0))
             .closePath().getPath());
     }

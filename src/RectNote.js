@@ -14,6 +14,7 @@ function RectNote() {
 RectNote.tag = 'RectNote'.toLowerCase();
 
 RectNote.render = function () {
+    var fontSize = $(document.body).getFontSize();
     return _({
         tag: 'gcontainer',
         class: 'cv-note',
@@ -22,18 +23,18 @@ RectNote.render = function () {
                 tag: 'rect',
                 class: 'vc-note-rect',
                 attr: {
-                    x:0,
-                    y:0,
-                    width:24,
-                    height:14
+                    x: 0,
+                    y: 0,
+                    width: Math.ceil(24 * fontSize / 14) + '',
+                    height: fontSize + ''
                 }
             },
             {
                 tag: 'text',
                 class: 'vc-note-text',
                 attr: {
-                    x: '30',
-                    y: '11'
+                    x:  Math.ceil(30 * fontSize / 14) + '',
+                    y:  Math.ceil(11 * fontSize / 14) + ''
                 }
             }
         ]
@@ -45,7 +46,7 @@ RectNote.property = {
         set: function (value) {
             value = value || '';
             this._text = value;
-            this.$text.clearChild().addChild(_({ text: value }))
+            this.$text.clearChild().addChild(_({text: value}))
         },
         get: function () {
             return this._text;
