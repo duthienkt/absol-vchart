@@ -6,6 +6,11 @@
     stroke: none;
 }
 
+.vc-note-hit {
+    fill: transparent;
+    stroke: none;
+}
+
 .vc-note-line {
     stroke-width: 2;
 }
