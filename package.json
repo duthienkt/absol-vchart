@@ -27,8 +27,8 @@
   },
   "homepage": "https://github.com/duthienkt/absol-vchart#readme",
   "dependencies": {
-    "absol": "^1.17.12",
-    "absol-acomp": "^0.9.57",
+    "absol": "^1.22.1",
+    "absol-acomp": "github:duthienkt/absol-acomp",
     "absol-svg": "0.0.3"
   },
   "devDependencies": {
