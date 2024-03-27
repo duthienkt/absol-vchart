@@ -1,11 +1,10 @@
 import Vcore from "./VCore";
 import './style/spiderchart.css';
-import { rotate, translate } from "./template";
-import { hline, text } from "./helper";
+import {rotate, translate} from "./template";
+import {hline, text} from "./helper";
 
-import './StrokeNote';
-import './RectNote';
 import './NoteGrid';
+import KeyNote from "./KeyNote";
 
 
 var _ = Vcore._;
@@ -13,7 +12,7 @@ var $ = Vcore.$;
 
 
 function SpiderChart() {
-    this.$attachhook = _('attachhook').addTo(this).on('error', this.eventHandler.attached);
+    this.$attachhook = _('attachhook').addTo(this).on('attached', this.eventHandler.attached);
     this.$background = $('.vchart-spider-chart-background', this);
     this.$axisCtn = $('.vchart-spider-chart-axis-ctn', this.$background);
     this.$forceground = $('.vchart-spider-chart-forceground', this);
@@ -64,36 +63,36 @@ SpiderChart.render = function () {
             },
             {
                 tag: 'notegrid',
-                attr:{
+                attr: {
                     itemMargin: 20,
                     padding: 5
-                }, 
+                },
                 child: [{
-                    tag: 'strokenote',
+                    tag: KeyNote,
                     attr: {
                         transform: translate(10, 20)
                     },
                     props: {
+                        type: 'line',
                         text: 'Long long text',
                         color: 'red'
                     }
                 },
-                {
-                    tag: 'rectnote',
-                    attr: {
-                        transform: translate(10, 40)
-                    },
-                    props: {
-                        text: 'Long long text',
-                        color: 'red'
-                    }
-                }]
+                    {
+                        tag: KeyNote,
+                        attr: {
+                            transform: translate(10, 40)
+                        },
+                        props: {
+                            type: 'rect',
+                            text: 'Long long text',
+                            color: 'red'
+                        }
+                    }]
             }
         ]
     });
 };
-
-
 
 
 /**
@@ -108,42 +107,40 @@ SpiderChart.prototype._expectSize = function (rects, r) {
         rect = rects[i];
         if (i == 0) {
             rect.x = rect.width / 2;
-            rect.y = - rect.height - r;
-        }
-        else if (rects.length % 4 == 0 && i == (rects.length >> 2)) {
-            rect.x = r;
-            rect.y = rect.height / 2;
-        }
-        else if (rects.length % 4 == 0 && i == (rects.length >> 2) * 3) {
-            rect.x = -r - rect.width;
-            rect.y = rect.height / 2;
-        }
-        else if (rects.length % 2 == 0 && i == (rects.length >> 1)) {
-            rect.x = rect.width / 2;
-            rect.y = r;
-        }
-        else if (i < rects.length / 4) {
-            rect.x = r * Math.cos(angle);
-            rect.y = r * Math.sin(angle) - rect.height;
-        }
-        else if (i < rects.length / 2) {
-            rect.x = r * Math.cos(angle);
-            rect.y = r * Math.sin(angle);
-        }
-        else if (i < rects.length / 4 * 3) {
-            rect.x = r * Math.cos(angle) - rect.width;
-            rect.y = r * Math.sin(angle);
-        }
-        else {
-            rect.x = r * Math.cos(angle) - rect.width;
-            rect.y = r * Math.sin(angle) - rect.height;
-        }
+            rect.y = -rect.height - r;
+        } else
+            if (rects.length % 4 == 0 && i == (rects.length >> 2)) {
+                rect.x = r;
+                rect.y = rect.height / 2;
+            } else
+                if (rects.length % 4 == 0 && i == (rects.length >> 2) * 3) {
+                    rect.x = -r - rect.width;
+                    rect.y = rect.height / 2;
+                } else
+                    if (rects.length % 2 == 0 && i == (rects.length >> 1)) {
+                        rect.x = rect.width / 2;
+                        rect.y = r;
+                    } else
+                        if (i < rects.length / 4) {
+                            rect.x = r * Math.cos(angle);
+                            rect.y = r * Math.sin(angle) - rect.height;
+                        } else
+                            if (i < rects.length / 2) {
+                                rect.x = r * Math.cos(angle);
+                                rect.y = r * Math.sin(angle);
+                            } else
+                                if (i < rects.length / 4 * 3) {
+                                    rect.x = r * Math.cos(angle) - rect.width;
+                                    rect.y = r * Math.sin(angle);
+                                } else {
+                                    rect.x = r * Math.cos(angle) - rect.width;
+                                    rect.y = r * Math.sin(angle) - rect.height;
+                                }
 
         cr = cr.merge(rect);
     }
     return cr;
 };
-
 
 
 SpiderChart.prototype.estimateSize = function () {
@@ -167,8 +164,7 @@ SpiderChart.prototype.estimateSize = function () {
         var size = this._expectSize(rects, midR);
         if (size.width < aWidth && size.height < aHeight) {
             minR = midR;
-        }
-        else {
+        } else {
             maxR = midR;
         }
     }
@@ -249,14 +245,14 @@ SpiderChart.prototype.recreateNotes = function () {
 
 SpiderChart.prototype.recreateTitle = function () {
     this.ctitle.elt = this.$title;
-    this.$title.clearChild().addChild(_({ text: this.ctitle.text || '' }));
+    this.$title.clearChild().addChild(_({text: this.ctitle.text || ''}));
 };
 
 
 SpiderChart.prototype.updateSize = function (force) {
     if (!force && !this.updateCanvasSize()) return;// nothing change
     this.$noteGrid.updateSize();
-    
+
 
 };
 
@@ -275,15 +271,13 @@ SpiderChart.eventHandler.attached = function () {
     if (!this._drew) {
         this._drew = true;
         this.redraw();
-    }
-    else {
+    } else {
         this.updateSize();
     }
 };
 
 
 SpiderChart.property = {};
-
 
 
 Vcore.install('spiderchart', SpiderChart);
