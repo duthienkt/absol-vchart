@@ -13,7 +13,7 @@ var $ = Vcore.$;
 
 
 /***
- *
+ * or RadaChart
  * @extends BChart
  * @constructor
  */
