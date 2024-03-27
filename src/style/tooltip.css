@@ -1,6 +1,3 @@
-.vchart-tooltip-higne {
-    position: relative;
-}
 
 .vchart-tooltip-container {
     background-color: rgba(20, 20, 22, 1);
@@ -14,17 +11,8 @@
     left: 0;
 }
 
-.vchart-tooltip-container.vchart-hidden {
-    visibility: hidden;
-}
-
-.vchart-tooltip-anchor-container {
-    z-index: 999;
-    position: absolute;
-    top: -1000px;
-    left: -100px;
-}
-
 .vchart-tooltip-anchor {
-    position: relative;
+    position: fixed;
+    z-index: 9999999;
+    pointer-events: none;
 }

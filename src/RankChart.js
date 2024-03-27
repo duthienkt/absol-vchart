@@ -73,7 +73,7 @@ function RankChart() {
                     y: 14,
                     x: 5
                 },
-                child: { text: '' }
+                child: {text: ''}
             },
             'scrollarrow',
             'hscrollbar',
@@ -84,7 +84,7 @@ function RankChart() {
                     y: 14,
                     x: 5
                 },
-                child: { text: '' }
+                child: {text: ''}
             }
         ]
     });
@@ -159,7 +159,7 @@ RankChart.prototype._createOxLabel = function () {
         return _({
             tag: 'text',
             class: 'vc-ox-label',
-            child: { text: position.name }
+            child: {text: position.name}
         })
     });
     this.$oxLabelCtn.addChild(this.$oxLabels);
@@ -183,8 +183,7 @@ RankChart.prototype._updateScrollerPosition = function () {
         this.$scrollArrow.box.y = this.computedData.oyLength / 2;
         this.$scrollArrow.width = this.computedData.oxLength - 20;
         this._updateScrollArrowBtb();
-    }
-    else {
+    } else {
         this.$scrollArrow.addStyle('display', 'none');
     }
     this.$axis.oyDivision = this.computedData.oySegmentLength;
@@ -206,6 +205,7 @@ RankChart.prototype.mapOYValue = function (val) {
 RankChart.prototype._createRank = function (rank, value) {
     var res = _({
         tag: 'g',
+        class: 'rank-chart-group',
         child: [
             {
                 tag: 'circle',
@@ -237,13 +237,14 @@ RankChart.prototype._createRank = function (rank, value) {
     res.on('mouseenter', function () {
         var currentBound = res.getBoundingClientRect();
         var text = this.numberToString(value);
-        showTooltip(text, currentBound.right + 3, currentBound.bottom + 7).then(function (token) {
-            res.once('mouseleave', function () {
-                setTimeout(function () {
-                    closeTooltip(token);
-                }, 1000);
-            });
-        }.bind(this));
+        var token = showTooltip(text, currentBound.right + 3, currentBound.bottom + 7);
+        res.addClass('vc-active');
+        res.once('mouseleave', function () {
+            setTimeout(function () {
+                res.removeClass('vc-active');
+                closeTooltip(token);
+            }, 1000);
+        });
     }.bind(this))
     return res;
 };
@@ -306,7 +307,7 @@ RankChart.prototype._updatePosListPosition = function () {
             ac[colIndex].maxWidth = Math.max(ac[colIndex].maxWidth, e.getBBox().width);
             return ac;
         }, Array(200).fill(null).map(function () {
-            return { minY: ninf, child: [], maxWidth: ninf };
+            return {minY: ninf, child: [], maxWidth: ninf};
         }));
         messure.reduce(function (left, col) {
             if (col.child.length == 0) return;
@@ -337,7 +338,6 @@ RankChart.prototype._updatePosListPosition = function () {
 
     this.computedData.oxScrollWidth = contentLength;
 };
-
 
 
 Vcore.install(RankChart);

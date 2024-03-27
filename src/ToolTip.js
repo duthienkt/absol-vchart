@@ -1,107 +1,99 @@
-import Dom from "absol/src/HTML5/Dom";
+import {_, $} from "absol-acomp/ACore";
+import {isRealNumber} from "absol-acomp/js/utils";
+import {getScreenSize} from "absol/src/HTML5/Dom";
 
-var syncTooltip = Dom.documentReady.then(function () {
-    var _ = Dom.ShareInstance._;
-    var $ = Dom.ShareInstance.$;
-    var higne = _({
-        class: 'vchart-tooltip-higne',
-        child: {
-            class: 'vchart-tooltip-anchor-container',
-            child: {
-                class: 'vchart-tooltip-anchor',
-                child: '.vchart-tooltip-container'
-            }
-        }
+
+function TooltipSession(content, x, y) {
+    this.content = content;
+    this.x = isRealNumber(x) ? x : 0;
+    this.y = isRealNumber(y) ? y : 0;
+    this.open();
+}
+
+/**
+ *
+ * @type {{$ctn: AElement, $anchor: AElement, holder: TooltipSession}}
+ */
+TooltipSession.prototype.share = {
+    $anchor: null,
+    $ctn: null,
+    holder: null
+};
+
+
+TooltipSession.prototype._prepare = function () {
+    if (this.share.$anchor) return;
+    this.share.$ctn = _({
+        class: "vchart-tooltip-container"
+    });
+    this.share.$anchor = _({
+        class: 'vchart-tooltip-anchor',
+        child: this.share.$ctn
+    });
+};
+
+TooltipSession.prototype.open = function () {
+    this._prepare();
+    if (this.share.holder === this) return;
+    if (this.share.holder) {
+        this.share.holder.close();
+    }
+    this.share.holder = this;
+    this.share.$anchor.addStyle({
+        visibility: 'hidden',
+        left: this.x + 'px',
+        top: this.y + 'px'
     }).addTo(document.body);
-
-    var container = $('.vchart-tooltip-container', higne);
-    container.addStyle({ left: -10000, top: -1000 });
-    var anchorContainer = $('.vchart-tooltip-anchor-container', higne);
-    var sync = higne.afterAttached();
-    var currentToken = 0;
-    var anchorClientX, anchorClientY;
-
-    function updateTooltipContainer() {
-        var containerBound = container.getBoundingClientRect();
-        var viewBound = Dom.traceOutBoundingClientRect(higne);
-        if (anchorClientX + containerBound.width > viewBound.right) {
-            container.addStyle({
-                left: 'auto',
-                right: '0'
-            });
-        }
-        else {
-            container.addStyle({
-                left: '0',
-                right: 'auto'
-            });
-        }
-
-        if (anchorClientY - containerBound.height < viewBound.top) {
-            container.addStyle({
-                top: '0',
-                bottom: 'auto'
-            });
-        }
-        else {
-            container.addStyle({
-                top: 'auto',
-                bottom: '0'
-            });
-        }
+    this.share.$ctn.clearChild();
+    if (typeof this.content === "string") {
+        this.content.split(/\r?\n/).forEach((line, i) => {
+            if (i) _('br').addTo(this.share.$ctn);
+            _({
+                tag: 'span',
+                child: {text: line}
+            }).addTo(this.share.$ctn);
+        });
+    } else {
+        console.error("Not support tooltip.content ", this.content);
     }
 
-    function close() {
-        container.addClass('absol-hidden');
-        window.removeEventListener('scroll', close, false);
+    var bound = this.share.$ctn.getBoundingClientRect();
+    var screenBound = getScreenSize();
+    if (this.y < bound.height) {
+        this.share.$ctn.addStyle('top', '0').addStyle('bottom', 'unset');
+    }
+    else {
+        this.share.$ctn.removeStyle('top').removeStyle('bottom');
 
     }
 
-    var ToolTip = {};
-    ToolTip.showTooltip = function (text, clientX, clientY) {
-        window.addEventListener('scroll', close, false);
+    if (this.x + bound.width > screenBound.width) {
+        this.share.$ctn.addStyle('right', '0').addStyle('left', 'unset');
+    } else {
+        this.share.$ctn.removeStyle('right').removeStyle('left');
 
-        anchorClientX = clientX;
-        anchorClientY = clientY;
-        var higneBound = higne.getBoundingClientRect();
-        anchorContainer.addStyle({
-            left: clientX - higneBound.left + 'px',
-            top: clientY - higneBound.top + 'px'
-        });
+    }
+
+    this.share.$anchor.removeStyle('visibility');
 
 
-        container.addClass('vchart-hidden');
-        container.clearChild();
-        text.split(/\r?\n/).forEach(function (line) {
-            _('<div><span>' + line + '</span></div>').addTo(container);
-        });
+};
 
-        sync = sync.then(updateTooltipContainer).then(function () {
-            container.removeClass('vchart-hidden');
-        });
 
-        return (++currentToken);
-    };
-
-    ToolTip.closeTooltip = function (token) {
-        if (currentToken == token) {
-            container.addClass('vchart-hidden');
-        }
-    };
-    return ToolTip;
-});
+TooltipSession.prototype.close = function () {
+    if (this.share.holder !== this) return;
+    this.share.holder = null;
+    this.share.$ctn.clearChild();
+    this.share.$anchor.remove();
+};
 
 
 export function showTooltip(text, clientX, clientY) {
-    return syncTooltip.then(function (tooltip) {
-        return tooltip.showTooltip(text, clientX, clientY);
-    })
+    return new TooltipSession(text, clientX, clientY);
 }
 
 
-export function closeTooltip(text, clientX, clientY) {
-    return syncTooltip.then(function (tooltip) {
-        tooltip.closeTooltip(text, clientX, clientY);
-    });
+export function closeTooltip(token) {
+    if (token && token.close) token.close();
 }
 
