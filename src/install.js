@@ -6,6 +6,10 @@ import AssessmentChart from "./AssessmentChart";
 import ColumnChart from "./ColumnChart";
 import ColumnAreaChart from "./ColumnAreaChart";
 import TinyCircleChart from "./TinyCircleChart";
+import DoughnutChart from "./DoughnutChart";
+import SimpleColumnChart from "./SimpleColumnChart";
+import SimpleBarChart from "./SimplerBarChart";
+import SimpleLineChart from "./SimpleLineChart";
 
 
 export var VChartCreators = [
@@ -15,7 +19,11 @@ export var VChartCreators = [
     AssessmentChart,
     ColumnChart,
     ColumnAreaChart,
-    TinyCircleChart
+    TinyCircleChart,
+    DoughnutChart,
+    SimpleColumnChart,
+    SimpleBarChart,
+    SimpleLineChart
 ];
 
 /***

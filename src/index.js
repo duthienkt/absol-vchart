@@ -45,7 +45,11 @@ import {
 } from "./helper";
 import { showTooltip, closeTooltip } from "./ToolTip";
 import install from "./install";
+import SelectColorSchemeMenu from "absol-acomp/js/colorpicker/SelectColorSchemeMenu";
 install(Vcore);
+Vcore.install(SelectColorSchemeMenu);
+absol.Dom.ShareInstance.install(SelectColorSchemeMenu);
+
 var vchart = {
     core: Vcore,
     creator: Vcore.creator,
