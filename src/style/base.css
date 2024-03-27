@@ -14,6 +14,9 @@
     min-height: var(--vc-require-height);
 }
 
+.vc-simple-ox {
+    stroke-width: 1;
+}
 
 .vc-oy-value {
     text-anchor: end;
@@ -31,4 +34,17 @@
 .vc-key-name {
     text-anchor: end;
     font-style: italic;
+}
+
+.vc-note {
+    cursor: default;
+}
+
+.vc-note:hover text {
+    fill: rgb(130, 135, 180);
+}
+
+.vc-value-text {
+    text-anchor: middle;
+    fill: currentColor;
 }
