@@ -3,17 +3,13 @@ import Vcore from "./VCore";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import GContainer from "absol-svg/js/svg/GContainer";
 import DomSignal from "absol/src/HTML5/DomSignal";
-import Color from "absol/src/Color/Color";
-import {randomWord} from "absol/src/String/stringGenerate";
-import RectNote from "./RectNote";
-import StrokeNote from "./StrokeNote";
-import {map} from "./helper";
-import BaseChart from "./BaseChart";
 import ACore from "absol-acomp/ACore";
 import ChartResizeBox from "./ChartResizeBox";
 import {hitElement} from "absol/src/HTML5/EventEmitter";
 import OOP from "absol/src/HTML5/OOP";
-import {numberToString} from "absol/src/Math/int";
+import {isNaturalNumber} from "absol-acomp/js/utils";
+import {DEFAULT_CHART_COLOR_SCHEMES} from "absol-acomp/js/colorpicker/SelectColorSchemeMenu";
+import KeyNote from "./KeyNote";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -49,17 +45,22 @@ function BChart() {
         notes: []
     };
 
-    this.on('click', this.eventHandler.click2Resize.bind(this));
-    if (!this.numberToText){
+    this.on('click', this.eventHandler.click2Resize);
+    if (!this.numberToText) {
         OOP.drillProperty(this, this, 'numberToText', 'numberToString');
     }
+    /**
+     * @name colorScheme
+     * @type {null|number}
+     * @memberof BChart#
+     */
 }
 
 
 BChart.tag = 'BChart'.toLowerCase();
 
-BChart.render = function () {
-    return _({
+BChart.render = function (data, o, dom) {
+    var res =  _({
         tag: 'svgcanvas',
         class: 'vc-chart',
         child: [
@@ -70,7 +71,7 @@ BChart.render = function () {
             {
                 tag: 'text',
                 class: 'vc-title',
-                child: { text: '' }
+                child: {text: ''}
             },
             {
                 tag: 'gcontainer',
@@ -79,6 +80,13 @@ BChart.render = function () {
             'sattachhook.vc-dom-signal'
         ]
     });
+
+    var colorScheme =o && o.props && o.props.colorScheme;
+    if (isNaturalNumber(colorScheme)) {
+        colorScheme = Math.max(0, Math.min(DEFAULT_CHART_COLOR_SCHEMES.length, colorScheme));
+        res.attr('data-color-scheme', colorScheme + '');
+    }
+    return res;
 };
 
 BChart.prototype.normalizeData = function () {
@@ -91,12 +99,28 @@ BChart.prototype.computeData = function () {
 BChart.prototype._createNote = function () {
     var thisC = this;
     this.$noteCtn.clearChild();
-    this.$notes = this.computedData.notes.map(function (note) {
+    this.$notes = this.computedData.notes.map((note, idx) => {
         var noteElt = _({
-            tag: note.type === "rect" ? RectNote : StrokeNote,
+            tag: KeyNote,
             props: {
                 color: note.color,
-                text: note.text
+                text: note.text,
+                noteType: note.type
+            },
+            attr: {
+                'data-idx': idx
+            },
+            on: {
+                mouseenter: event => {
+                    if (this.eventHandler['mouseEnterNote']) {
+                        this.eventHandler['mouseEnterNote'](idx, event);
+                    }
+                },
+                mouseleave: event => {
+                    if (this.eventHandler['mouseLeaveNote']) {
+                        this.eventHandler['mouseLeaveNote'](idx, event);
+                    }
+                }
             }
         });
         thisC.$noteCtn.addChild(noteElt);
@@ -213,13 +237,24 @@ BChart.property.showInlineValue = {
     set: function (value) {
         if (value) {
             this.addClass('vc-show-inline-value');
-        }
-        else {
+        } else {
             this.removeClass('vc-show-inline-value');
         }
     },
     get: function () {
         return this.containsClass('vc-show-inline-value');
+    }
+};
+
+BChart.property.colorScheme = {
+    set: function (value) {
+        this.attr('data-color-scheme', value + '');
+    },
+    get: function () {
+        var res = this.attr('data-color-scheme');
+        if (res) res = parseInt(res, 10);
+        if (!isNaturalNumber(res)) res = null;
+        return res;
     }
 };
 
