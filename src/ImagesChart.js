@@ -3,10 +3,15 @@ import Vcore from "./VCore";
 import salaryimgchart_svg from '../template/salaryimgchart.svg';
 
 import {map, text} from './helper';
+import {ChartResizeController} from "./BChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
+/**
+ * @deprecated
+ * @constructor
+ */
 export function SalaryImgChart() {
 
 }
