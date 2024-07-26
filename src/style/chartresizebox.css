@@ -1,4 +1,5 @@
 .as-resize-box.vc-chart-resize-box {
     position: fixed;
     z-index: 8000000;
+    user-select: none;
 }
