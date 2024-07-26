@@ -10,6 +10,8 @@ import DoughnutChart from "./DoughnutChart";
 import SimpleColumnChart from "./SimpleColumnChart";
 import SimpleBarChart from "./SimplerBarChart";
 import SimpleLineChart from "./SimpleLineChart";
+import HorizontalRangeChart from "./HorizontalRangeChart";
+import HorizontalRankChart from "./HorizontalRankChart";
 
 
 export var VChartCreators = [
@@ -23,7 +25,9 @@ export var VChartCreators = [
     DoughnutChart,
     SimpleColumnChart,
     SimpleBarChart,
-    SimpleLineChart
+    SimpleLineChart,
+    HorizontalRangeChart,
+    HorizontalRankChart
 ];
 
 /***
