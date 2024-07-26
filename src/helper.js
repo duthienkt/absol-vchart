@@ -246,8 +246,7 @@ export function toLocalString(fixedRight) {
         int = int.split('').reduce(function (ac, cr, i, arr) {
             if (i == 0 || (arr.length - i) % 3 == 0) {
                 ac.push(cr);
-            }
-            else {
+            } else {
                 ac[ac.length - 1] += cr;
             }
             return ac;
@@ -467,4 +466,8 @@ export function addDevContextMenu(svg) {
             })
         }
     });
+}
+
+export function measureArial14TextWidth(text) {
+    return TextMeasure.measureWidth(text, 'Arial', 14);
 }
