@@ -28,3 +28,8 @@
     stroke: #000000;
     stroke-width: 1;
 }
+
+
+.image-chart.as-bonus-under-100-percent .image-chart-bonus {
+    fill: #ff927f;
+}
