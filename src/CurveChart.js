@@ -1,7 +1,17 @@
 import Vcore from "./VCore";
 import { autoCurve } from "./helper";
 
+/**
+ *
+ * @returns {LineChart}
+ * @constructor
+ */
 function CurveChart() {
+}
+
+CurveChart.tag = 'CurveChart'.toLowerCase();
+
+CurveChart.render = function () {
     return Vcore._('linechart', true);
 };
 
