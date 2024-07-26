@@ -1,14 +1,67 @@
 absol._({
     tag: 'piechart',
     style: {
+        width: '278px',
+        height: '222.3px'
+    },
+    props: {
+        colorScheme: 2,
+        pieces: [
+            {
+                name: "Đạo phật",
+                value: 5,
+                valueText: "1.4%",
+                // fillColor: {
+                //     rgba: [
+                //         0.75,
+                //         0.25,
+                //         0.25,
+                //         1
+                //     ]
+                // }
+            },
+            {
+                name: "Đạo thiên chúa",
+                value: 9,
+                valueText: "2.5%",
+                // fillColor: {
+                //     rgba: [
+                //         0.25,
+                //         0.25,
+                //         0.75,
+                //         1
+                //     ]
+                // }
+            },
+            {
+                name: "Không",
+                value: 343,
+                valueText: "96.1%",
+                // fillColor: {
+                //     rgba: [
+                //         0.25,
+                //         0.75,
+                //         0.25,
+                //         1
+                //     ]
+                // }
+            }
+        ]
+    }
+}).addTo(document.body);
+
+
+absol._({
+    tag: 'piechart',
+    style: {
         width: '500px',
         height: '450px',
         verticalAlign: 'top',
-        backgroundColor:'gray'
+        backgroundColor: 'gray'
     },
     props: {
         resizable: true,
-        contentPadding:0,
+        contentPadding: 0,
         pieces: [
             {
                 name: 'IE',
