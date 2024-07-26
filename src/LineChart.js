@@ -1,12 +1,19 @@
 import Vcore from "./VCore";
-import { isNumber, text, circle, hline } from "./helper";
-import { showTooltip, closeTooltip } from "./ToolTip";
-import { translate, rotate } from "./template";
+import {isNumber, text, circle, hline} from "./helper";
+import {showTooltip, closeTooltip} from "./ToolTip";
+import {translate, rotate} from "./template";
+import {ChartTitleController} from "./BChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
 function LineChart() {
+    this.titleCtrl = new ChartTitleController(this);
+}
+
+LineChart.tag = 'LineChart'.toLowerCase();
+
+LineChart.render = function () {
     return _('basechart', true);
 };
 
@@ -55,19 +62,24 @@ LineChart.prototype._createLine = function (line, color) {
     });
     res.$path = _('shape.line-chart-line').addTo(res);
     res.$plots = line.values.map(function (u, i) {
-        var plot = circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res).on('mouseenter', function (event) {
-            var text = line.texts && line.texts[i];
-            if (!text) return;
-            var currentBound = this.getBoundingClientRect();
 
-            showTooltip(text, (currentBound.left + currentBound.right) / 2, (currentBound.top + currentBound.bottom) / 2).then(function (token) {
-                this.once('mouseleave', function () {
-                    setTimeout(function () {
-                        closeTooltip(token);
-                    }, 1000);
-                });
-            }.bind(this));
-        });
+        var plot = circle(0, 0, this.plotRadius, 'line-chart-plot').addTo(res)
+        var text = line.texts && line.texts[i];
+        if (text) plot.attr('title', text);
+        // .on('mouseenter', function (event) {
+        // var text = line.texts && line.texts[i];
+        // if (!text) return;
+        //
+        // var currentBound = this.getBoundingClientRect();
+        //
+        // showTooltip(text, (currentBound.left + currentBound.right) / 2, (currentBound.top + currentBound.bottom) / 2).then(function (token) {
+        //     this.once('mouseleave', function () {
+        //         setTimeout(function () {
+        //             closeTooltip(token);
+        //         }, 1000);
+        //     });
+        // }.bind(this));
+        // });
         if (line.plotColors && line.plotColors[i]) {
             plot.addStyle('fill', line.plotColors[i]);
         }
@@ -75,7 +87,6 @@ LineChart.prototype._createLine = function (line, color) {
     }.bind(this));
     return res;
 };
-
 
 
 LineChart.prototype.initBackComp = function () {
@@ -116,12 +127,12 @@ LineChart.prototype.updateBackComp = function () {
     this.oxContentLength = this.oxLength;
     if (this.oxSegmentLength < maxKeyNameWidth + this.keyPaddingH * 2) {
         this.rotateText = true;
-    }
-    else if (this.minOXSegmentLength > this.oxSegmentLength) {
-        this.oxSegmentLength = this.minOXSegmentLength;
-        this.rotateText = true;
-        this.oxContentLength = this.oxSegmentLength * this.keys.length;
-    }
+    } else
+        if (this.minOXSegmentLength > this.oxSegmentLength) {
+            this.oxSegmentLength = this.minOXSegmentLength;
+            this.rotateText = true;
+            this.oxContentLength = this.oxSegmentLength * this.keys.length;
+        }
 
     if (this.rotateText) {
         this.$keyNames.forEach(function (e, i) {
@@ -130,8 +141,7 @@ LineChart.prototype.updateBackComp = function () {
 
         }.bind(this));
         this.oxyBottom -= maxKeyNameWidth / 1.4 + 12;
-    }
-    else {
+    } else {
         this.$keyNames.forEach(function (e, i) {
             e.attr('transform', translate((i + 0.5) * this.oxSegmentLength, 12));
             e.$text.attr('text-anchor', 'middle');
@@ -141,13 +151,9 @@ LineChart.prototype.updateBackComp = function () {
     }
 
 
-
-
-
     //reupdate because update oxybottom
     this.super();
 };
-
 
 
 LineChart.prototype.initComp = function () {
@@ -168,8 +174,7 @@ LineChart.prototype.updateComp = function () {
                     cx: this.oxSegmentLength * (j + 0.5),
                     cy: this.mapOYValue(value)
                 });
-            }
-            else {
+            } else {
                 $plot.attr('display', 'none');
             }
         }.bind(this));
@@ -195,22 +200,20 @@ LineChart.prototype.updateComp = function () {
                 var x = this.oxSegmentLength * (j + 0.5);
                 $line.$path.moveTo(x, y);
                 return 'IN_LINE';
-            }
-            else if (state == 'IN_LINE') {
-                if (!isNumber(value)) return 'NOT_START';
-                var y = this.mapOYValue(value);
-                var x = this.oxSegmentLength * (j + 0.5);
-                $line.$path.lineTo(x, y);
-                return 'IN_LINE';
-            }
+            } else
+                if (state == 'IN_LINE') {
+                    if (!isNumber(value)) return 'NOT_START';
+                    var y = this.mapOYValue(value);
+                    var x = this.oxSegmentLength * (j + 0.5);
+                    $line.$path.lineTo(x, y);
+                    return 'IN_LINE';
+                }
             return ac;
         }.bind(this), "NOT_START");
 
         $line.$path.end();
     }.bind(this));
 };
-
-
 
 
 LineChart.prototype.preInit = function () {
@@ -226,6 +229,6 @@ LineChart.prototype.preInit = function () {
     this.lines = [];
 };
 
-Vcore.creator.linechart = LineChart;
 
+Vcore.install(LineChart);
 export default LineChart;

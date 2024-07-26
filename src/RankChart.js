@@ -233,19 +233,7 @@ RankChart.prototype._createRank = function (rank, value) {
             }
         ]
     });
-
-    res.on('mouseenter', function () {
-        var currentBound = res.getBoundingClientRect();
-        var text = this.numberToString(value);
-        var token = showTooltip(text, currentBound.right + 3, currentBound.bottom + 7);
-        res.addClass('vc-active');
-        res.once('mouseleave', function () {
-            setTimeout(function () {
-                res.removeClass('vc-active');
-                closeTooltip(token);
-            }, 1000);
-        });
-    }.bind(this))
+    res.attr('title',  this.numberToString(value));
     return res;
 };
 

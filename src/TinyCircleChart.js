@@ -1,6 +1,6 @@
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import VCore, {_, $} from "./VCore";
-import BChart from "./BChart";
+import BChart, {ChartResizeController} from "./BChart";
 import Color from "absol/src/Color/Color";
 import Turtle from "absol-svg/js/controller/Turtle";
 import './style/tinycirclechart.css';
@@ -12,6 +12,7 @@ import {getScreenSize} from "absol/src/HTML5/Dom";
  * @constructor
  */
 function TinyCircleChart() {
+    this.resizeCtrl = new ChartResizeController(this);
     this.contentPadding = 5;
     this._arcs = [];
     this.computedData = {

@@ -30,6 +30,8 @@ var $ = Vcore.$;
  */
 function PieChart() {
     BChart.call(this);
+    this.titleCtrl.revokeResource();
+    delete this.titleCtrl;
     this.$pieCtn = this.$body;
     this.$pie = _('gcontainer');
     this.$pieCtn.addChild(this.$pie);

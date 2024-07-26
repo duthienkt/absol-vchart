@@ -2,34 +2,47 @@ import Vcore from "./VCore";
 
 import salaryimgchart_svg from '../template/salaryimgchart.svg';
 import {text, getMaxHeightBox, getMaxWidthBox, rect} from "./helper";
-import GContainer from "absol-svg/js/svg/GContainer";
+import {ChartResizeController} from "./BChart";
+import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
+/**
+ *
+ * @constructor
+ */
 function SalaryScaleChart() {
-    //this chart is not used
+    this.resizeCtrl = new ChartResizeController(this);
 }
 
 
 SalaryScaleChart.tag = 'SalaryScaleChart'.toLowerCase();
 
 SalaryScaleChart.render = function () {
+    var svg = _(salaryimgchart_svg.replace(/(.|[\r\n])+<svg/, '<svg')).addClass('image-chart').addClass('vc-image-chart')
+        .addClass('vc-chart')
+    svg.$attachhook = _('sattachhook').addTo(svg);
     return _(
         {
-            tag: GContainer.tag,
-            elt: _(salaryimgchart_svg.replace(/(.|[\r\n])+<svg/, '<svg')).addClass('image-chart').addClass('vc-image-chart')
-                .addClass('vc-chart')
+            tag: SvgCanvas.tag,
+            elt: svg
         }
     );
 };
 
+// SalaryScaleChart.prototype.updateSize = function () {
+//     // this.attr({
+//     //     width: this.canvasWidth,
+//     //     height: this.canvasHeight,
+//     //     viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ')
+//     // })
+// };
+
+
 SalaryScaleChart.prototype.updateSize = function () {
-    this.attr({
-        width: this.canvasWidth,
-        height: this.canvasHeight,
-        viewBox: [0, 0, this.canvasWidth, this.canvasHeight].join(' ')
-    })
+    SvgCanvas.prototype.updateSize.call(this);
+    this.update();
 };
 
 
@@ -113,6 +126,11 @@ SalaryScaleChart.prototype.updateCols = function () {
             return x * (100 + self.bonus) / 100;
         });
     }
+    if (this.bonus < 0) {
+        this.addClass('as-bonus-under-100-percent');
+    } else {
+        this.removeClass('as-bonus-under-100-percent');
+    }
     this.baseHeight = this.heightCols.map(function (h) {
         return h / (100 + self.bonus) * 100
     });
@@ -140,8 +158,7 @@ SalaryScaleChart.prototype.updateCols = function () {
                 height: height
             });
         });
-    }
-    else {
+    } else {
         this.$bonuses.forEach(function (e, i) {
             var height = self.bonusHeight[i];
             e.attr({
@@ -242,7 +259,6 @@ SalaryScaleChart.prototype.updateRange = function () {
 
 
 SalaryScaleChart.prototype.update = function () {
-    this.updateSize();
     this.oy = this.canvasHeight - this.paddingContent;
     this.oxLength = this.canvasWidth - 2 * this.paddingContent;
     this.ox = this.paddingContent;
@@ -254,7 +270,6 @@ SalaryScaleChart.prototype.update = function () {
 
 
 SalaryScaleChart.prototype.preInit = function () {
-    this.sync = this.afterAttached();
     this.canvasWidth = 560;
     this.canvasHeight = 320;
     this.paddingContent = 10;
@@ -275,8 +290,34 @@ SalaryScaleChart.prototype.init = function (props) {
     this.preInit();
     this.super(props);
     this.initComp();
-    this.sync.then(this.update.bind(this));
+    this.$attachhook.once('attached', this.update.bind(this));
 
 };
+
+SalaryScaleChart.property = {};
+
+SalaryScaleChart.property.canvasHeight = {
+    set: function (value) {
+        this.addStyle('height', value + 'px');
+        this.box.height = value;
+
+    },
+    get: function () {
+        return this.box.height;
+    }
+};
+
+
+SalaryScaleChart.property.canvasWidth = {
+    set: function (value) {
+        this.addStyle('width', value + 'px');
+        this.box.width = value;
+
+    },
+    get: function () {
+        return this.box.width;
+    }
+};
+
 
 Vcore.install('SalaryScaleChart'.toLowerCase(), SalaryScaleChart);

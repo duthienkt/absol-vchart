@@ -2,15 +2,21 @@ import Vcore from "./VCore";
 import { isNumber, rect, text, getSubNumberArray } from "./helper";
 import { translate, rotate } from "./template";
 import LineChart from "./LineChart";
+import {ChartTitleController} from "./BChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
 
 function DualChart() {
+    this.titleCtrl = new ChartTitleController(this);
+}
 
-    var res = _('basechart.dualchart', true);
-    return res;
-};
+
+DualChart.tag = 'DualChart'.toLowerCase();
+
+DualChart.render = function () {
+    return  _('basechart.dualchart', true);
+}
 
 DualChart.prototype.processMinMax = function () {
     this.minValue = this.lines.reduce(function (minValue, line) {

@@ -4,8 +4,8 @@ import GContainer from "absol-svg/js/svg/GContainer";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import DomSignal from "absol/src/HTML5/DomSignal";
 import {generateBackgroundColors} from "./helper";
-import FunnelChart from "./FunnelChart";
 import Color from "absol/src/Color/Color";
+import {ChartResizeController} from "./BChart";
 
 var _ = VCore._;
 var $ = VCore.$;
@@ -39,6 +39,7 @@ function BarStackChart() {
     this.$blocks = [];
     this.$notes = [];
     this.domSignal.emit('updateContent');
+    this.resizeCtrl = new ChartResizeController(this);
 }
 
 

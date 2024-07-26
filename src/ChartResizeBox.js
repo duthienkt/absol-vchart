@@ -22,6 +22,7 @@ function ChartResizeBox() {
     this.$attachhook = $('attachhook', this);
     this.updateSize = this.updateSize.bind(this);
     this.$attachhook.requestUpdateSize = this.updateSize;
+    this.$attachhook.cancelWaiting();
     this.$trackedScrollers = [];
     this.canResize = true;
     this._endMoveTime = 0;
@@ -58,6 +59,7 @@ ChartResizeBox.prototype.attachTo = function (target) {
     if (!target || !isDomNode(target)) return;
     ResizeSystem.add(this.$attachhook);
     this.$target = target;
+    this.sponsorElement = target;
     var pe = target.parentElement;
     if (pe) {
         pe.appendChild(this);
