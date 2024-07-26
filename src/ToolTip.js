@@ -87,6 +87,17 @@ TooltipSession.prototype.close = function () {
     this.share.$anchor.remove();
 };
 
+/**
+ * adapt old version
+ * @param cb
+ * @returns {TooltipSession}
+ */
+TooltipSession.prototype.then = function (cb) {
+    if (typeof cb === "string") {
+        cb(this);
+    }
+    return this;
+}
 
 export function showTooltip(text, clientX, clientY) {
     return new TooltipSession(text, clientX, clientY);
