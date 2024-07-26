@@ -48,3 +48,9 @@
     text-anchor: middle;
     fill: currentColor;
 }
+
+.vc-grid {
+    fill: none;
+    stroke: #ddd;
+    pointer-events: none;
+}

@@ -7,12 +7,153 @@ import ACore from "absol-acomp/ACore";
 import ChartResizeBox from "./ChartResizeBox";
 import {hitElement} from "absol/src/HTML5/EventEmitter";
 import OOP from "absol/src/HTML5/OOP";
-import {isNaturalNumber} from "absol-acomp/js/utils";
+import {isNaturalNumber, revokeResource} from "absol-acomp/js/utils";
 import {DEFAULT_CHART_COLOR_SCHEMES} from "absol-acomp/js/colorpicker/SelectColorSchemeMenu";
 import KeyNote from "./KeyNote";
+import Tooltip from "absol-acomp/js/Tooltip";
+import ToolTip from "absol-acomp/js/Tooltip";
+import noop from "absol/src/Code/noop";
+
 
 var _ = Vcore._;
 var $ = Vcore.$;
+
+/**
+ *
+ * @param chartElt
+ * @constructor
+ */
+export function ChartResizeController(chartElt) {
+    this.chartElt = chartElt;
+    this.ev_click = this.ev_click.bind(this);
+    this.ev_clickOut = this.ev_clickOut.bind(this);
+    this.chartElt.on('click', this.ev_click);
+}
+
+
+ChartResizeController.prototype.ev_click = function (event) {
+    if (!this.chartElt.resizable) return;
+    this.prepare();
+    if (this.share.$resizebox.isAttached(this.chartElt)) return;
+    this.share.$resizebox.attachTo(this.chartElt);
+    document.addEventListener('click', this.ev_clickOut);
+};
+
+ChartResizeController.prototype.ev_clickOut = function (event) {
+    if (hitElement(this.chartElt, event)) return;
+    if (this.share.$resizebox.isAfterMoving()) return;
+    if (this.share.$resizebox.isAttached(this)) this.share.$resizebox.detach();
+    document.removeEventListener('click', this.ev_clickOut);
+};
+
+ChartResizeController.prototype.revokeResource = function () {
+    document.removeEventListener('click', this.ev_clickOut);
+};
+
+
+ChartResizeController.prototype.share = {
+    /**
+     * @type {ChartResizeBox}
+     */
+    $resizebox: null
+};
+
+ChartResizeController.prototype.prepare = function () {
+    if (this.share.$resizebox) return;
+    this.share.$resizebox = ACore._({
+        tag: ChartResizeBox.tag
+    });
+};
+
+
+
+/**
+ *
+ * @param {BChart} elt
+ * @constructor
+ */
+export function ChartTitleController(elt) {
+    this.elt = elt;
+    Object.keys(this.constructor.prototype).filter(key => key.startsWith('ev_')).forEach(key => this[key] = this[key].bind(this));
+    this.elt.on('mouseover', this.ev_mouseEnter)
+        .on('mouseout', this.ev_mouseOut);
+    this.titleElt = null;
+    this.contentElt = ACore._({
+        tag: 'div',
+        style: {font: '14px Arial'}
+    }).on('mouseover', this.ev_mouseEnter)
+        .on('mouseout', this.ev_mouseOut)
+    this.closeTO = -1;
+    this.sessonToken = null;
+}
+
+ChartTitleController.prototype.revokeResource = function () {
+    this.elt.off('mouseover', this.ev_mouseEnter)
+        .off('mouseout', this.ev_mouseOut);
+    this.contentElt.off('mouseover', this.ev_mouseEnter)
+        .off('mouseout', this.ev_mouseOut);
+    revokeResource(this.contentElt);
+    delete this.elt;
+    delete this.contentElt;
+    this.revokeResource = noop();
+};
+
+
+ChartTitleController.prototype.ev_mouseEnter = function (event) {
+    if (hitElement(this.contentElt, event)) {
+        clearTimeout(this.closeTO);
+        return;
+    }
+    var hasTileElt = this.findTitleElt(event.target);
+
+    if (hasTileElt) {
+        clearTimeout(this.closeTO);
+        if (hasTileElt !== this.titleElt) {
+            this.titleElt = hasTileElt;
+            this.sessonToken = Tooltip.show(this.titleElt, this.makeTooltipContent(this.titleElt.attr('title')));
+        }
+    } else {
+        if (this.titleElt) {
+            clearTimeout(this.closeTO);
+            this.closeTO = setTimeout(() => {
+                this.titleElt = null;
+                ToolTip.close(this.sessonToken);
+            }, 500)
+        }
+    }
+};
+
+
+ChartTitleController.prototype.ev_mouseOut = function (event) {
+    if (this.titleElt && (event.target === this.titleElt || event.target === this.contentElt ||
+        (event.target.isDescendantOf && !event.target.isDescendantOf(this.titleElt)) && !event.target.isDescendantOf(this.contentElt))
+    ) {
+        clearTimeout(this.closeTO);
+        this.closeTO = setTimeout(() => {
+            this.titleElt = null;
+            ToolTip.close(this.sessonToken);
+        }, 500);
+    }
+};
+
+ChartTitleController.prototype.makeTooltipContent = function (text) {
+    this.contentElt.clearChild();
+    return ACore._({
+        elt: this.contentElt,
+        child: text.split('\n').reduce((ac, cr) => {
+            ac.push({text: cr}, 'br');
+            return ac;
+        }, [])
+    });
+};
+
+ChartTitleController.prototype.findTitleElt = function (elt) {
+    while (elt && elt !== this.elt) {
+        if (elt.attr && elt.attr('title')) return elt;
+        elt = elt.parentElement;
+    }
+    return null;
+};
 
 
 /***
@@ -45,7 +186,8 @@ function BChart() {
         notes: []
     };
 
-    this.on('click', this.eventHandler.click2Resize);
+    this.resizeCtrl = new ChartResizeController(this);
+    this.titleCtrl = new ChartTitleController(this);
     if (!this.numberToText) {
         OOP.drillProperty(this, this, 'numberToText', 'numberToString');
     }
@@ -60,7 +202,7 @@ function BChart() {
 BChart.tag = 'BChart'.toLowerCase();
 
 BChart.render = function (data, o, dom) {
-    var res =  _({
+    var res = _({
         tag: 'svgcanvas',
         class: 'vc-chart',
         child: [
@@ -81,13 +223,24 @@ BChart.render = function (data, o, dom) {
         ]
     });
 
-    var colorScheme =o && o.props && o.props.colorScheme;
+    var colorScheme = o && o.props && o.props.colorScheme;
     if (isNaturalNumber(colorScheme)) {
         colorScheme = Math.max(0, Math.min(DEFAULT_CHART_COLOR_SCHEMES.length, colorScheme));
         res.attr('data-color-scheme', colorScheme + '');
     }
     return res;
 };
+
+BChart.prototype.revokeResource = function () {
+    revokeResource(this.resizeCtrl);
+    revokeResource(this.titleCtrl);
+    while (this.lastChild) {
+        revokeResource(this.lastChild);
+        this.lastChild.remove();
+    }
+    this.revokeResource = noop();
+    this.computedData = null;
+}
 
 BChart.prototype.normalizeData = function () {
 };
@@ -264,26 +417,26 @@ BChart.eventHandler = {};
  *
  * @type {ChartResizeBox}
  */
-BChart.$resizebox = ACore._({
-    tag: ChartResizeBox.tag
-});
-
-BChart.eventHandler.click2Resize = function () {
-    if (this.resizable)
-        if (!BChart.$resizebox.isAttached(this)) {
-            BChart.$resizebox.attachTo(this);
-            document.addEventListener('click', this.eventHandler.click2CancelResize);
-        }
-};
-
-
-BChart.eventHandler.click2CancelResize = function (event) {
-    if (hitElement(this, event)) return;
-    if (hitElement(BChart.$resizebox, event)) return;
-    if (BChart.$resizebox.isAfterMoving()) return;
-    if (BChart.$resizebox.isAttached(this)) BChart.$resizebox.detach();
-    document.removeEventListener('click', this.eventHandler.click2CancelResize);
-};
+// BChart.$resizebox = ACore._({
+//     tag: ChartResizeBox.tag
+// });
+//
+// BChart.eventHandler.click2Resize = function () {
+//     if (this.resizable)
+//         if (!BChart.$resizebox.isAttached(this)) {
+//             BChart.$resizebox.attachTo(this);
+//             document.addEventListener('click', this.eventHandler.click2CancelResize);
+//         }
+// };
+//
+//
+// BChart.eventHandler.click2CancelResize = function (event) {
+//     if (hitElement(this, event)) return;
+//     if (hitElement(BChart.$resizebox, event)) return;
+//     if (BChart.$resizebox.isAfterMoving()) return;
+//     if (BChart.$resizebox.isAttached(this)) BChart.$resizebox.detach();
+//     document.removeEventListener('click', this.eventHandler.click2CancelResize);
+// };
 
 
 Vcore.install(BChart);
