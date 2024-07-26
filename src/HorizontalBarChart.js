@@ -2,6 +2,7 @@ import Vcore from "./VCore";
 import { rect, text, line, vline, moveHLine, moveVLine, generateBackgroundColors, getMaxWidthBox, calBeautySegment, map, lighterColor, hline, fresherColor } from "./helper";
 import { translate } from "./template";
 import Dom from "absol/src/HTML5/Dom";
+import {ChartResizeController} from "./BChart";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -9,6 +10,7 @@ var $ = Vcore.$;
 
 function HorizontalBarChart() {
     var self = this;
+    this.resizeCtrl = new ChartResizeController(this);
     this._bars = [];
     this._vLines = [];
     this._title = '';
