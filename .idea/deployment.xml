@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="absol.cf" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="absol.cf">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/libs/absol-vchart" local="$PROJECT_DIR$" web="/libs/absol-vchart" />
+            <mapping local="" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
