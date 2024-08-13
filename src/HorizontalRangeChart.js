@@ -227,8 +227,8 @@ HorizontalRangeChart.prototype.createRanges = function () {
             tag: 'rect',
             attr: {
                 x: -2.5,
-                y: -15,
-                width: 5, height: 30,
+                y: -13,
+                width: 5, height: 26,
                 title: this.numberToString(range.min)
             },
             style: {
@@ -246,8 +246,8 @@ HorizontalRangeChart.prototype.createRanges = function () {
                 },
                 attr: {
                     x: -2.5,
-                    y: -15,
-                    width: 5, height: 30,
+                    y: -13,
+                    width: 5, height: 26,
                     title: this.numberToString(range.mid)
                 }
             });
@@ -261,8 +261,8 @@ HorizontalRangeChart.prototype.createRanges = function () {
             },
             attr: {
                 x: -2.5,
-                y: -15,
-                width: 5, height: 30,
+                y: -13,
+                width: 5, height: 26,
                 title: this.numberToString(range.max)
             }
         });
@@ -271,7 +271,7 @@ HorizontalRangeChart.prototype.createRanges = function () {
             elt.$normal = _({
                 tag: 'circle',
                 attr: {
-                    cx: 0, cy: 0, r: 10,
+                    cx: 0, cy: 0, r: 8,
                     title: this.numberToString(range.normal)
                 },
                 style: {
@@ -311,7 +311,7 @@ HorizontalRangeChart.prototype.updateContentPosition = function () {
 
     var oyLabelWidth = this.$oyLabels.reduce((ac, cr) => Math.max(ac, cr.getBBox().width), 0);
     oyLabelWidth = Math.ceil(oyLabelWidth);
-    var spacing = 80;
+    var spacing = 40;
     this.$body.box.x = oyLabelWidth + 10;
     this.$body.box.width = width - this.$body.box.x - 10;
 
@@ -378,11 +378,11 @@ HorizontalRangeChart.prototype.updateContentPosition = function () {
     this.$ranges.forEach((elt, i) => {
         elt.box.y = i * spacing + spacing / 2;
         var range = ranges[i];
-        elt.$min.attr('x', map(range.min, 0, dv, 0, dx) - 2.5);
-        if (elt.$mid) elt.$mid.attr('x', map(range.mid, 0, dv, 0, dx) - 2.5);
-        elt.$max.attr('x', map(range.max, 0, dv, 0, dx) - 2.5);
-        elt.$line.attr('d', `M${map(range.min, 0, dv, 0, dx)} 0 l${map(range.max - range.min, 0, dv, 0, dx)} 0`)
-        if (elt.$normal) elt.$normal.attr('cx', map(range.normal, 0, dv, 0, dx));
+        elt.$min.attr('x', map(range.min - sm.minValue, 0, dv, 0, dx) - 2.5);
+        if (elt.$mid) elt.$mid.attr('x', map(range.mid - sm.minValue, 0, dv, 0, dx) - 2.5);
+        elt.$max.attr('x', map(range.max - sm.minValue, 0, dv, 0, dx) - 2.5);
+        elt.$line.attr('d', `M${map(range.min - sm.minValue, 0, dv, 0, dx)} 0 l${map(range.max - range.min, 0, dv, 0, dx)} 0`)
+        if (elt.$normal) elt.$normal.attr('cx', map(range.normal - sm.minValue, 0, dv, 0, dx));
     });
 
     this.$body.box.height = this.$axis.box.height + 10;//10px : padding bottom

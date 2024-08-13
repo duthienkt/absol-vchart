@@ -2,7 +2,7 @@ import Vcore, {$, _} from "./VCore";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import {KeyNoteGroup} from "./KeyNote";
 import {isNaturalNumber} from "absol-acomp/js/utils";
-import {DEFAULT_CHART_COLOR_SCHEMES} from "absol-acomp/js/colorpicker/SelectColorSchemeMenu";
+import {DEFAULT_CHART_COLOR_SCHEMES, generatorColorScheme} from "absol-acomp/js/colorpicker/SelectColorSchemeMenu";
 import {ChartResizeController, ChartTitleController} from "./BChart";
 import AElement from "absol/src/HTML5/AElement";
 import {calBeautySegment, map, measureArial14TextWidth} from "./helper";
@@ -35,7 +35,7 @@ function HorizontalRankChart() {
     this.cpData = null;
 
     this.colors = [
-        'transparent', 'rgb(201, 241, 253)', 'rgb(212, 227, 252)', 'rgb(218, 202, 251)',
+        'white', 'rgb(201, 241, 253)', 'rgb(212, 227, 252)', 'rgb(218, 202, 251)',
         'rgb(242, 201, 251)', 'rgb(255, 218, 216)', 'rgb(255, 236, 215)', 'rgb(254, 252, 224)',
         'rgb(223, 237, 214)', 'rgb(77, 215, 250)', 'rgb(117, 169, 249)', 'rgb(139, 81, 245)',
         'rgb(215, 87, 246)', 'rgb(255, 138, 132)', 'rgb(152, 165, 52)', 'rgb(254, 248, 160)',
@@ -156,6 +156,10 @@ HorizontalRankChart.prototype.computeData = function () {
         return Math.min(ac, ...cr.ranks);
     }, Infinity);
 
+    this.cpData.count = positions.reduce((ac, cr) => {
+        return Math.max(ac, cr.ranks.length);
+    }, 0);
+
     this.cpData.max = positions.reduce((ac, cr) => {
         return Math.max(ac, ...cr.ranks);
     }, -Infinity);
@@ -166,6 +170,41 @@ HorizontalRankChart.prototype.computeData = function () {
 
     this.cpData.max += 1;
     if (this.zeroOY) this.cpData.min = Math.min(this.cpData.min, 0);
+
+    this.colors = this.cpData.count < 10 ? [
+        "#FF5733", // Bright Orange
+        "#33FF57", // Bright Green
+        "#3357FF", // Bright Blue
+        "#FF33A8", // Bright Pink
+        "#FF3333", // Bright Red
+        "#33FFF5", // Bright Cyan
+        "#FFFF33", // Bright Yellow
+        "#FF8C33", // Bright Coral
+        "#33FF8C", // Bright Mint
+        "#8C33FF"  // Bright Purple
+    ] : [
+        "#FF5733", // Bright Orange
+        "#33FF57", // Bright Green
+        "#3357FF", // Bright Blue
+        "#FF33A8", // Bright Pink
+        "#FF3333", // Bright Red
+        "#33FFF5", // Bright Cyan
+        "#FFFF33", // Bright Yellow
+        "#FF8C33", // Bright Coral
+        "#33FF8C", // Bright Mint
+        "#8C33FF", // Bright Purple
+        "#FF5733", // Bright Orange
+        "#33FF57", // Bright Green
+        "#3357FF", // Bright Blue
+        "#FF33A8", // Bright Pink
+        "#FF3333", // Bright Red
+        "#33FFF5", // Bright Cyan
+        "#FFFF33", // Bright Yellow
+        "#FF8C33", // Bright Coral
+        "#33FF8C", // Bright Mint
+        "#8C33FF"  // Bright Purple
+    ];
+    ;
 
 };
 
@@ -192,6 +231,15 @@ HorizontalRankChart.prototype.createPositions = function () {
             tag: 'gcontainer',
         });
 
+        elt.$line = _({
+            tag: 'path',
+            style: {
+                stroke: 'rgb(69, 69, 72)',
+                'stroke-width': 3
+            }
+        });
+        elt.addChild(elt.$line);
+
         elt.$ranks = it.ranks.map((r, i) => {
             return _({
                 tag: 'gcontainer',
@@ -202,23 +250,16 @@ HorizontalRankChart.prototype.createPositions = function () {
                 child: [
                     {
                         tag: 'circle',
-                        class: 'rank-chart-plot',
+                        class: 'vc-circle-plot',
                         style: {
-                            fill: this.colors[i]
+                            fill: this.colors[i],
+                            stroke: 'black',
+                            strokeWidth: 2
                         },
                         attr: {
-                            r: 9,
+                            r: 8,
                             x: 0, y: 0
                         }
-                    },
-                    {
-                        tag: 'text',
-                        style: {
-                            'alignment-baseline': 'middle',
-                            'text-anchor': 'middle'
-                        },
-
-                        child: {text: i + 1 + ''}
                     }
                 ]
             })
@@ -244,7 +285,7 @@ HorizontalRankChart.prototype.updateContentPosition = function () {
 
     var oyLabelWidth = this.$oyLabels.reduce((ac, cr) => Math.max(ac, cr.getBBox().width), 0);
     oyLabelWidth = Math.ceil(oyLabelWidth);
-    var spacing = 80;
+    var spacing = 40;
     this.$body.box.y = y + 24;
     this.$body.box.x = oyLabelWidth + 10;
     this.$body.box.width = width - this.$body.box.x - 10;
@@ -313,8 +354,10 @@ HorizontalRankChart.prototype.updateContentPosition = function () {
         elt.box.y = i * spacing + spacing / 2;
         var position = positions[i];
         for (var k = 0; k < position.ranks.length; ++k) {
-            elt.$ranks[k].box.x = map(position.ranks[k], 0, dv, 0, dx)
+            elt.$ranks[k].box.x = map(position.ranks[k] - sm.minValue, 0, dv, 0, dx);
         }
+        if (position.ranks.length > 0)
+            elt.$line.attr('d', `M${map(position.ranks[0] - sm.minValue, 0, dv, 0, dx)} 0 L${map(position.ranks[position.ranks.length - 1] - sm.minValue, 0, dv, 0, dx)} 0`);
     });
 
 
