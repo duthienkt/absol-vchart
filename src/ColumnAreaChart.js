@@ -31,6 +31,7 @@ ColumnAreaChart.render = function () {
     return ColumnChart.render().addClass('vc-column-area-chart');
 };
 
+ColumnAreaChart.prototype.dataKeys = ColumnChart.prototype.dataKeys.concat(['areas']);
 
 ColumnAreaChart.prototype.computeMinMax = function () {
   ColumnChart.prototype.computeMinMax.call(this);
@@ -65,6 +66,7 @@ ColumnAreaChart.prototype._createArea = DualChart.prototype._createArea;
 ColumnAreaChart.prototype._createAreaNote = DualChart.prototype._createAreaNote;
 
 ColumnAreaChart.prototype._createAreas = function (){
+    this.$areaCtn.clearChild();
     this.$areas = this.areas.map(function (area, i) {
         return this._createArea(area, area.color).addTo(this.$areaCtn);
     }.bind(this));
@@ -87,16 +89,6 @@ ColumnAreaChart.prototype.updateBodyPosition = function () {
     this._updateAreaPosition();
 };
 
-//
-// ColumnAreaChart.prototype.initComp = function () {
-//
-//     this.super();
-// };
-// ColumnAreaChart.prototype.updateComp = function () {
-//     this.super();
-//     this.updateArea();
-// };
-//
 ColumnAreaChart.prototype._updateAreaPosition  = function () {
     var oxSegmentLength = this.computedData.oxSegmentLength;
     this.$areas.map(function ($area, i) {
