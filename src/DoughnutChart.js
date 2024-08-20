@@ -47,12 +47,13 @@ OOP.mixClass(DoughnutChart, BChart);
 DoughnutChart.property = Object.assign({}, BChart.property);
 DoughnutChart.eventHandler = Object.assign({}, BChart.eventHandler);
 
+DoughnutChart.prototype.dataKeys = BChart.prototype.dataKeys.concat(['pieces']);
+
 
 DoughnutChart.tag = 'DoughnutChart'.toLowerCase();
 
 DoughnutChart.render = function (data, o, dom) {
     return BChart.render(data, o, dom).addClass('vc-piece-chart');
-
 };
 
 DoughnutChart.eventHandler.mouseEnterNote = function (idx, event) {
@@ -77,6 +78,7 @@ DoughnutChart.eventHandler.mouseLeaveNote = function (idx) {
 
 
 DoughnutChart.prototype._createPie = function () {
+
     this.$pie.clearChild();
     var thisC = this;
     this.$pieces = this.pieces.map((piece, idx) => {
@@ -84,7 +86,7 @@ DoughnutChart.prototype._createPie = function () {
             tag: 'shape',
             class: 'vc-piece',
             style: {
-                fill: piece.fillColor + ''
+                fill: (piece.fillColor  || this.blockColors[idx]) + ''
             },
             attr: {title: piece.name + ': ' + (piece.valueText || piece.value)},
             on: {
@@ -99,12 +101,12 @@ DoughnutChart.prototype._createPie = function () {
         thisC.$pie.addChild(pieceElt);
         return pieceElt;
     });
-    this.$pieceValues = this.pieces.map(function (piece) {
+    this.$pieceValues = this.pieces.map( (piece, idx)=> {
         var valueElt = _({
             tag: 'text',
             class: 'vc-piece-value',
             style: {
-                fill: Color.parse(piece.fillColor + '').getContrastYIQ()
+                fill: Color.parse((piece.fillColor  || this.blockColors[idx])+'').getContrastYIQ()
             },
             child: {text: piece.valueText || piece.value || ''}
         });
@@ -115,9 +117,9 @@ DoughnutChart.prototype._createPie = function () {
 };
 
 DoughnutChart.prototype.computeNotes = function () {
-    return this.pieces.map(function (piece, i) {
+    return this.pieces.map( (piece, i)=> {
         return {
-            color: piece.fillColor,
+            color: piece.fillColor||this.blockColors[i],
             text: piece.name,
             type: 'rect',
             idx: i
@@ -273,10 +275,7 @@ DoughnutChart.prototype.updateBodyPosition = function () {
 
 DoughnutChart.prototype.normalizeData = function () {
     var colorScheme = this.colorScheme;
-    var blockColors = isNaturalNumber(colorScheme) ? generatorColorScheme(colorScheme, this.pieces.length) : generateBackgroundColors(this.pieces.length);
-    this.pieces.forEach(function (piece, i) {
-        piece.fillColor = piece.fillColor || blockColors[i];
-    });
+    this.blockColors = isNaturalNumber(colorScheme) ? generatorColorScheme(colorScheme, this.pieces.length) : generateBackgroundColors(this.pieces.length);
 };
 
 
