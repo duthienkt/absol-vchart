@@ -1,7 +1,6 @@
 import Vcore from "./VCore";
 import {rect, text, isNumber} from "./helper";
 import {translate} from "./template";
-import AElementNS from "absol/src/HTML5/AElementNS";
 import OOP from "absol/src/HTML5/OOP";
 import VerticalChart from "./VerticalChart";
 
@@ -35,6 +34,9 @@ ColumnChart.render = function () {
     return VerticalChart.render().addClass('vc-column-chart');
 };
 
+
+ColumnChart.prototype.dataKeys = VerticalChart.prototype.dataKeys.concat(['values', 'oxColWidth']);
+
 ColumnChart.prototype.computeMinMax = function () {
     this.computedData.min = this.values.filter(isNumber).reduce(function (ac, cr) {
         return Math.min(ac, cr);
@@ -66,6 +68,7 @@ ColumnChart.prototype._createColumn = function (value, i, color) {
 };
 
 ColumnChart.prototype._createColumns = function () {
+    this.$columnCtn.clearChild();
     this.$columnes = this.values.map(function (value, i) {
         return this._createColumn(value, i, this.columnColors && this.columnColors[i]).addTo(this.$columnCtn);
     }.bind(this));
@@ -99,7 +102,7 @@ ColumnChart.prototype._updateColumnPosition = function () {
     }.bind(this));
 };
 
+Vcore.install(ColumnChart);
 
-Vcore.creator.columnchart = ColumnChart;
 
 export default ColumnChart;
