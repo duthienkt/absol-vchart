@@ -6,6 +6,9 @@ import DomSignal from "absol/src/HTML5/DomSignal";
 import {generateBackgroundColors} from "./helper";
 import Color from "absol/src/Color/Color";
 import {ChartResizeController} from "./BChart";
+import {observePropertyChanges, unobservePropertyChanges} from "absol/src/DataStructure/Object";
+import {revokeResource} from "absol-acomp/js/utils";
+import noop from "absol/src/Code/noop";
 
 var _ = VCore._;
 var $ = VCore.$;
@@ -40,6 +43,9 @@ function BarStackChart() {
     this.$notes = [];
     this.domSignal.emit('updateContent');
     this.resizeCtrl = new ChartResizeController(this);
+    observePropertyChanges(this, ['blocks'], () => {
+        this.domSignal.emit('updateContent');
+    });
 }
 
 
@@ -67,6 +73,16 @@ BarStackChart.render = function () {
             'sattachhook.vc-dom-signal'
         ]
     })
+};
+
+BarStackChart.prototype.revokeResource = function () {
+    unobservePropertyChanges(this, ['blocks']);
+    revokeResource(this.resizeCtrl);
+    this.revokeResource = noop;
+    while (this.lastChild) {
+        revokeResource(this.lastChild);
+        this.lastChild.remove();
+    }
 };
 
 
@@ -109,7 +125,7 @@ BarStackChart.prototype._makeNote = function (block) {
                     y: 15,
                     x: 0
                 },
-                child: { text: block.name }
+                child: {text: block.name}
             },
             {
                 tag: 'text',
@@ -229,7 +245,7 @@ BarStackChart.prototype._updateNotePosition = function () {
     this.$noteCtn.box.setPosition(this.$content.box.width - noteCtnBox.width, 0);
     var dy = this.$noteCtn.box.height / this.blocks.length;
     this.$notes.forEach(function (noteElt, i) {
-        noteElt.box.y = dy * i + dy/2 - 7;
+        noteElt.box.y = dy * i + dy / 2 - 7;
     });
 };
 
