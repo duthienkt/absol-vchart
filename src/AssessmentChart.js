@@ -6,7 +6,7 @@ import {rotate, translate} from "./template";
 import Rectangle from "absol/src/Math/Rectangle";
 import BChart from "./BChart";
 import OOP from "absol/src/HTML5/OOP";
-import GContainer from "absol-svg/js/svg/GContainer";
+import {observePropertyChanges, unobservePropertyChanges} from "absol/src/DataStructure/Object";
 
 var _ = Vcore._;
 var $ = Vcore.$;
@@ -19,7 +19,7 @@ var $ = Vcore.$;
  */
 function AssessmentChart() {
     BChart.call(this);
-    this.rangePlotRadius = 5;
+    this.rangePlotRadius = 5;//? not display
     this.rangeFillColor = null;
     this.rangeFillColor = null;
     this.rangeMaxStrokeColor = Color.parse('rgba(255, 150, 0, 0.3)');
@@ -80,6 +80,8 @@ AssessmentChart.render = function () {
     return BChart.render().addClass('vc-assessment-chart');
 };
 
+AssessmentChart.prototype.dataKeys = ['title', 'simpleMode ','keys ','rangeFillColor'];
+
 AssessmentChart.prototype.normalizeData = function () {
     var thisC = this;
     // fill: area.fill || this.autoColor(i, 0.3),
@@ -95,18 +97,16 @@ AssessmentChart.prototype.normalizeData = function () {
         if (area.color) {
             area.fill = area.fill || filColor;
             area.stroke = area.stroke || strokeColor;
-        }
-        else {
+        } else {
             if (area.stroke) {
                 area.fill = area.fill || 'none';
-            }
-            else if (area.fill) {
-                area.stroke = area.stroke || 'none';
-            }
-            else {
-                area.fill = filColor;
-                area.stroke = strokeColor;
-            }
+            } else
+                if (area.fill) {
+                    area.stroke = area.stroke || 'none';
+                } else {
+                    area.fill = filColor;
+                    area.stroke = strokeColor;
+                }
             area.color = color;
         }
     });
@@ -135,7 +135,8 @@ AssessmentChart.prototype._createAxis = function () {
     this.$axisNames = this.keys.map(function (key, i, arr) {
         var anchor = 'start';
         if (i === 0 || i === arr.length / 2) anchor = 'middle';
-        else if (i > arr.length / 2) anchor = 'end';
+        else
+            if (i > arr.length / 2) anchor = 'end';
         return _({
             tag: 'text',
             attr: {
@@ -145,7 +146,7 @@ AssessmentChart.prototype._createAxis = function () {
             style: {
                 textAnchor: anchor
             },
-            child: { text: key }
+            child: {text: key}
         }).addTo(this.$axisCnt);
     }.bind(this));
 
@@ -156,7 +157,7 @@ AssessmentChart.prototype._createAxis = function () {
 
     this.computedData.axisNameSize = this.$axisNames.map(function (elt) {
         var box = elt.getBBox();
-        return { width: box.width, height: box.height };
+        return {width: box.width, height: box.height};
     });
 
     this.$levelValueCnt.clearChild();
@@ -214,8 +215,8 @@ AssessmentChart.prototype.createContent = function () {
 
 AssessmentChart.prototype._createLevelValue = function (value) {
     var res = _('gcontainer.vc-assessment-chart-level-value');
-    res.$bound = rect(0, -6, 0, 13).attr({ rx: '4', ry: '4' }).addTo(res);
-    res.$text = text(value + '', 0, 4).attr({ 'text-anchor': 'middle' }).addTo(res);
+    res.$bound = rect(0, -6, 0, 13).attr({rx: '4', ry: '4'}).addTo(res);
+    res.$text = text(value + '', 0, 4).attr({'text-anchor': 'middle'}).addTo(res);
     if (value === '' || value === undefined || value === null) res.addStyle('visibility', 'hidden');
     return res;
 };
@@ -251,8 +252,7 @@ AssessmentChart.prototype.mapLevel = function (value) {
                     this.levelMappingArray[i - 1], this.levelMappingArray[i],
                     i - 1, i);
         }
-    }
-    else {
+    } else {
         return value;
     }
 };
@@ -282,35 +282,34 @@ AssessmentChart.prototype._expectSize = function (rects, r) {
         if (i == 0) {
             rect.x = rect.width / 2;
             rect.y = -rect.height - r - 7;
-        }
-        else if (rects.length % 4 == 0 && i == (rects.length >> 2)) {
-            rect.x = r;
-            rect.y = rect.height / 2;
-        }
-        else if (rects.length % 4 == 0 && i == (rects.length >> 2) * 3) {
-            rect.x = -r - rect.width;
-            rect.y = rect.height / 2;
-        }
-        else if (rects.length % 2 == 0 && i == (rects.length >> 1)) {
-            rect.x = rect.width / 2;
-            rect.y = r + 7;
-        }
-        else if (i < rects.length / 4) {
-            rect.x = r * Math.cos(angle);
-            rect.y = r * Math.sin(angle) - rect.height;
-        }
-        else if (i < rects.length / 2) {
-            rect.x = r * Math.cos(angle);
-            rect.y = r * Math.sin(angle);
-        }
-        else if (i < rects.length / 4 * 3) {
-            rect.x = r * Math.cos(angle) - rect.width;
-            rect.y = r * Math.sin(angle);
-        }
-        else {
-            rect.x = r * Math.cos(angle) - rect.width;
-            rect.y = r * Math.sin(angle) - rect.height;
-        }
+        } else
+            if (rects.length % 4 == 0 && i == (rects.length >> 2)) {
+                rect.x = r;
+                rect.y = rect.height / 2;
+            } else
+                if (rects.length % 4 == 0 && i == (rects.length >> 2) * 3) {
+                    rect.x = -r - rect.width;
+                    rect.y = rect.height / 2;
+                } else
+                    if (rects.length % 2 == 0 && i == (rects.length >> 1)) {
+                        rect.x = rect.width / 2;
+                        rect.y = r + 7;
+                    } else
+                        if (i < rects.length / 4) {
+                            rect.x = r * Math.cos(angle);
+                            rect.y = r * Math.sin(angle) - rect.height;
+                        } else
+                            if (i < rects.length / 2) {
+                                rect.x = r * Math.cos(angle);
+                                rect.y = r * Math.sin(angle);
+                            } else
+                                if (i < rects.length / 4 * 3) {
+                                    rect.x = r * Math.cos(angle) - rect.width;
+                                    rect.y = r * Math.sin(angle);
+                                } else {
+                                    rect.x = r * Math.cos(angle) - rect.width;
+                                    rect.y = r * Math.sin(angle) - rect.height;
+                                }
 
         cr = cr.merge(rect);
     }
@@ -334,8 +333,7 @@ AssessmentChart.prototype._computedNetSize = function () {
         var size = this._expectSize(rects, midR);
         if (size.width < aWidth && size.height < aHeight) {
             minR = midR;
-        }
-        else {
+        } else {
             maxR = midR;
         }
     }
@@ -358,8 +356,7 @@ AssessmentChart.prototype._updateAxisPosition = function () {
             if (axisLineElt) {
                 if (value >= 0) {
                     axisLineElt.addStyle('strokeWidth', value + '');
-                }
-                else {
+                } else {
                     axisLineElt.remove('strokeWidth');
                 }
             }
@@ -372,11 +369,11 @@ AssessmentChart.prototype._updateAxisPosition = function () {
         var y = (axisLength + 30) * Math.sin(angle) + 5;
         if (this.keys.length % 2 == 0 && i == (this.keys.length >> 1)) {
             y += 7;
-        }
-        else if (i == 0) {
-            y -= 7;
-        }
-        $axisName.attr({ x: x, y: y });
+        } else
+            if (i == 0) {
+                y -= 7;
+            }
+        $axisName.attr({x: x, y: y});
     }.bind(this));
 
     this.$levels.forEach(function ($level, level) {
@@ -400,12 +397,11 @@ AssessmentChart.prototype._updateAxisPosition = function () {
 
     if (this.mapRadius(1) - this.mapRadius(0) > 13) {
         this.$levelValues.forEach(function ($levelValue, i) {
-            $levelValue.$bound.attr({ x: -levelValueWidth / 2, width: levelValueWidth });
+            $levelValue.$bound.attr({x: -levelValueWidth / 2, width: levelValueWidth});
             $levelValue.attr('transform', translate(0, -this.mapRadius(i)));
         }.bind(this));
 
-    }
-    else {
+    } else {
         this.$levelValues.forEach(function ($levelValue, i) {
             $levelValue.addStyle('display', 'none');
         }.bind(this));
@@ -447,12 +443,12 @@ AssessmentChart.prototype._updateRangePosition = function () {
             var levelMax = this.mapLevel(range[1]);
             var xMax = this.mapRadius(levelMax) * Math.cos(angle);
             var yMax = this.mapRadius(levelMax) * Math.sin(angle);
-            $range.$max.attr({ cx: xMax, cy: yMax });
+            $range.$max.attr({cx: xMax, cy: yMax});
 
             var levelMin = this.mapLevel(range[0]);
             var xMin = this.mapRadius(levelMin) * Math.cos(angle);
             var yMin = this.mapRadius(levelMin) * Math.sin(angle);
-            $range.$min.attr({ cx: xMin, cy: yMin });
+            $range.$min.attr({cx: xMin, cy: yMin});
             $range.$line.attr('d', 'M' + xMin + ' ' + yMin + 'L' + xMax + ' ' + yMax);
         }.bind(this));
 
@@ -467,8 +463,7 @@ AssessmentChart.prototype._updateRangePosition = function () {
             if (i == 0) {
                 this.$rangeArea.moveTo(xMax, yMax);
                 this.$rangeMax.moveTo(xMax, yMax);
-            }
-            else {
+            } else {
                 this.$rangeArea.lineTo(xMax, yMax);
                 this.$rangeMax.lineTo(xMax, yMax);
             }
@@ -486,8 +481,7 @@ AssessmentChart.prototype._updateRangePosition = function () {
             if (i == 0) {
                 this.$rangeArea.moveTo(xMin, yMin);
                 this.$rangeMin.moveTo(xMin, yMin);
-            }
-            else {
+            } else {
                 this.$rangeArea.lineTo(xMin, yMin);
                 this.$rangeMin.lineTo(xMin, yMin);
             }
