@@ -13,6 +13,7 @@ import KeyNote from "./KeyNote";
 import Tooltip from "absol-acomp/js/Tooltip";
 import ToolTip from "absol-acomp/js/Tooltip";
 import noop from "absol/src/Code/noop";
+import {observePropertyChanges, unobservePropertyChanges} from "absol/src/DataStructure/Object";
 
 
 var _ = Vcore._;
@@ -191,6 +192,12 @@ function BChart() {
     if (!this.numberToText) {
         OOP.drillProperty(this, this, 'numberToText', 'numberToString');
     }
+
+    observePropertyChanges(this, this.dataKeys, ()=>{
+        if (this.domSignal) this.domSignal.emit('updateContent');
+    });
+
+
     /**
      * @name colorScheme
      * @type {null|number}
@@ -231,14 +238,17 @@ BChart.render = function (data, o, dom) {
     return res;
 };
 
+BChart.prototype.dataKeys = ['title'];
+
 BChart.prototype.revokeResource = function () {
+    unobservePropertyChanges(this, this.dataKeys);
     revokeResource(this.resizeCtrl);
     revokeResource(this.titleCtrl);
     while (this.lastChild) {
         revokeResource(this.lastChild);
         this.lastChild.remove();
     }
-    this.revokeResource = noop();
+    this.revokeResource = noop;
     this.computedData = null;
 }
 
@@ -402,6 +412,9 @@ BChart.property.showInlineValue = {
 BChart.property.colorScheme = {
     set: function (value) {
         this.attr('data-color-scheme', value + '');
+        if (this.isDescendantOf(document.body)) {
+            this.domSignal.emit("updateContent");
+        }
     },
     get: function () {
         var res = this.attr('data-color-scheme');
@@ -412,31 +425,6 @@ BChart.property.colorScheme = {
 };
 
 BChart.eventHandler = {};
-
-/***
- *
- * @type {ChartResizeBox}
- */
-// BChart.$resizebox = ACore._({
-//     tag: ChartResizeBox.tag
-// });
-//
-// BChart.eventHandler.click2Resize = function () {
-//     if (this.resizable)
-//         if (!BChart.$resizebox.isAttached(this)) {
-//             BChart.$resizebox.attachTo(this);
-//             document.addEventListener('click', this.eventHandler.click2CancelResize);
-//         }
-// };
-//
-//
-// BChart.eventHandler.click2CancelResize = function (event) {
-//     if (hitElement(this, event)) return;
-//     if (hitElement(BChart.$resizebox, event)) return;
-//     if (BChart.$resizebox.isAfterMoving()) return;
-//     if (BChart.$resizebox.isAttached(this)) BChart.$resizebox.detach();
-//     document.removeEventListener('click', this.eventHandler.click2CancelResize);
-// };
 
 
 Vcore.install(BChart);
