@@ -86,6 +86,33 @@ KeyNote.prototype.typeHandlers.null = {
 }
 
 KeyNote.prototype.typeHandlers.rect = KeyNote.prototype.typeHandlers.null;
+KeyNote.prototype.typeHandlers.rhombus = {
+    view: function () {
+        var fontSize = 14;
+
+        this.$rhombus = _({
+            tag: 'rect',
+            class: 'vc-note-rect',
+            attr: {
+                x: -fontSize/2.8,
+                y: -fontSize/2.8,
+                width: fontSize/1.4,
+                height: fontSize/1.4,
+                transform: 'rotate(45)'
+            }
+        });
+        this.$type = _({
+            tag:GContainer,
+            child: this.$rhombus
+        });
+        this.$type.box.x =  Math.ceil(24 * fontSize / 14/2);
+        this.$type.box.y = Math.ceil(fontSize/2);
+    },
+    color: function (value) {
+        this.$rhombus.addStyle('fill', value);
+    }
+};
+
 KeyNote.prototype.typeHandlers.point = {
     view: function () {
         // var fontSize = getComputedStyle(document.body).getPropertyValue('font-size');
