@@ -9,6 +9,9 @@ import AElement from "absol/src/HTML5/AElement";
 import Turtle from "absol/src/Math/Turtle";
 import {numberToString} from "absol/src/Math/int";
 import {calBeautySegment, map, measureArial14TextWidth} from "./helper";
+import DelaySignal from "absol/src/HTML5/DelaySignal";
+import {observePropertyChanges} from "absol/src/DataStructure/Object";
+import GContainer from "absol-svg/js/svg/GContainer";
 
 /**
  * @extends SvgCanvas
@@ -33,10 +36,20 @@ function HorizontalRangeChart() {
     this.$rangeCtn = $('.vc-range-ctn', this);
     this.$grid = $('.vc-grid', this);
     this.$valueName = $('.vc-value-name', this);
+    this.domSignal = new DelaySignal();
 
-    setTimeout(() => {
-        console.log(Object.assign({}, this))
-    }, 100);
+    this.domSignal.on({
+        updateContent: () => {
+            if (this.isDescendantOf(document.body)) {
+                this.updateContent();
+            }
+        }
+    });
+
+    observePropertyChanges(this, this.dataKeys, () => {
+        if (this.domSignal) this.domSignal.emit('updateContent');
+    });
+
 
     /**
      * @name ranges
@@ -162,6 +175,23 @@ HorizontalRangeChart.render = function (data, o, dom) {
     return res;
 };
 
+
+HorizontalRangeChart.prototype.rowSpacing = 40;
+HorizontalRangeChart.prototype.plotRadius = 8;
+HorizontalRangeChart.prototype.rangeHeight = 20;
+HorizontalRangeChart.prototype.rangeWidth = 3;
+HorizontalRangeChart.prototype.rangeMaxColor = '#86aeea';
+HorizontalRangeChart.prototype.rangeMinColor = '#7ebd3b';
+HorizontalRangeChart.prototype.rangeMidColor = 'red';
+HorizontalRangeChart.prototype.rangeMidHeight = 26;
+HorizontalRangeChart.prototype.rangeMidWidth = 5;
+
+HorizontalRangeChart.prototype.normalColor = 'rgb(247, 148, 29)';
+
+
+HorizontalRangeChart.prototype.dataKeys = BChart.prototype.dataKeys
+    .concat(['rowSpacing', 'plotRadius', 'rangeHeight', 'ranges','rangeWidth', 'rangeMaxColor', 'rangeMinColor', 'rangeMidHeight', 'rangeMidWidth' ]);
+
 HorizontalRangeChart.prototype.numberToString = function () {
     return numberToString.apply(this, arguments);
 };
@@ -182,10 +212,10 @@ HorizontalRangeChart.prototype.addStyle = function (arg0, arg1) {
 
 HorizontalRangeChart.prototype.createNote = function () {
     var items = [
-        {noteType: 'line', text: this.minText || 'Minimum', key: 'min', color: '#ED1C24'},
-        {noteType: 'line', text: this.midText || 'Medium', key: 'mid', color: '#58EBF4'},
-        {noteType: 'line', text: this.maxText || 'Maximum', key: 'max', color: '#2C82FF'},
-        {noteType: 'point', text: this.normalText || 'Normal', key: 'normal', color: '#f7941d'}
+        {noteType: 'line', text: this.minText || 'Minimum', key: 'min', color: this.rangeMinColor},
+        {noteType: 'line', text: this.midText || 'Medium', key: 'mid', color: this.rangeMidColor},
+        {noteType: 'line', text: this.maxText || 'Maximum', key: 'max', color: this.rangeMaxColor},
+        {noteType: 'point', text: this.normalText || 'Normal', key: 'normal', color: this.normalColor}
     ];
     this.$keyNoteGroup.items = items;
 };
@@ -194,6 +224,7 @@ HorizontalRangeChart.prototype.createNote = function () {
 HorizontalRangeChart.prototype.createOYLabel = function () {
     var ranges = this.ranges;
     if (!Array.isArray(ranges)) ranges = [];
+    if (this.$oyLabels) this.$oyLabels.forEach(e => e.remove());
     this.$oyLabels = ranges.map(it => {
         return _({
             tag: 'text',
@@ -223,32 +254,57 @@ HorizontalRangeChart.prototype.createRanges = function () {
         });
 
         elt.addChild(elt.$line);
+        if (isRealNumber(range.normal)) {
+            elt.$normal = _({
+                tag: 'circle',
+                attr: {
+                    cx: 0, cy: 0, r: this.plotRadius,
+                    title: this.numberToString(range.normal)
+                },
+                style: {
+                    fill: this.normalColor,
+                    stroke: 'rgb(92, 92, 95)'
+                }
+            });
+            elt.addChild(elt.$normal);
+        }
         elt.$min = _({
             tag: 'rect',
             attr: {
-                x: -2.5,
-                y: -13,
-                width: 5, height: 26,
+                x: -this.rangeWidth / 2,
+                y: -this.rangeHeight / 2,
+                width: this.rangeWidth, height: this.rangeHeight,
                 title: this.numberToString(range.min)
             },
             style: {
-                fill: '#ED1C24',
+                fill: this.rangeMinColor,
+                // fill:'black',
+                // fill: 'rgb(72, 72, 75)',
                 stroke: 'none'
             }
         });
         elt.addChild(elt.$min);
         if (isRealNumber(range.mid)) {
             elt.$mid = _({
-                tag: 'rect',
-                style: {
-                    fill: '#58EBF4',
-                    stroke: 'none'
-                },
-                attr: {
-                    x: -2.5,
-                    y: -13,
-                    width: 5, height: 26,
-                    title: this.numberToString(range.mid)
+                tag: GContainer,
+                child: {
+                    tag: 'rect',
+                    style: {
+                        // fill: '#58EBF4',
+                        fill: 'red',
+                        stroke: 'none'
+                    },
+                    attr: {
+                        // x: -this.plotRadius / 1.4,
+                        // y: -this.plotRadius / 1.4,
+                        // width: this.plotRadius / 0.7, height: this.plotRadius / 0.7,
+                        width: this.rangeMidWidth,
+                        height: this.rangeMidHeight,
+                        x: -this.rangeMidWidth/2,
+                        y: - this.rangeMidHeight/2,
+                        title: this.numberToString(range.mid),
+                        // transform:'rotate(45)'
+                    }
                 }
             });
             elt.addChild(elt.$mid);
@@ -256,30 +312,19 @@ HorizontalRangeChart.prototype.createRanges = function () {
         elt.$max = _({
             tag: 'rect',
             style: {
-                fill: '#2C82FF',
+                fill: this.rangeMaxColor,
+                // fill: 'rgb(72, 72, 75)',
                 stroke: 'none'
             },
             attr: {
-                x: -2.5,
-                y: -13,
-                width: 5, height: 26,
+                x: -this.rangeWidth / 2,
+                y: -this.rangeHeight / 2,
+                width: this.rangeWidth, height: this.rangeHeight,
                 title: this.numberToString(range.max)
             }
         });
         elt.addChild(elt.$max);
-        if (isRealNumber(range.normal)) {
-            elt.$normal = _({
-                tag: 'circle',
-                attr: {
-                    cx: 0, cy: 0, r: 8,
-                    title: this.numberToString(range.normal)
-                },
-                style: {
-                    fill: "rgb(247, 148, 29)"
-                }
-            });
-            elt.addChild(elt.$normal);
-        }
+
         return elt;
     });
     this.$rangeCtn.clearChild()
@@ -306,12 +351,13 @@ HorizontalRangeChart.prototype.updateContentPosition = function () {
     this.$keyNoteGroup.box.x = 10;
     this.$keyNoteGroup.box.y = y;
     this.$keyNoteGroup.updateSize();
+    this.$keyNoteGroup.box.x = width / 2 - this.$keyNoteGroup.getBBox().width / 2;
     y += (this.$keyNoteGroup.box.height || 0) + 20;
     this.$body.box.y = y + 24;
 
     var oyLabelWidth = this.$oyLabels.reduce((ac, cr) => Math.max(ac, cr.getBBox().width), 0);
     oyLabelWidth = Math.ceil(oyLabelWidth);
-    var spacing = 40;
+    var spacing = this.rowSpacing;
     this.$body.box.x = oyLabelWidth + 10;
     this.$body.box.width = width - this.$body.box.x - 10;
 
@@ -350,7 +396,8 @@ HorizontalRangeChart.prototype.updateContentPosition = function () {
         elt.attr('y', i * spacing + spacing / 2);
     });
 
-    while (this.$oxLabelCtn.childNodes.length > sm.segmentCount + 1) this.$oxLabelCtn.lastChild.remove();
+    while (this.$oxLabelCtn.childNodes.length > sm.segmentCount + 1 && this.$oxLabelCtn.lastChild)
+        this.$oxLabelCtn.lastChild.remove();
     while (this.$oxLabelCtn.childNodes.length < sm.segmentCount + 1)
         this.$oxLabelCtn.addChild(_({tag: 'text', style: {textAnchor: 'middle'}, attr: {y: -8}, child: {text: ''}}));
 
@@ -378,9 +425,9 @@ HorizontalRangeChart.prototype.updateContentPosition = function () {
     this.$ranges.forEach((elt, i) => {
         elt.box.y = i * spacing + spacing / 2;
         var range = ranges[i];
-        elt.$min.attr('x', map(range.min - sm.minValue, 0, dv, 0, dx) - 2.5);
-        if (elt.$mid) elt.$mid.attr('x', map(range.mid - sm.minValue, 0, dv, 0, dx) - 2.5);
-        elt.$max.attr('x', map(range.max - sm.minValue, 0, dv, 0, dx) - 2.5);
+        elt.$min.attr('x', map(range.min - sm.minValue, 0, dv, 0, dx) - this.rangeWidth / 2);
+        if (elt.$mid) elt.$mid.box.x = map(range.mid - sm.minValue, 0, dv, 0, dx);
+        elt.$max.attr('x', map(range.max - sm.minValue, 0, dv, 0, dx) - this.rangeWidth / 2);
         elt.$line.attr('d', `M${map(range.min - sm.minValue, 0, dv, 0, dx)} 0 l${map(range.max - range.min, 0, dv, 0, dx)} 0`)
         if (elt.$normal) elt.$normal.attr('cx', map(range.normal - sm.minValue, 0, dv, 0, dx));
     });
@@ -400,6 +447,7 @@ HorizontalRangeChart.prototype.computeData = function () {
 };
 
 HorizontalRangeChart.prototype.updateContent = function () {
+
     this.computeData();
     this.$title.firstChild.data = this.title;
     this.$valueName.firstChild.data = this.valueName || '';
