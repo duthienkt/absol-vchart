@@ -104,6 +104,8 @@ VerticalChart.eventHandler = Object.assign({}, BChart.eventHandler);
 
 VerticalChart.tag = 'VerticalChart'.toLowerCase();
 
+VerticalChart.prototype.dataKeys = BChart.prototype.dataKeys.concat(['keys', 'zeroOY']);
+
 VerticalChart.render = function () {
     return BChart.render();
 };
