@@ -1,13 +1,15 @@
 import Vcore, {$, _} from "./VCore";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import {KeyNoteGroup} from "./KeyNote";
-import {isNaturalNumber} from "absol-acomp/js/utils";
+import {isNaturalNumber, revokeResource} from "absol-acomp/js/utils";
 import {DEFAULT_CHART_COLOR_SCHEMES, generatorColorScheme} from "absol-acomp/js/colorpicker/SelectColorSchemeMenu";
-import {ChartResizeController, ChartTitleController} from "./BChart";
+import BChart, {ChartResizeController, ChartTitleController} from "./BChart";
 import AElement from "absol/src/HTML5/AElement";
 import {calBeautySegment, map, measureArial14TextWidth} from "./helper";
 import Turtle from "absol/src/Math/Turtle";
 import {numberToString} from "absol/src/Math/int";
+import {observePropertyChanges, unobservePropertyChanges} from "absol/src/DataStructure/Object";
+import DelaySignal from "absol/src/HTML5/DelaySignal";
 
 
 /**
@@ -41,6 +43,13 @@ function HorizontalRankChart() {
         'rgb(215, 87, 246)', 'rgb(255, 138, 132)', 'rgb(152, 165, 52)', 'rgb(254, 248, 160)',
         'rgb(174, 221, 148)', 'rgb(0, 164, 221)', 'rgb(20, 100, 246)', 'rgb(156, 41, 183)'
     ];
+    this.domSignal = new DelaySignal();
+    this.domSignal.on('updateContent', ()=>{
+        if (this.isDescendantOf(document.body)) this.updateContent();
+    });
+
+    observePropertyChanges(this, this.dataKeys, ()=> this.domSignal.emit('updateContent'));
+
 
     /**
      * @name positions
@@ -135,6 +144,18 @@ HorizontalRankChart.render = function (data, o, dom) {
         res.attr('data-color-scheme', colorScheme + '');
     }
     return res;
+};
+
+HorizontalRankChart.prototype.dataKeys = BChart.prototype.dataKeys.concat(['position', 'valueName']);
+
+HorizontalRankChart.prototype.revokeResource = function () {
+      unobservePropertyChanges(this, this.dataKeys);
+      revokeResource(this.titleCtrl);
+      revokeResource(this.resizeCtrl);
+      revokeResource(this.domSignal);
+      while (this.lastChild) {
+          this.lastChild.remove();
+      }
 };
 
 HorizontalRankChart.prototype.addStyle = function (arg0, arg1) {
@@ -322,16 +343,16 @@ HorizontalRankChart.prototype.updateContentPosition = function () {
     this.$oyLabels.forEach((elt, i) => {
         elt.attr('y', i * spacing + spacing / 2);
     });
-    Array.prototype.forEach.call(this.$oxLabelCtn.childNodes, (elt, i) => {
-        elt.firstChild.data = this.numberToString(sm.minValue + i * dv);
-        elt.attr('x', dx * i);
-    });
 
 
     while (this.$oxLabelCtn.childNodes.length > sm.segmentCount + 1) this.$oxLabelCtn.lastChild.remove();
     while (this.$oxLabelCtn.childNodes.length < sm.segmentCount + 1)
         this.$oxLabelCtn.addChild(_({tag: 'text', style: {textAnchor: 'middle'}, attr: {y: -8}, child: {text: ''}}));
 
+    Array.prototype.forEach.call(this.$oxLabelCtn.childNodes, (elt, i) => {
+        elt.firstChild.data = this.numberToString(sm.minValue + i * dv);
+        elt.attr('x', dx * i);
+    });
 
     /***** draw grid *******/
     turtle = new Turtle();
