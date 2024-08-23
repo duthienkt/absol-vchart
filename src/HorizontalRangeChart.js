@@ -1,7 +1,7 @@
 import VCore, {_, $} from "./VCore";
 import BChart, {ChartResizeController, ChartTitleController} from "./BChart";
 import OOP, {mixClass} from "absol/src/HTML5/OOP";
-import {isNaturalNumber, isRealNumber} from "absol-acomp/js/utils";
+import {findMaxZIndex, isNaturalNumber, isRealNumber} from "absol-acomp/js/utils";
 import {DEFAULT_CHART_COLOR_SCHEMES} from "absol-acomp/js/colorpicker/SelectColorSchemeMenu";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import {KeyNoteGroup} from "./KeyNote";
@@ -12,6 +12,8 @@ import {calBeautySegment, map, measureArial14TextWidth} from "./helper";
 import DelaySignal from "absol/src/HTML5/DelaySignal";
 import {observePropertyChanges} from "absol/src/DataStructure/Object";
 import GContainer from "absol-svg/js/svg/GContainer";
+import noop from "absol/src/Code/noop";
+import {traceOutBoundingClientRect} from "absol/src/HTML5/Dom";
 
 /**
  * @extends SvgCanvas
@@ -20,7 +22,11 @@ import GContainer from "absol-svg/js/svg/GContainer";
 function HorizontalRangeChart() {
     this.resizeCtrl = new ChartResizeController(this);
     this.titleCtrl = new ChartTitleController(this);
-    this.$attachhook.once('attached', this.updateContent.bind(this));
+    this.fixedAxisCtrl = new HRCFixedAxisController(this);
+    this.$attachhook.once('attached', () => {
+        this.updateContent.bind(this);
+        this.fixedAxisCtrl.start();
+    });
     /**
      *
      * @type {KeyNoteGroup}
@@ -37,6 +43,7 @@ function HorizontalRangeChart() {
     this.$grid = $('.vc-grid', this);
     this.$valueName = $('.vc-value-name', this);
     this.domSignal = new DelaySignal();
+    this.$fixedContentRef = $('.vc-fixed-content-ref', this);
 
     this.domSignal.on({
         updateContent: () => {
@@ -108,6 +115,18 @@ HorizontalRangeChart.render = function (data, o, dom) {
                     'alignment-baseline': "hanging"
                 },
                 child: {text: ''}
+            },
+            {
+                tag: 'rect',
+                class: 'vc-fixed-content-ref',
+                attr: {
+                    width: '10px',
+                    height: '10px'
+                },
+                style: {
+                    fill: 'transparent',
+                    stroke: 'none'
+                }
             },
             {
                 tag: KeyNoteGroup
@@ -190,7 +209,7 @@ HorizontalRangeChart.prototype.normalColor = 'rgb(247, 148, 29)';
 
 
 HorizontalRangeChart.prototype.dataKeys = BChart.prototype.dataKeys
-    .concat(['rowSpacing', 'plotRadius', 'rangeHeight', 'ranges','rangeWidth', 'rangeMaxColor', 'rangeMinColor', 'rangeMidHeight', 'rangeMidWidth' ]);
+    .concat(['rowSpacing', 'plotRadius', 'rangeHeight', 'ranges', 'rangeWidth', 'rangeMaxColor', 'rangeMinColor', 'rangeMidHeight', 'rangeMidWidth']);
 
 HorizontalRangeChart.prototype.numberToString = function () {
     return numberToString.apply(this, arguments);
@@ -300,8 +319,8 @@ HorizontalRangeChart.prototype.createRanges = function () {
                         // width: this.plotRadius / 0.7, height: this.plotRadius / 0.7,
                         width: this.rangeMidWidth,
                         height: this.rangeMidHeight,
-                        x: -this.rangeMidWidth/2,
-                        y: - this.rangeMidHeight/2,
+                        x: -this.rangeMidWidth / 2,
+                        y: -this.rangeMidHeight / 2,
                         title: this.numberToString(range.mid),
                         // transform:'rotate(45)'
                     }
@@ -336,6 +355,7 @@ HorizontalRangeChart.prototype.createRanges = function () {
 HorizontalRangeChart.prototype.updateSize = function () {
     SvgCanvas.prototype.updateSize.call(this);
     this.updateContentPosition();
+    this.fixedAxisCtrl.updateContentPosition();
 };
 
 HorizontalRangeChart.prototype.updateContentPosition = function () {
@@ -360,6 +380,9 @@ HorizontalRangeChart.prototype.updateContentPosition = function () {
     var spacing = this.rowSpacing;
     this.$body.box.x = oyLabelWidth + 10;
     this.$body.box.width = width - this.$body.box.x - 10;
+    this.$fixedContentRef.attr('y', this.$body.box.y - 24);
+    this.$fixedContentRef.attr('width', this.$body.box.width + this.$body.box.x + 8);
+    this.$fixedContentRef.attr('height', 33);
 
     this.$oyLabelCtn.box.x = -this.$body.box.x;
 
@@ -382,8 +405,11 @@ HorizontalRangeChart.prototype.updateContentPosition = function () {
     var dx = Math.max(100, Math.floor(20 + measureArial14TextWidth(this.numberToString(this.computedData.max))));
     var sm = calBeautySegment(Math.floor((this.$axis.box.width - valueNameWidth - 10 - dx / 2) / dx),
         this.computedData.min, this.computedData.max + 1);
+    this.computedData.sm = sm;
     dx = Math.floor((this.$axis.box.width - valueNameWidth - 10 - dx / 2) / sm.segmentCount);
     var dv = (sm.maxValue - sm.minValue) / sm.segmentCount;
+    this.computedData.dx = dx;//for fixed content
+    this.computedData.dv = dv;
     turtle.moveTo(0, 2);
     for (i = 0; i < sm.segmentCount; ++i) {
         turtle.moveBy(dx, -4);
@@ -447,7 +473,6 @@ HorizontalRangeChart.prototype.computeData = function () {
 };
 
 HorizontalRangeChart.prototype.updateContent = function () {
-
     this.computeData();
     this.$title.firstChild.data = this.title;
     this.$valueName.firstChild.data = this.valueName || '';
@@ -455,9 +480,212 @@ HorizontalRangeChart.prototype.updateContent = function () {
     this.createOYLabel();
     this.createRanges();
     this.updateContentPosition();
+    this.fixedAxisCtrl.updateContent();
 };
 
 VCore.install(HorizontalRangeChart);
 
 export default HorizontalRangeChart;
+
+/**
+ *
+ * @param {HorizontalRangeChart}elt
+ * @constructor
+ */
+function HRCFixedAxisController(elt) {
+    this.elt = elt;
+    this.state = 'PENDING';
+    this.listenningElementList = [];
+    this.ev_scroll = this.ev_scroll.bind(this);
+    this.$canvas = null;
+
+}
+
+HRCFixedAxisController.prototype.start = function () {
+    if (this.state !== 'PENDING') return;
+    this.state = "RUNNING";
+    var elt = this.elt.parentElement;
+    while (elt) {
+        elt.addEventListener('scroll', this.ev_scroll);
+        elt = elt.parentElement;
+        this.listenningElementList.push(elt);
+    }
+    elt = document;
+    elt.addEventListener('scroll', this.ev_scroll);
+    this.listenningElementList.push(elt);
+    this.$canvas = _({
+        tag: SvgCanvas.tag,
+        class:'vc-chart',
+        style: {
+            pointerEvents:'none',
+            minHeight: 'unset',
+            position: 'fixed',
+            zIndex: findMaxZIndex(this.elt) + 100,
+            left: 0,
+            top: 0
+        },
+        child: [
+            {
+                tag:'path',
+                class:'vc-fixed-axis-bg',
+                style:{
+                    pointerEvents:'all',
+                    fill: 'white',
+                    stroke:'none'
+                }
+            },
+            {
+                tag: 'gcontainer',
+                class: 'vc-body',
+                child: [
+                    {
+                        tag: 'gcontainer',
+                        class: 'vc-ox-label-ctn'
+                    },
+                    {
+                        tag: 'text',
+                        class: 'vc-value-name',
+                        child: {text: ''}
+                    },
+                    {
+                        tag: 'gcontainer',
+                        class: 'vchart-axis',
+                        child: [
+                            {
+                                tag: 'path',
+                                id: 'oxy',
+                                attr: {
+                                    d: 'm0 -1v1 h1',
+                                    fill: 'none'
+                                }
+                            },
+                            {
+                                tag: 'path',
+                                id: "ox-arrow",
+                                attr: {
+                                    d: 'm0 -5v10l6.8 -5z'
+                                }
+                            },
+                        ]
+                    }
+                ]
+            },
+
+        ]
+    }).addTo(this.elt.parentElement);
+    this.$bg = $('.vc-fixed-axis-bg', this.$canvas);
+    this.$body = $('.vc-body', this.$canvas);
+    this.$axis = $('.vchart-axis', this.$canvas);
+    this.$oxy = $('#oxy', this.$canvas);
+    this.$oxArrow = $('#ox-arrow', this.$canvas);
+    this.$body.box.y = 24;
+    this.$oxLabelCtn = $('.vc-ox-label-ctn', this.$canvas);
+    this.$valueName = $('.vc-value-name', this.$canvas);
+
+};
+
+HRCFixedAxisController.prototype.stop = function () {
+    if (this.state !== 'RUNNING') return;
+    this.state = "STOPPED";
+    var elt;
+    while (this.listenningElementList.length > 0) {
+        elt = this.listenningElementList.pop();
+        elt.removeEventListener('scroll', this.ev_scroll);
+    }
+    this.$canvas.remove();
+};
+
+HRCFixedAxisController.prototype.revokeResource = function () {
+    this.revokeResource = noop;
+    this.stop();
+    this.elt = null;
+};
+
+HRCFixedAxisController.prototype.updateContent = function () {
+    this.$valueName.firstChild.data = this.elt.valueName || '';
+
+};
+
+
+HRCFixedAxisController.prototype.updateContentPosition = function () {
+    if (this.state !== "RUNNING") return;
+    var i;
+    if (!this.elt.computedData) return;
+    var sm = this.elt.computedData.sm;
+    var dx = this.elt.computedData.dx;
+    var dv = this.elt.computedData.dv;
+    var width = parseFloat(this.elt.$fixedContentRef.attr('width'))
+    var height = parseFloat(this.elt.$fixedContentRef.attr('height'))
+    this.$canvas.addStyle({
+        width: width + 'px',
+        height: height + 1 + 'px'
+    });
+    this.$canvas.box.setSize(width, height);
+    this.$body.box.x =  this.elt.$body.box.x;
+    this.$axis.box.x = this.elt.$axis.box.x;
+    this.$oxArrow.attr('d', 'M' + (this.elt.$axis.box.width) + ' 0 m0 -5v10l6.8 -5z');
+    this.$valueName.attr('x', this.elt.$axis.box.width)
+        .attr('y', -8);
+
+    var turtle = new Turtle()
+        .moveTo(this.elt.$axis.box.width, 0)
+        .hLineTo(0)
+        .vLineTo(10);
+    turtle.moveTo(0, 2);
+    for (i = 0; i < sm.segmentCount; ++i) {
+        turtle.moveBy(dx, -4);
+        turtle.vLineBy(4);
+    }
+    this.$oxy.attr('d', turtle.getPath());
+
+    while (this.$oxLabelCtn.childNodes.length > sm.segmentCount + 1 && this.$oxLabelCtn.lastChild)
+        this.$oxLabelCtn.lastChild.remove();
+    while (this.$oxLabelCtn.childNodes.length < sm.segmentCount + 1)
+        this.$oxLabelCtn.addChild(_({tag: 'text', style: {textAnchor: 'middle'}, attr: {y: -8}, child: {text: ''}}));
+
+    Array.prototype.forEach.call(this.$oxLabelCtn.childNodes, (elt, i) => {
+        elt.firstChild.data = this.elt.numberToString(sm.minValue + i * dv);
+        elt.attr('x', dx * i);
+    });
+
+    turtle = new Turtle();
+    turtle.moveTo(width, 0 )
+        .vLineTo(height)
+        .hLineBy(-8)
+        .vLineBy(-5)
+        .hLineTo(0)
+        .vLineTo(0)
+        .closePath();
+
+    this.$bg.attr('d', turtle.getPath());
+
+    this.updateDomPosition();
+};
+
+HRCFixedAxisController.prototype.updateDomPosition = function () {
+    var outBound = traceOutBoundingClientRect(this.elt);
+    var refBound = this.elt.$fixedContentRef.getBoundingClientRect();
+    var bound = this.elt.getBoundingClientRect();
+    var hidden = false;
+    hidden = hidden || bound.bottom < outBound.top + refBound.height + 5;
+    hidden = hidden || refBound.top  > outBound.top;
+    if (hidden) {
+        this.$canvas.addStyle('visibility', 'hidden');
+    }
+    else {
+        this.$canvas.removeStyle('visibility');
+        this.$canvas.addStyle({
+            left: refBound.left - 0.5 + 'px',
+            top: Math.max(refBound.top, outBound.top) - 0.5 + 'px',
+        });
+    }
+
+}
+
+HRCFixedAxisController.prototype.ev_scroll = function () {
+    this.updateDomPosition();
+};
+
+
+
 
