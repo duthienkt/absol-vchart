@@ -1,6 +1,5 @@
 import Vcore from "./VCore";
-import BaseChart from "./BaseChart";
-import {circle, text, generateBackgroundColors, map} from "./helper";
+import {circle, text, generateBackgroundColors, map, getGlobalBBox} from "./helper";
 import Color from "absol/src/Color/Color";
 import {translate, rotate} from "./template";
 import BChart from "./BChart";
@@ -251,12 +250,29 @@ SunburstChart.prototype._updateSunburstPosition = function () {
     this.$sunbirstCtn.box.setPosition(x, y);
 }
 
+
+
+SunburstChart.prototype._updatePrintViewport = function () {
+    var children = Array.prototype.slice.call(this.childNodes);
+    var bound = children.reduce((ac, cr) => {
+        var bbox = cr.getBBox();
+        if (bbox.width === 0 || bbox.height === 0) return ac;
+        var rect = getGlobalBBox(cr);
+        if (!ac) return rect;
+        return ac.merge(rect);
+    }, null);
+    if (bound) {
+        this.attr('data-print-view-box', (Math.floor(bound.x) - 0.5) + ' ' + (Math.floor(bound.y) - 0.5) + ' ' + Math.ceil(bound.width + 1) + ' ' + Math.ceil(bound.height + 1));
+    }
+    else this.attr('data-print-view-box', null);
+};
+
 SunburstChart.prototype.updateBodyPosition = function () {
     BChart.prototype.updateBodyPosition.call(this);
     this._findBestFanRadius();
     this._updateNodePosition();
     this._updateSunburstPosition();
-
+    this._updatePrintViewport();
 };
 
 SunburstChart.prototype._createRoot = function () {

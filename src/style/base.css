@@ -54,3 +54,15 @@
     stroke: #ddd;
     pointer-events: none;
 }
+
+@media print {
+    .as-resize-box{
+        display: none;
+    }
+
+    .vc-chart {
+        max-width: 600px;/*a4 with 2in margin both*/
+        height: auto;
+    }
+
+}

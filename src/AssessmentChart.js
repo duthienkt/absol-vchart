@@ -1,5 +1,5 @@
 import './style/assessmentchart.css';
-import {text, rect, hline, circle, map, lighterColor} from "./helper";
+import {text, rect, hline, circle, map, lighterColor, getGlobalBBox} from "./helper";
 import Vcore from "./VCore";
 import Color from "absol/src/Color/Color";
 import {rotate, translate} from "./template";
@@ -80,7 +80,7 @@ AssessmentChart.render = function () {
     return BChart.render().addClass('vc-assessment-chart');
 };
 
-AssessmentChart.prototype.dataKeys = ['title', 'simpleMode ','keys ','rangeFillColor'];
+AssessmentChart.prototype.dataKeys = ['title', 'simpleMode ', 'keys ', 'rangeFillColor'];
 
 AssessmentChart.prototype.normalizeData = function () {
     var thisC = this;
@@ -119,7 +119,7 @@ AssessmentChart.prototype.computeNotes = function () {
             color: area.color,
             text: area.name
         }
-    });
+    }).filter(it => !!it.text);
 };
 
 AssessmentChart.prototype._createAxis = function () {
@@ -496,12 +496,29 @@ AssessmentChart.prototype._updateRangePosition = function () {
     }
 };
 
+
+AssessmentChart.prototype._updatePrintViewport = function () {
+    var children = Array.prototype.slice.call(this.childNodes);
+    var bound = children.reduce((ac, cr) => {
+        var bbox = cr.getBBox();
+        if (bbox.width === 0 || bbox.height === 0) return ac;
+        var rect = getGlobalBBox(cr);
+        if (!ac) return rect;
+        return ac.merge(rect);
+    }, null);
+    if (bound) {
+        this.attr('data-print-view-box', (Math.floor(bound.x) - 0.5) + ' ' + (Math.floor(bound.y) - 0.5) + ' ' + Math.ceil(bound.width + 1) + ' ' + Math.ceil(bound.height + 1));
+    }
+    else this.attr('data-print-view-box', null);
+};
+
 AssessmentChart.prototype.updateBodyPosition = function () {
     BChart.prototype.updateBodyPosition.call(this);
     this._computedNetSize();
     this._updateAxisPosition();
     this._updateAreaPosition();
     this._updateRangePosition();
+    this._updatePrintViewport();
 };
 
 

@@ -6,6 +6,7 @@ import AComp from 'absol-acomp/AComp';
 import './vchart.resizablediv';
 import TextMeasure from "absol-acomp/js/TextMeasure";
 import BContextCapture from "absol-acomp/js/BContextCapture";
+import Rectangle from "absol/src/Math/Rectangle";
 
 var _ = Vcore._;
 
@@ -470,4 +471,35 @@ export function addDevContextMenu(svg) {
 
 export function measureArial14TextWidth(text) {
     return TextMeasure.measureWidth(text, 'Arial', 14);
+}
+
+export function getGlobalBBox(svgElement) {
+    var bbox = svgElement.getBBox();
+    var matrix = svgElement.getCTM();
+
+    var points = [
+        svgElement.ownerSVGElement.createSVGPoint(),
+        svgElement.ownerSVGElement.createSVGPoint(),
+        svgElement.ownerSVGElement.createSVGPoint(),
+        svgElement.ownerSVGElement.createSVGPoint()
+    ];
+
+    points[0].x = bbox.x;
+    points[0].y = bbox.y;
+    points[1].x = bbox.x + bbox.width;
+    points[1].y = bbox.y;
+    points[2].x = bbox.x;
+    points[2].y = bbox.y + bbox.height;
+    points[3].x = bbox.x + bbox.width;
+    points[3].y = bbox.y + bbox.height;
+
+    points = points.map(function(point) {
+        return point.matrixTransform(matrix);
+    });
+
+    var minX = Math.min(points[0].x, points[1].x, points[2].x, points[3].x);
+    var minY = Math.min(points[0].y, points[1].y, points[2].y, points[3].y);
+    var maxX = Math.max(points[0].x, points[1].x, points[2].x, points[3].x);
+    var maxY = Math.max(points[0].y, points[1].y, points[2].y, points[3].y);
+    return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 }
