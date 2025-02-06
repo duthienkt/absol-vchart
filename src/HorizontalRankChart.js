@@ -10,6 +10,8 @@ import Turtle from "absol/src/Math/Turtle";
 import {numberToString} from "absol/src/Math/int";
 import {observePropertyChanges, unobservePropertyChanges} from "absol/src/DataStructure/Object";
 import DelaySignal from "absol/src/HTML5/DelaySignal";
+import {HRCFixedAxisController} from "./HorizontalRangeChart";
+import {drillProperty} from "absol/src/HTML5/OOP";
 
 
 /**
@@ -19,7 +21,13 @@ import DelaySignal from "absol/src/HTML5/DelaySignal";
 function HorizontalRankChart() {
     this.resizeCtrl = new ChartResizeController(this);
     this.titleCtrl = new ChartTitleController(this);
-    this.$attachhook.once('attached', this.updateContent.bind(this));
+    this.fixedAxisCtrl = new HRCFixedAxisController(this);
+
+
+    this.$attachhook.once('attached', () => {
+        this.fixedAxisCtrl.start();
+        this.updateContent();
+    });
 
     this.$title = $('.vc-title', this);
 
@@ -32,6 +40,7 @@ function HorizontalRankChart() {
     this.$grid = $('.vc-grid', this);
     this.$valueName = $('.vc-value-name', this);
     this.$postionCtn = $('.vc-postion-ctn', this);
+    this.$fixedContentRef = $('.vc-fixed-content-ref', this);
 
     this.$oyLabels = [];
     this.cpData = null;
@@ -45,8 +54,12 @@ function HorizontalRankChart() {
     ];
     this.domSignal = new DelaySignal();
     this.domSignal.on('updateContent', ()=>{
-        if (this.isDescendantOf(document.body)) this.updateContent();
+        if (this.isDescendantOf(document.body)) {
+            this.fixedAxisCtrl.start();
+            this.updateContent();
+        }
     });
+    drillProperty(this, this, 'computedData', 'cpData');
 
     observePropertyChanges(this, this.dataKeys, ()=> this.domSignal.emit('updateContent'));
 
@@ -79,6 +92,18 @@ HorizontalRankChart.render = function (data, o, dom) {
                     'alignment-baseline': "hanging"
                 },
                 child: {text: ''}
+            },
+            {
+                tag: 'rect',
+                class: 'vc-fixed-content-ref',
+                attr: {
+                    width: '10',
+                    height: '33'
+                },
+                style: {
+                    fill: 'transparent',
+                    stroke: 'none'
+                }
             },
             {
                 tag: KeyNoteGroup
@@ -153,6 +178,7 @@ HorizontalRankChart.prototype.revokeResource = function () {
       revokeResource(this.titleCtrl);
       revokeResource(this.resizeCtrl);
       revokeResource(this.domSignal);
+    this.fixedAxisCtrl.revokeResource();
       while (this.lastChild) {
           this.lastChild.remove();
       }
@@ -225,8 +251,6 @@ HorizontalRankChart.prototype.computeData = function () {
         "#33FF8C", // Bright Mint
         "#8C33FF"  // Bright Purple
     ];
-    ;
-
 };
 
 
@@ -319,6 +343,10 @@ HorizontalRankChart.prototype.updateContentPosition = function () {
     this.$valueName.attr('x', this.$axis.box.width)
         .attr('y', -8);
 
+    this.$fixedContentRef.attr('y', this.$body.box.y - 24);
+    this.$fixedContentRef.attr('width', this.$body.box.width + this.$body.box.x + 8);
+
+
     /**
      *
      * @type {Turtle}
@@ -331,8 +359,11 @@ HorizontalRankChart.prototype.updateContentPosition = function () {
     var dx = Math.max(100, Math.floor(20 + measureArial14TextWidth(this.numberToString(this.cpData.max))));
     var sm = calBeautySegment(Math.floor((this.$axis.box.width - valueNameWidth - 10 - dx / 2) / dx),
         this.cpData.min, this.cpData.max + 1);
+    this.cpData.sm = sm;
     dx = Math.floor((this.$axis.box.width - valueNameWidth - 10 - dx / 2) / sm.segmentCount);
     var dv = (sm.maxValue - sm.minValue) / sm.segmentCount;
+    this.cpData.dx = dx;
+    this.cpData.dv = dv;
     turtle.moveTo(0, 2);
     for (i = 0; i < sm.segmentCount; ++i) {
         turtle.moveBy(dx, -4);
@@ -385,6 +416,9 @@ HorizontalRankChart.prototype.updateContentPosition = function () {
     //auto size
     this.$body.box.height = this.$axis.box.height + 10;//10px: padding button
     this.box.height = this.$body.box.y + this.$body.box.height;
+
+    this.fixedAxisCtrl.updateContentPosition();
+
 };
 
 HorizontalRankChart.prototype.numberToString = function () {
@@ -398,7 +432,7 @@ HorizontalRankChart.prototype.updateContent = function () {
     this.$valueName.firstChild.data = this.valueName || '';
     this.createOYLabel();
     this.createPositions();
-
+    this.fixedAxisCtrl.updateContent();
     this.updateContentPosition();
 };
 
