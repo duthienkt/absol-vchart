@@ -43,7 +43,7 @@ ChartResizeController.prototype.ev_click = function (event) {
 ChartResizeController.prototype.ev_clickOut = function (event) {
     if (hitElement(this.chartElt, event)) return;
     if (this.share.$resizebox.isAfterMoving()) return;
-    if (this.share.$resizebox.isAttached(this)) this.share.$resizebox.detach();
+    if (this.share.$resizebox.isAttached(this.chartElt)) this.share.$resizebox.detach();
     document.removeEventListener('click', this.ev_clickOut);
 };
 
@@ -328,7 +328,7 @@ BChart.prototype._updateNotesPosition = function () {
 BChart.prototype._updateTitlePosition = function () {
     this.$title.attr({
         x: this.box.width / 2,
-        y: 15
+        y: 18
     });
 };
 
