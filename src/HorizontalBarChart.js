@@ -1,11 +1,11 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import { rect, text, line, vline, moveHLine, moveVLine, generateBackgroundColors, getMaxWidthBox, calBeautySegment, map, lighterColor, hline, fresherColor } from "./helper";
 import { translate } from "./template";
 import Dom from "absol/src/HTML5/Dom";
 import {ChartResizeController} from "./BChart";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 function HorizontalBarChart() {
@@ -597,7 +597,7 @@ HorizontalBarChart.render = function () {
     });
 };
 
-Vcore.install('HorizontalBarChart'.toLowerCase(), HorizontalBarChart);
+VCore.install('HorizontalBarChart'.toLowerCase(), HorizontalBarChart);
 
 export default HorizontalBarChart;
 

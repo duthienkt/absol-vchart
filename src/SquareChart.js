@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import BaseChart from "./BaseChart";
 import { text, vline, hline, circle, moveVLine, moveHLine, map } from "./helper";
 
@@ -158,8 +158,8 @@ import { text, vline, hline, circle, moveVLine, moveHLine, map } from "./helper"
 // };
 
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 function SquareChart() {
     var res = _({
@@ -371,6 +371,6 @@ SquareChart.prototype.init = function (props) {
     this.sync = this.sync.then(this.update.bind(this));
 };
 
-Vcore.creator.squarechart = SquareChart;
+VCore.creator.squarechart = SquareChart;
 
 export default SquareChart;

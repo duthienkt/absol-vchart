@@ -1,11 +1,11 @@
 import BChart from "./BChart";
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
 import {calBeautySegment, map} from "./helper";
 import Axis from "./Axis";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /**
  * @extends BChart
@@ -338,6 +338,6 @@ VerticalChart.eventHandler.scrollArrowsPressRight = function () {
     this.eventHandler.scrollOxySpace();
 };
 
-Vcore.install(VerticalChart);
+VCore.install(VerticalChart);
 
 export default VerticalChart;

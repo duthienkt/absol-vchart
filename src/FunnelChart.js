@@ -1,6 +1,6 @@
 import './style/base.css';
 import './style/funnelchart.css';
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import AElement from "absol/src/HTML5/AElement";
 import ResizeSystem from "absol/src/HTML5/ResizeSystem";
 import DomSignal from "absol/src/HTML5/DomSignal";
@@ -9,8 +9,8 @@ import {generateBackgroundColors, map, rect} from "./helper";
 import Color from "absol/src/Color/Color";
 import BChart, {ChartResizeController} from "./BChart";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /***
  * @extends AElement
@@ -284,6 +284,6 @@ FunnelChart.eventHandler.attached = function () {
 };
 
 
-Vcore.install(FunnelChart);
+VCore.install(FunnelChart);
 
 export default FunnelChart;

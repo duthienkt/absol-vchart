@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import './style/spiderchart.css';
 import {rotate, translate} from "./template";
 import {hline, text} from "./helper";
@@ -7,8 +7,8 @@ import './NoteGrid';
 import KeyNote from "./KeyNote";
 
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 function SpiderChart() {
@@ -280,7 +280,7 @@ SpiderChart.eventHandler.attached = function () {
 SpiderChart.property = {};
 
 
-Vcore.install('spiderchart', SpiderChart);
+VCore.install('spiderchart', SpiderChart);
 export default SpiderChart;
 
 

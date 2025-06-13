@@ -1,12 +1,12 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 
 import salaryimgchart_svg from '../template/salaryimgchart.svg';
 
 import {map, text} from './helper';
 import {ChartResizeController} from "./BChart";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /**
  * @deprecated
@@ -203,6 +203,6 @@ SalaryImgChart.prototype.init = function (props) {
 };
 
 
-Vcore.install(SalaryImgChart);
+VCore.install(SalaryImgChart);
 
 export default SalaryImgChart;

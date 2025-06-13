@@ -1,11 +1,11 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import {rect, text, isNumber} from "./helper";
 import {translate} from "./template";
 import OOP from "absol/src/HTML5/OOP";
 import VerticalChart from "./VerticalChart";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 /***
@@ -102,7 +102,7 @@ ColumnChart.prototype._updateColumnPosition = function () {
     }.bind(this));
 };
 
-Vcore.install(ColumnChart);
+VCore.install(ColumnChart);
 
 
 export default ColumnChart;

@@ -1,12 +1,12 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 
 import salaryimgchart_svg from '../template/salaryimgchart.svg';
 import {text, getMaxHeightBox, getMaxWidthBox, rect} from "./helper";
 import {ChartResizeController} from "./BChart";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /**
  *
@@ -320,4 +320,4 @@ SalaryScaleChart.property.canvasWidth = {
 };
 
 
-Vcore.install('SalaryScaleChart'.toLowerCase(), SalaryScaleChart);
+VCore.install('SalaryScaleChart'.toLowerCase(), SalaryScaleChart);

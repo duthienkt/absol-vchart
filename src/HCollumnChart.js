@@ -1,9 +1,9 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import DomSignal from "absol/src/HTML5/DomSignal";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 /***
@@ -95,6 +95,6 @@ HColumnChart.prototype.updateContentPosition = function () {
 };
 
 
-Vcore.install(HColumnChart);
+VCore.install(HColumnChart);
 
 export default HColumnChart;

@@ -1,7 +1,7 @@
 import Svg from 'absol/src/HTML5/Svg';
 import install from "absol-svg/js/svg/install";
-var Vcore = new Svg();
-install(Vcore);
-export var _ = Vcore._;
-export var $ = Vcore.$;
-export default Vcore;
+var VCore = new Svg();
+install(VCore);
+export var _ = VCore._;
+export var $ = VCore.$;
+export default VCore;

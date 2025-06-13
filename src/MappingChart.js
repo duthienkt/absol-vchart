@@ -1,11 +1,11 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import BaseChart from "./BaseChart";
 import { text, circle, hline, moveHLine, rect, map, isNumber } from "./helper";
 import { translate } from "./template";
 
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 var STATE_READY = 0;
 var STATE_MODIFY = 1;
@@ -845,8 +845,8 @@ MappingChartMarker.prototype.init = function (props) {
 
 
 
-Vcore.creator.mappingchartmarker = MappingChartMarker;
+VCore.creator.mappingchartmarker = MappingChartMarker;
 
 
-Vcore.creator.mappingchart = MappingChart;
+VCore.creator.mappingchart = MappingChart;
 export default MappingChart;

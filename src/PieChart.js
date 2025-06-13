@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import Color from "absol/src/Color/Color";
 import {generateBackgroundColors} from "./helper";
 import './style/piechart.css';
@@ -11,8 +11,8 @@ import {closeTooltip, showTooltip} from "./ToolTip";
 import {isNaturalNumber} from "absol-acomp/js/utils";
 import {generatorColorScheme} from 'absol-acomp/js/colorpicker/SelectColorSchemeMenu';
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /***
  * @typedef VCPiece
@@ -252,6 +252,6 @@ PieChart.prototype.normalizeData = function () {
 };
 
 
-Vcore.install(PieChart);
+VCore.install(PieChart);
 
 export default PieChart;

@@ -1,9 +1,9 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
 import { circle, text, moveHLine, calBeautySegment, map } from "./helper";
 import { translate } from "./template";
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 function GroupRankChart() {
     var suffix = (Math.random() + '').replace(/\./g, '');
@@ -410,6 +410,6 @@ GroupRankChart.property.overflowOX = {
     }
 };
 
-Vcore.creator.grouprankchart = GroupRankChart;
+VCore.creator.grouprankchart = GroupRankChart;
 
 export default GroupRankChart;

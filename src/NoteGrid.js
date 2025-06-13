@@ -1,8 +1,8 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import { translate } from './template';
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 function NoteGrid() {
@@ -138,6 +138,6 @@ NoteGrid.attribute.padding = {
     }
 };
 
-Vcore.install('NoteGrid'.toLowerCase(), NoteGrid);
+VCore.install('NoteGrid'.toLowerCase(), NoteGrid);
 
 export default NoteGrid;

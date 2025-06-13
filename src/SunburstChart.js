@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import {circle, text, generateBackgroundColors, map, getGlobalBBox} from "./helper";
 import Color from "absol/src/Color/Color";
 import {translate, rotate} from "./template";
@@ -6,8 +6,8 @@ import BChart from "./BChart";
 import OOP from "absol/src/HTML5/OOP";
 import Rectangle from "absol/src/Math/Rectangle";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /***
  * @extends BChart
@@ -364,6 +364,6 @@ SunburstChart.prototype.calDepth = function (node) {
 };
 
 
-Vcore.creator.sunburstchart = SunburstChart;
+VCore.creator.sunburstchart = SunburstChart;
 
 export default SunburstChart;

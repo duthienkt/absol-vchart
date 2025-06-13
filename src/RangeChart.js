@@ -1,5 +1,5 @@
 import './style/rangechart.css';
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import {
     hline,
     vline,
@@ -18,8 +18,8 @@ import BChart from "./BChart";
 import OOP from "absol/src/HTML5/OOP";
 import VerticalChart from "./VerticalChart";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /***
  * @extends BChart
@@ -576,7 +576,7 @@ RangeChart.prototype._createRange = function (range) {
 };
 
 
-Vcore.install(RangeChart);
-Vcore.install('ostickchart', function () {
+VCore.install(RangeChart);
+VCore.install('ostickchart', function () {
     return _('rangechart.base-chart.o-stick-chart', true);
 });

@@ -1,4 +1,4 @@
-import Vcore, {$, _} from "./VCore";
+import VCore, {$, _} from "./VCore";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import {KeyNoteGroup} from "./KeyNote";
 import {isNaturalNumber, revokeResource} from "absol-acomp/js/utils";
@@ -211,7 +211,7 @@ HorizontalRankChart.prototype.computeData = function () {
         return Math.max(ac, ...cr.ranks);
     }, -Infinity);
     if (this.cpData.min > this.cpData.max) {
-        this.cpData = 0;
+        this.cpData.min = 0;
         this.cpData.max = 0;
     }
 
@@ -441,6 +441,6 @@ HorizontalRankChart.prototype.updateSize = function () {
     this.updateContentPosition();
 };
 
-Vcore.install(HorizontalRankChart);
+VCore.install(HorizontalRankChart);
 
 export default HorizontalRankChart;

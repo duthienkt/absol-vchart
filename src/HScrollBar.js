@@ -1,13 +1,13 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
 import Draggable from "absol-acomp/js/Draggable";
 import {translate} from "./template";
 import GContainer from "absol-svg/js/svg/GContainer";
 import Hanger from "absol-acomp/js/Hanger";
 
-var _ = Vcore._;
+var _ = VCore._;
 
-var $ = Vcore.$;
+var $ = VCore.$;
 
 
 /**
@@ -195,6 +195,6 @@ HScrollBar.prototype.moveTo = function (x, y) {
     this.attr('transform', translate(x, y));
 }
 
-Vcore.creator.hscrollbar = HScrollBar;
+VCore.creator.hscrollbar = HScrollBar;
 
 export default HScrollBar;

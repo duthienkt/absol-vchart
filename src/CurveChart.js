@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore,{_, $}  from "./VCore";
 import { autoCurve } from "./helper";
 
 /**
@@ -12,7 +12,7 @@ function CurveChart() {
 CurveChart.tag = 'CurveChart'.toLowerCase();
 
 CurveChart.render = function () {
-    return Vcore._('linechart', true);
+    return _('linechart', true);
 };
 
 CurveChart.prototype.updateComp = function () {
@@ -36,6 +36,6 @@ CurveChart.prototype.updateComp = function () {
     }.bind(this));
 };
 
-Vcore.creator.curvechart = CurveChart;
+VCore.install(CurveChart);
 
 export default CurveChart;

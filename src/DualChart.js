@@ -1,11 +1,11 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import { isNumber, rect, text, getSubNumberArray } from "./helper";
 import { translate, rotate } from "./template";
 import LineChart from "./LineChart";
 import {ChartTitleController} from "./BChart";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 function DualChart() {
     this.titleCtrl = new ChartTitleController(this);
@@ -295,6 +295,6 @@ Object.keys(LineChart.prototype)
     });
 
 
-Vcore.creator.dualchart = DualChart;
+VCore.creator.dualchart = DualChart;
 
 export default DualChart;

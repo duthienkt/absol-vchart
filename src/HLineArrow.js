@@ -1,11 +1,11 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import {translate} from "./template";
 import {moveHLine} from "./helper";
 import AElementNS from "absol/src/HTML5/AElementNS";
 import GContainer from "absol-svg/js/svg/GContainer";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 /***
@@ -61,6 +61,6 @@ HLineArrow.property.length = {
 }
 
 
-Vcore.creator.hlinearrow = HLineArrow;
+VCore.creator.hlinearrow = HLineArrow;
 
 export default HLineArrow;

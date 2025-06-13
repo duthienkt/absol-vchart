@@ -1,8 +1,8 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import { hline, text, circle, moveHLine, moveVLine } from "./helper";
 import { translate } from "./template";
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 function RangeGroupChart() {
 
@@ -176,6 +176,6 @@ RangeGroupChart.prototype.updateComp = function () {
     }.bind(this), 0);
 };
 
-Vcore.creator.rangegroupchart = RangeGroupChart;
+VCore.creator.rangegroupchart = RangeGroupChart;
 
 export default RangeGroupChart;

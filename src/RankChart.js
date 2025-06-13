@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import {translate} from "./template";
 import {calBeautySegment, map, rect, text} from "./helper";
 import {closeTooltip, showTooltip} from "./ToolTip";
@@ -9,8 +9,8 @@ import ColumnChart from "./ColumnChart";
 import GContainer from "absol-svg/js/svg/GContainer";
 import './style/rankchart.css';
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /***
  * @extends BChart
@@ -328,6 +328,6 @@ RankChart.prototype._updatePosListPosition = function () {
 };
 
 
-Vcore.install(RankChart);
+VCore.install(RankChart);
 
 export default RankChart;

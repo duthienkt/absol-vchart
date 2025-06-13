@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import {getSubNumberArray, isNumber} from "./helper";
 import DualChart from "./DualChart";
 import {translate} from "./template";
@@ -7,8 +7,8 @@ import ColumnChart from "./ColumnChart";
 import Core from "absol-svg/js/svg/Core";
 import VerticalChart from "./VerticalChart";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 /***
