@@ -1,5 +1,5 @@
 import './style/base.css';
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import SvgCanvas from "absol-svg/js/svg/SvgCanvas";
 import GContainer from "absol-svg/js/svg/GContainer";
 import DomSignal from "absol/src/HTML5/DomSignal";
@@ -16,8 +16,8 @@ import noop from "absol/src/Code/noop";
 import {observePropertyChanges, unobservePropertyChanges} from "absol/src/DataStructure/Object";
 
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 /**
  *
@@ -67,10 +67,9 @@ ChartResizeController.prototype.prepare = function () {
 };
 
 
-
 /**
  *
- * @param {BChart} elt
+ * @param {BChart|SvgCanvas} elt
  * @constructor
  */
 export function ChartTitleController(elt) {
@@ -79,11 +78,12 @@ export function ChartTitleController(elt) {
     this.elt.on('mouseover', this.ev_mouseEnter)
         .on('mouseout', this.ev_mouseOut);
     this.titleElt = null;
+    this.followElt = null;
     this.contentElt = ACore._({
         tag: 'div',
         style: {font: '14px Arial'}
     }).on('mouseover', this.ev_mouseEnter)
-        .on('mouseout', this.ev_mouseOut)
+        .on('mouseout', this.ev_mouseOut);
     this.closeTO = -1;
     this.sessonToken = null;
 }
@@ -96,6 +96,10 @@ ChartTitleController.prototype.revokeResource = function () {
     revokeResource(this.contentElt);
     delete this.elt;
     delete this.contentElt;
+    if (this.followElt) {
+        this.followElt.remove();
+        this.followElt = null;
+    }
     this.revokeResource = noop();
 };
 
@@ -111,13 +115,34 @@ ChartTitleController.prototype.ev_mouseEnter = function (event) {
         clearTimeout(this.closeTO);
         if (hasTileElt !== this.titleElt) {
             this.titleElt = hasTileElt;
-            this.sessonToken = Tooltip.show(this.titleElt, this.makeTooltipContent(this.titleElt.attr('title')));
+            if (this.titleElt.tagName === 'path') {
+                this.followElt = ACore._({
+                    style: {
+                        position: 'fixed',
+                        top: event.clientY + 'px',
+                        left: event.clientX + 'px',
+                        opacity: 0,
+                        visibility: 'hidden'
+                    }
+                }).addTo(this.elt.parentElement);
+
+            } else {
+                if (this.followElt) {
+                    this.followElt.remove();
+                    this.followElt = null;
+                }
+            }
+            this.sessonToken = Tooltip.show(this.followElt ||this.titleElt, this.makeTooltipContent(this.titleElt.attr('title')));
         }
     } else {
         if (this.titleElt) {
             clearTimeout(this.closeTO);
             this.closeTO = setTimeout(() => {
                 this.titleElt = null;
+                if (this.followElt) {
+                    this.followElt.remove();
+                    this.followElt = null;
+                }
                 ToolTip.close(this.sessonToken);
             }, 500)
         }
@@ -132,6 +157,10 @@ ChartTitleController.prototype.ev_mouseOut = function (event) {
         clearTimeout(this.closeTO);
         this.closeTO = setTimeout(() => {
             this.titleElt = null;
+            if (this.followElt) {
+                this.followElt.remove();
+                this.followElt = null;
+            }
             ToolTip.close(this.sessonToken);
         }, 500);
     }
@@ -193,7 +222,7 @@ function BChart() {
         OOP.drillProperty(this, this, 'numberToText', 'numberToString');
     }
 
-    observePropertyChanges(this, this.dataKeys, ()=>{
+    observePropertyChanges(this, this.dataKeys, () => {
         if (this.domSignal) this.domSignal.emit('updateContent');
     });
 
@@ -427,6 +456,6 @@ BChart.property.colorScheme = {
 BChart.eventHandler = {};
 
 
-Vcore.install(BChart);
+VCore.install(BChart);
 
 export default BChart;
