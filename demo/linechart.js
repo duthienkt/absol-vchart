@@ -19,9 +19,59 @@ var texts = Array(12).fill(0).map(function (u, i) {
 
 
 vchart._({
+    tag: 'linechart2',
+    style:{
+        height: '600px',
+        width: '100%'
+    },
+    props: {
+        intergerOnly: true,
+        title: 'Bão lãnh thanh toán',
+        valueName: '$',
+        keyName: 'Tháng',
+        zeroOY: true,
+        keys: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+        lines: [
+            {
+                name: 'Đường 1',
+                values: results,
+                texts: texts,
+                plotColors: ['blue']
+            },
+            {
+                name: 'Đường 2',
+                values: results1,
+                texts: texts,
+                plotColors: ['cyan']
+            },
+            {
+                name: 'Đường 3',
+                values: results1,
+                texts: texts,
+                plotColors: ['cyan']
+            },
+            {
+                name: 'Đường 3',
+                values: results1,
+                texts: texts,
+                plotColors: ['cyan']
+            },
+            {
+                name: 'Đường 3',
+                values: results1,
+                texts: texts,
+                plotColors: ['cyan']
+            }
+        ],
+
+    }
+}).addTo(document.body)
+
+
+vchart._({
     tag: 'linechart',
     props: {
-        title: 'Bão lãnh thanh toán',
+        title: 'Bão lãnh thanh toán (old version)',
         valueName: '$',
         keyName: 'Tháng',
         zeroOY: true,
@@ -62,3 +112,5 @@ vchart._({
         ]
     }
 }).addTo(document.body)
+
+
