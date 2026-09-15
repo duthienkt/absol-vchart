@@ -1,11 +1,11 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import OOP from "absol/src/HTML5/OOP";
 import { calBeautySegment, text, moveHLine, map } from "./helper";
 import { translate } from "./template";
 
-var _ = Vcore._;
+var _ = VCore._;
 
-var $ = Vcore.$;
+var $ = VCore.$;
 
 function BaseChart() {
     var _ = vchart._;
@@ -258,7 +258,7 @@ BaseChart.prototype.preInit = function () {
     this.oyMinValue = 0;
     this.valueName = '';
     this.keyName = '';
-    this.colorTable = ['#821616', ' #824116', '#826C16', '#6C8216', '#418216', '#168216',
+    this.colorTable = ['#821616', '#824116', '#826C16', '#6C8216', '#418216', '#168216',
         '#168241', '#16826C', '#166C82', '#164182', '#161682', '#411682', '#6C1682',
         '#82166C', '#821641'];
 };
@@ -380,6 +380,6 @@ BaseChart.property.showInlineValue = {
 };
 
 
-Vcore.creator.basechart = BaseChart;
+VCore.creator.basechart = BaseChart;
 
 export default BaseChart;
