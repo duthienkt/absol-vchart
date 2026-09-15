@@ -1,11 +1,11 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import Mat3 from "absol/src/Math/Mat3";
 import Vec2 from "absol/src/Math/Vec2";
 import './style/scrollarrow.css';
 import EventEmitter from "absol/src/HTML5/EventEmitter";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 function ScrollArrow() {
     this.$left = $('.vc-scroll-arrow-left', this);
@@ -228,6 +228,6 @@ ScrollArrow.eventHandler.pointerUp = function () {
 };
 
 
-Vcore.install(ScrollArrow);
+VCore.install(ScrollArrow);
 
 export default ScrollArrow;
