@@ -15,6 +15,7 @@ import HorizontalRankChart from "./HorizontalRankChart";
 import StackedHorizontalBarChart from "./StackedHorizontalBarChart";
 import {LineChart2} from "./LineChart";
 import MappingBarChart from "./MapingBarChart";
+import SparklineChart from "./SparkLineChart";
 
 
 export var VChartCreators = [
@@ -33,7 +34,8 @@ export var VChartCreators = [
     HorizontalRankChart,
     StackedHorizontalBarChart,
     LineChart2,
-    MappingBarChart
+    MappingBarChart,
+    SparklineChart
 ];
 
 /***
