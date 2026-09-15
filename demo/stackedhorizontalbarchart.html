@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>StackedHorizontalBarChart</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script src="../dist/vchart.js?time=<?php  echo stat('../dist/vchart.js')['mtime'];?>"></script>
+</head>
+
+<body>
+<script>
+    absol.remoteNodeRequireAsync(location.href.replace('.html', '.js'));
+</script>
+
+<style>
+    body::after {
+        content: "";
+        display: block;
+        height: 50px;
+    }
+</style>
+</body>
+
+</html>
