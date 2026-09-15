@@ -1,6 +1,6 @@
 import './style/assessmentchart.css';
 import {text, rect, hline, circle, map, lighterColor, getGlobalBBox} from "./helper";
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import Color from "absol/src/Color/Color";
 import {rotate, translate} from "./template";
 import Rectangle from "absol/src/Math/Rectangle";
@@ -8,8 +8,8 @@ import BChart from "./BChart";
 import OOP from "absol/src/HTML5/OOP";
 import {observePropertyChanges, unobservePropertyChanges} from "absol/src/DataStructure/Object";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 /***
@@ -563,6 +563,6 @@ AssessmentChart.property.rangeSegment = {
 };
 
 
-Vcore.install(AssessmentChart);
+VCore.install(AssessmentChart);
 
 export default AssessmentChart;

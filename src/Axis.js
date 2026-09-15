@@ -1,8 +1,8 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import GContainer from "absol-svg/js/svg/GContainer";
 
-var _ = Vcore._;
-var $ = Vcore.$;
+var _ = VCore._;
+var $ = VCore.$;
 
 
 /***
@@ -105,6 +105,6 @@ Axis.prototype.init = function (props) {
 };
 
 
-Vcore.install(Axis);
+VCore.install(Axis);
 
 export default Axis;
