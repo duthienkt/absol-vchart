@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 import Color from 'absol/src/Color/Color';
 import Vec2 from 'absol/src/Math/Vec2';
 
@@ -8,7 +8,7 @@ import TextMeasure from "absol-acomp/js/TextMeasure";
 import BContextCapture from "absol-acomp/js/BContextCapture";
 import Rectangle from "absol/src/Math/Rectangle";
 
-var _ = Vcore._;
+var _ = VCore._;
 
 
 export var beautyStep = [
@@ -135,6 +135,9 @@ export function calBeautySegment(maxSegment, minValue, maxValue, integerOnly) {
         }
         ++i;
     }
+
+    res.segmentCount = Math.min(100, res.segmentCount);
+
     return res;
 }
 
