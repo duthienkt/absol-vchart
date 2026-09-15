@@ -14,6 +14,17 @@
     min-height: var(--vc-require-height);
 }
 
+.vc-oxy {
+    fill: none;
+    stroke: rgb(68, 114, 196);
+    stroke-width: 1;
+}
+
+.vc-oxy-arrow {
+    fill: rgb(68, 114, 196);
+    stroke: none;
+}
+
 .vc-simple-ox {
     stroke-width: 1;
 }
@@ -56,12 +67,12 @@
 }
 
 @media print {
-    .as-resize-box{
+    .as-resize-box {
         display: none;
     }
 
     .vc-chart {
-        max-width: 600px;/*a4 with 2in margin both*/
+        max-width: 600px; /*a4 with 2in margin both*/
         height: auto;
     }
 
