@@ -12,6 +12,9 @@ import SimpleBarChart from "./SimplerBarChart";
 import SimpleLineChart from "./SimpleLineChart";
 import HorizontalRangeChart from "./HorizontalRangeChart";
 import HorizontalRankChart from "./HorizontalRankChart";
+import StackedHorizontalBarChart from "./StackedHorizontalBarChart";
+import {LineChart2} from "./LineChart";
+import MappingBarChart from "./MapingBarChart";
 
 
 export var VChartCreators = [
@@ -27,7 +30,10 @@ export var VChartCreators = [
     SimpleBarChart,
     SimpleLineChart,
     HorizontalRangeChart,
-    HorizontalRankChart
+    HorizontalRankChart,
+    StackedHorizontalBarChart,
+    LineChart2,
+    MappingBarChart
 ];
 
 /***
