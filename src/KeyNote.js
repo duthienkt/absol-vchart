@@ -253,13 +253,17 @@ export function KeyNoteGroup() {
      * @memberof KeyNoteGroup#
      */
 
+    this.$hoverItem = null;
+    this.hoverItem = null;
+
 }
 
 KeyNoteGroup.tag = 'KeyNodeGroup'.toLowerCase();
 
 KeyNoteGroup.render = function () {
     return _({
-        tag: GContainer
+        tag: GContainer,
+        extendEvent:['enteritem', 'leaveitem'],
     });
 };
 
@@ -270,7 +274,7 @@ KeyNoteGroup.prototype.updateSize = function () {
     var col = Math.floor((this.box.width) / maxWidth) || 1;
     var y = 0;
     var itemElt;
-    var height;
+    var height = 0;
     for (var i = 0; i < this.$items.length; ++i) {
         itemElt = this.$items[i];
         itemElt.box.position = {x: maxWidth * (i % col), y: y};
@@ -316,12 +320,34 @@ KeyNoteGroup.property.items = {
      */
     set: function (items) {
         items = items || [];
+        this._items = items;
+        this.$hoverItem = null;
+        this.hoverItem = null;
         this.clearChild();
         this.$items = items.map(it => {
-            return _({
+            var itemElt =  _({
                 tag: KeyNote,
-                props: Object.assign({}, it)
-            })
+                props: Object.assign({}, it),
+                on:{
+                    mouseenter: ()=>{
+                        if (this.$hoverItem === itemElt) return;
+                        if (this.$hoverItem) {
+                            this.emit('leaveitem', {type: 'leaveitem', itemElt: this.$hoverItem, item: this.hoverItem}, this);
+                        }
+                        this.$hoverItem = itemElt;
+                        this.hoverItem = it;
+                        this.emit('enteritem', {type: 'enteritem', itemElt: this.$hoverItem, item: this.hoverItem}, this);
+
+                    },
+                    mouseleave: ()=>{
+                        if (this.$hoverItem !== itemElt) return;
+                        this.emit('leaveitem', {type: 'leaveitem', itemElt: this.$hoverItem, item: this.hoverItem}, this);
+                        this.hoverItem = null;
+                        this.$hoverItem = null;
+                    }
+                }
+            });
+            return itemElt;
         });
         this.addChild(this.$items)
 
@@ -330,7 +356,7 @@ KeyNoteGroup.property.items = {
      * @this KeyNoteGroup
      */
     get: function () {
-
+        return this._items;
     },
     configurable: true
 };
