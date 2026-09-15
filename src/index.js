@@ -1,4 +1,4 @@
-import Vcore from "./VCore";
+import VCore from "./VCore";
 
 import './style/vchartStyle';
 
@@ -46,16 +46,16 @@ import {
 import { showTooltip, closeTooltip } from "./ToolTip";
 import install from "./install";
 import SelectColorSchemeMenu from "absol-acomp/js/colorpicker/SelectColorSchemeMenu";
-install(Vcore);
-Vcore.install(SelectColorSchemeMenu);
+install(VCore);
+VCore.install(SelectColorSchemeMenu);
 absol.Dom.ShareInstance.install(SelectColorSchemeMenu);
 
 var vchart = {
-    core: Vcore,
-    creator: Vcore.creator,
-    _: Vcore._,
-    $: Vcore.$,
-    buildSvg: Vcore._,
+    core: VCore,
+    creator: VCore.creator,
+    _: VCore._,
+    $: VCore.$,
+    buildSvg: VCore._,
     lambda: {
         isNumber: isNumber,
         toLocalString: toLocalString
