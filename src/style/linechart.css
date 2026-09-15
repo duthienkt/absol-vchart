@@ -7,3 +7,29 @@
 .line-chart-plot {
     stroke: none;
 }
+
+.vc-line-chart.vc-small-col .vc-key {
+    visibility: hidden;
+}
+
+.vc-line-chart .vc-plot {
+    fill: var(--color);
+}
+
+.vc-line-path {
+    stroke: var(--color);
+    stroke-width: 2;
+    fill: none;
+}
+
+.vc-line-hit-path {
+    stroke-width: 6;
+    fill: none;
+    stroke: transparent;
+}
+
+.vc-line:hover .vc-line-hit-path,
+.vc-line.vc-hover .vc-line-hit-path
+{
+    stroke: var(--lighter-color);
+}
